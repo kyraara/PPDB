@@ -65,109 +65,110 @@ export default function DataSiswaForm() {
     navigate('/formulir/data-ortu');
   };
 
-  const inputStyle = (name) => ({
-    width: '100%', padding: '0.75rem 1rem', background: 'var(--bg-tertiary)', border: `1.5px solid ${errors[name] ? 'var(--status-ditolak)' : 'var(--glass-border)'}`,
-    borderRadius: 'var(--radius-md)', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem', outline: 'none', transition: 'border 0.3s',
-  });
+  const getInputClass = (name) => `
+    w-full px-4 py-3 bg-bg-tertiary dark:bg-dark-bg-tertiary border-[1.5px] rounded-md text-text-primary dark:text-dark-text-primary font-body text-[0.92rem] outline-none transition-colors
+    ${errors[name] ? 'border-status-ditolak' : 'border-border-default dark:border-dark-border-default focus:border-accent dark:focus:border-dark-accent'}
+  `;
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass-card" style={{ padding: '2rem' }}>
-      <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>
-        <User size={18} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem', color: 'var(--accent-primary)' }} />
+    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass-card p-6 md:p-8">
+      <h3 className="text-[1.15rem] mb-1 flex items-center gap-2">
+        <User size={18} className="text-accent dark:text-dark-accent" />
         Data Calon Siswa
       </h3>
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginBottom: '1.5rem' }}>Lengkapi data pribadi calon peserta didik</p>
+      <p className="text-text-muted dark:text-dark-text-muted text-sm mb-6">Lengkapi data pribadi calon peserta didik</p>
 
-      <div style={{ display: 'grid', gap: '1rem' }}>
+      <div className="grid gap-4">
         {/* Nama */}
         <div>
-          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Nama Lengkap *</label>
-          <input name="nama_lengkap" value={form.nama_lengkap} onChange={handleChange} placeholder="Nama sesuai akta kelahiran" style={inputStyle('nama_lengkap')} />
-          {errors.nama_lengkap && <span className="form-error">{errors.nama_lengkap}</span>}
+          <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">Nama Lengkap *</label>
+          <input name="nama_lengkap" value={form.nama_lengkap} onChange={handleChange} placeholder="Nama sesuai akta kelahiran" className={getInputClass('nama_lengkap')} />
+          {errors.nama_lengkap && <span className="form-error mt-1">{errors.nama_lengkap}</span>}
         </div>
 
         {/* NIK + NISN */}
-        <div style={{ display: 'grid', gridTemplateColumns: showNISN ? '1fr 1fr' : '1fr', gap: '1rem' }}>
+        <div className={`grid grid-cols-1 ${showNISN ? 'md:grid-cols-2' : ''} gap-4`}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>NIK</label>
-            <input name="nik" value={form.nik} onChange={handleChange} placeholder="16 digit" maxLength={16} style={inputStyle('nik')} />
-            {errors.nik && <span className="form-error">{errors.nik}</span>}
+            <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">NIK</label>
+            <input name="nik" value={form.nik} onChange={handleChange} placeholder="16 digit" maxLength={16} className={getInputClass('nik')} />
+            {errors.nik && <span className="form-error mt-1">{errors.nik}</span>}
           </div>
           {showNISN && (
             <div>
-              <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>NISN</label>
-              <input name="nisn" value={form.nisn} onChange={handleChange} placeholder="10 digit" maxLength={10} style={inputStyle('nisn')} />
+              <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">NISN</label>
+              <input name="nisn" value={form.nisn} onChange={handleChange} placeholder="10 digit" maxLength={10} className={getInputClass('nisn')} />
             </div>
           )}
         </div>
 
         {/* Tempat + Tanggal Lahir */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
-              <MapPin size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.25rem' }} />Tempat Lahir *
+            <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary flex items-center gap-1">
+              <MapPin size={13} />Tempat Lahir *
             </label>
-            <input name="tempat_lahir" value={form.tempat_lahir} onChange={handleChange} placeholder="Kota/kabupaten" style={inputStyle('tempat_lahir')} />
-            {errors.tempat_lahir && <span className="form-error">{errors.tempat_lahir}</span>}
+            <input name="tempat_lahir" value={form.tempat_lahir} onChange={handleChange} placeholder="Kota/kabupaten" className={getInputClass('tempat_lahir')} />
+            {errors.tempat_lahir && <span className="form-error mt-1">{errors.tempat_lahir}</span>}
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
-              <Calendar size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.25rem' }} />Tanggal Lahir *
+            <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary flex items-center gap-1">
+              <Calendar size={13} />Tanggal Lahir *
             </label>
-            <input type="date" name="tanggal_lahir" value={form.tanggal_lahir} onChange={handleChange} style={{ ...inputStyle('tanggal_lahir'), colorScheme: 'dark' }} />
-            {errors.tanggal_lahir && <span className="form-error">{errors.tanggal_lahir}</span>}
+            <input type="date" name="tanggal_lahir" value={form.tanggal_lahir} onChange={handleChange} className={`${getInputClass('tanggal_lahir')} [color-scheme:light] dark:[color-scheme:dark]`} />
+            {errors.tanggal_lahir && <span className="form-error mt-1">{errors.tanggal_lahir}</span>}
           </div>
         </div>
 
         {/* Jenis Kelamin */}
         <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Jenis Kelamin *</label>
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <label className="block mb-2 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">Jenis Kelamin *</label>
+          <div className="flex gap-3">
             {[{ val: 'L', label: 'Laki-laki' }, { val: 'P', label: 'Perempuan' }].map(opt => (
-              <label key={opt.val} style={{
-                flex: 1, padding: '0.75rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', textAlign: 'center', fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.2s',
-                background: form.jenis_kelamin === opt.val ? 'rgba(201,168,76,0.1)' : 'var(--bg-tertiary)',
-                border: `1.5px solid ${form.jenis_kelamin === opt.val ? 'var(--accent-primary)' : errors.jenis_kelamin ? 'var(--status-ditolak)' : 'var(--glass-border)'}`,
-                color: form.jenis_kelamin === opt.val ? 'var(--accent-primary)' : 'var(--text-secondary)',
-              }}>
-                <input type="radio" name="jenis_kelamin" value={opt.val} checked={form.jenis_kelamin === opt.val} onChange={handleChange} style={{ display: 'none' }} />
+              <label key={opt.val} className={`
+                flex-1 p-3 rounded-md cursor-pointer text-center text-[0.9rem] font-medium transition-colors border-[1.5px]
+                ${form.jenis_kelamin === opt.val 
+                  ? 'bg-accent-bg dark:bg-dark-accent-bg border-accent dark:border-dark-accent text-accent dark:text-dark-accent' 
+                  : `bg-bg-tertiary dark:bg-dark-bg-tertiary text-text-secondary dark:text-dark-text-secondary hover:border-border-hover dark:hover:border-dark-border-hover ${errors.jenis_kelamin ? 'border-status-ditolak' : 'border-border-default dark:border-dark-border-default'}`
+                }
+              `}>
+                <input type="radio" name="jenis_kelamin" value={opt.val} checked={form.jenis_kelamin === opt.val} onChange={handleChange} className="hidden" />
                 {opt.label}
               </label>
             ))}
           </div>
-          {errors.jenis_kelamin && <span className="form-error">{errors.jenis_kelamin}</span>}
+          {errors.jenis_kelamin && <span className="form-error mt-1">{errors.jenis_kelamin}</span>}
         </div>
 
         {/* Agama */}
         <div>
-          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Agama *</label>
-          <select name="agama" value={form.agama} onChange={handleChange} style={{ ...inputStyle('agama'), appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%238A9AB5\' d=\'M6 8L1 3h10z\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center' }}>
+          <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">Agama *</label>
+          <select name="agama" value={form.agama} onChange={handleChange} className={`${getInputClass('agama')} appearance-none bg-no-repeat bg-[position:right_1rem_center] bg-[url("data:image/svg+xml,%3Csvg_xmlns='http://www.w3.org/2000/svg'_width='12'_height='12'_viewBox='0_0_12_12'%3E%3Cpath_fill='%238A9AB5'_d='M6_8L1_3h10z'/%3E%3C/svg%3E")]`}>
             {agamaOptions.map(a => <option key={a} value={a}>{a}</option>)}
           </select>
-          {errors.agama && <span className="form-error">{errors.agama}</span>}
+          {errors.agama && <span className="form-error mt-1">{errors.agama}</span>}
         </div>
 
         {/* Alamat */}
         <div>
-          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Alamat Lengkap *</label>
-          <textarea name="alamat" value={form.alamat} onChange={handleChange} rows={3} placeholder="Jalan, RT/RW, Kelurahan, Kecamatan, Kota" style={{ ...inputStyle('alamat'), resize: 'vertical' }} />
-          {errors.alamat && <span className="form-error">{errors.alamat}</span>}
+          <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">Alamat Lengkap *</label>
+          <textarea name="alamat" value={form.alamat} onChange={handleChange} rows={3} placeholder="Jalan, RT/RW, Kelurahan, Kecamatan, Kota" className={`${getInputClass('alamat')} resize-y`} />
+          {errors.alamat && <span className="form-error mt-1">{errors.alamat}</span>}
         </div>
 
         {/* Asal Sekolah */}
         {showAsalSekolah && (
           <div>
-            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Asal Sekolah</label>
-            <input name="asal_sekolah" value={form.asal_sekolah} onChange={handleChange} placeholder={jenjang === 'SD' ? 'Nama TK (opsional)' : `Nama ${jenjang === 'SMP' ? 'SD/MI' : 'SMP/MTs'} asal`} style={inputStyle('asal_sekolah')} />
+            <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">Asal Sekolah</label>
+            <input name="asal_sekolah" value={form.asal_sekolah} onChange={handleChange} placeholder={jenjang === 'SD' ? 'Nama TK (opsional)' : `Nama ${jenjang === 'SMP' ? 'SD/MI' : 'SMP/MTs'} asal`} className={getInputClass('asal_sekolah')} />
           </div>
         )}
       </div>
 
       {/* Navigation */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
-        <button onClick={handleNext} disabled={saving} className="btn btn-primary">
+      <div className="flex justify-end mt-8">
+        <button onClick={handleNext} disabled={saving} className={`btn btn-primary flex items-center gap-2 ${saving ? 'opacity-70 cursor-wait' : ''}`}>
           {saving ? 'Menyimpan...' : 'Lanjut: Data Orang Tua'}
-          <ArrowRight size={18} />
+          {!saving && <ArrowRight size={18} />}
         </button>
       </div>
     </motion.div>

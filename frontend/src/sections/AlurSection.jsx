@@ -19,64 +19,28 @@ const steps = [
 
 export default function AlurSection() {
   return (
-    <section style={{ padding: '5rem 0', background: 'var(--bg-secondary)' }}>
+    <section className="py-20 bg-bg-secondary dark:bg-dark-bg-secondary">
       <div className="container">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          variants={fadeInUp}
-          style={{ textAlign: 'center', marginBottom: '4rem' }}
-        >
-          <h2 style={{ marginBottom: '0.5rem' }}>Alur Pendaftaran</h2>
-          <div style={{ width: '60px', height: '4px', background: 'var(--accent-primary)', borderRadius: '2px', margin: '0 auto 1rem' }} />
-          <p style={{ color: 'var(--text-secondary)' }}>5 langkah mudah menuju penerimaan</p>
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={fadeInUp}
+          className="text-center mb-16">
+          <h2 className="mb-2">Alur Pendaftaran</h2>
+          <div className="w-[60px] h-1 rounded-sm mx-auto mb-4 bg-accent dark:bg-dark-accent" />
+          <p className="text-text-secondary dark:text-dark-text-secondary">5 langkah mudah menuju penerimaan</p>
         </motion.div>
 
         <div className="alur-container">
           {steps.map((step, i) => (
-            <motion.div
-              key={i}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              custom={i}
-              variants={fadeInUp}
-              className="alur-step"
-            >
-              <div className="card" style={{
-                padding: '1.5rem',
-                width: '100%',
-                maxWidth: '220px',
-                textAlign: 'center',
-                position: 'relative',
-                zIndex: 2,
-              }}>
-                <div style={{
-                  position: 'absolute',
-                  top: '-15px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%',
-                  background: 'var(--accent-primary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '0.85rem',
-                  fontWeight: 700,
-                  color: 'white',
-                  border: '3px solid var(--bg-secondary)'
-                }}>
+            <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i} variants={fadeInUp}
+              className="alur-step">
+              <div className="card p-6 w-full max-w-[220px] text-center relative z-[2]">
+                <div className="absolute -top-[15px] left-1/2 -translate-x-1/2 w-[30px] h-[30px] rounded-full flex items-center justify-center
+                                text-sm font-bold text-white bg-accent dark:bg-dark-accent
+                                border-[3px] border-bg-secondary dark:border-dark-bg-secondary">
                   {i + 1}
                 </div>
-
-                <step.icon size={32} color="var(--accent-primary)" style={{ margin: '1rem auto 0.75rem' }} />
-                <h4 style={{ fontSize: '1rem', marginBottom: '0.4rem' }}>{step.title}</h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                  {step.desc}
-                </p>
+                <step.icon size={32} className="text-accent dark:text-dark-accent mx-auto mt-4 mb-3" />
+                <h4 className="text-base mb-1">{step.title}</h4>
+                <p className="text-xs text-text-secondary dark:text-dark-text-secondary leading-relaxed">{step.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -89,8 +53,6 @@ export default function AlurSection() {
           gap: 1.5rem;
           position: relative;
         }
-        
-        /* Garis horizontal untuk desktop */
         .alur-container::before {
           content: '';
           position: absolute;
@@ -98,29 +60,21 @@ export default function AlurSection() {
           left: 10%;
           right: 10%;
           height: 2px;
-          background: var(--border-default);
+          background: var(--color-border-default);
           z-index: 1;
         }
-
         @media (max-width: 900px) {
           .alur-container {
             flex-direction: column;
             align-items: center;
             gap: 2.5rem;
           }
-          /* Garis vertikal untuk mobile */
           .alur-container::before {
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            right: auto;
-            width: 2px;
-            height: 100%;
+            top: 0; bottom: 0; left: 50%; right: auto;
+            width: 2px; height: 100%;
             transform: translateX(-50%);
           }
-          .alur-step .card {
-            max-width: 300px;
-          }
+          .alur-step .card { max-width: 300px; }
         }
       `}</style>
     </section>

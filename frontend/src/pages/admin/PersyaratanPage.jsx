@@ -7,7 +7,7 @@ import {
 import api from '../../services/api';
 import { Skeleton } from '../../components/SkeletonLoader';
 
-const jenjangColors = { TK: '#C9A84C', SD: '#2D8A6B', SMP: '#1A6B5A', SMA: '#E0C76A' };
+const jenjangColors = { TK: 'var(--color-accent)', SD: '#2D8A6B', SMP: '#1A6B5A', SMA: '#E0C76A' };
 
 const emptyForm = {
   jenjang: 'TK', kode: '', nama: '', keterangan: '', wajib: true,
@@ -73,12 +73,7 @@ export default function PersyaratanPage() {
     } catch (err) { setError(err.response?.data?.message || 'Gagal menghapus.'); setDeleteConfirm(null); }
   };
 
-  const inputStyle = {
-    padding: '0.65rem 1rem', background: 'var(--bg-tertiary)',
-    border: '1.5px solid var(--glass-border)', borderRadius: 'var(--radius-md)',
-    color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.88rem',
-    outline: 'none', width: '100%', transition: 'border 0.3s',
-  };
+  const inputClassName = "px-4 py-2.5 bg-bg-tertiary dark:bg-dark-bg-tertiary border-[1.5px] border-border-default dark:border-dark-border-default rounded-md text-text-primary dark:text-dark-text-primary font-body text-[0.88rem] outline-none w-full transition-colors focus:border-accent dark:focus:border-dark-accent";
 
   // Group by jenjang for display
   const grouped = {};
@@ -90,77 +85,81 @@ export default function PersyaratanPage() {
   return (
     <div>
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
-        <h1 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FileText size={24} color="var(--accent-primary)" /> Persyaratan Dokumen
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-between items-center mb-6 flex-wrap gap-3">
+        <h1 className="text-2xl flex items-center gap-2">
+          <FileText size={24} className="text-accent dark:text-dark-accent" /> Persyaratan Dokumen
         </h1>
-        <button onClick={openCreate} className="btn btn-primary btn-sm"><Plus size={16} /> Tambah</button>
+        <button onClick={openCreate} className="btn btn-primary btn-sm flex items-center gap-2">
+          <Plus size={16} /> Tambah
+        </button>
       </motion.div>
 
-      {success && <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: 'color-mix(in srgb, var(--status-diterima) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-diterima) 25%, transparent)', color: 'var(--status-diterima)', marginBottom: '1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}><CheckCircle2 size={14} />{success}</div>}
-      {error && !showModal && <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: 'color-mix(in srgb, var(--status-ditolak) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-ditolak) 25%, transparent)', color: 'var(--status-ditolak)', marginBottom: '1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}><AlertCircle size={14} />{error}</div>}
+      {success && <div className="p-3 rounded-md mb-4 text-[0.85rem] flex items-center gap-1.5 text-status-diterima border border-status-diterima/25 bg-status-diterima/10"><CheckCircle2 size={14} />{success}</div>}
+      {error && !showModal && <div className="p-3 rounded-md mb-4 text-[0.85rem] flex items-center gap-1.5 text-status-ditolak border border-status-ditolak/25 bg-status-ditolak/10"><AlertCircle size={14} />{error}</div>}
 
       {/* Filter */}
-      <div className="glass-card-static" style={{ padding: '0.85rem 1.25rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Filter:</span>
+      <div className="glass-card-static px-5 py-3.5 mb-5 flex items-center gap-3 flex-wrap">
+        <span className="text-[0.82rem] text-text-muted dark:text-dark-text-muted">Filter:</span>
         {['semua', 'TK', 'SD', 'SMP', 'SMA'].map(j => (
-          <button key={j} onClick={() => setFilterJenjang(j)} style={{
-            padding: '0.35rem 0.75rem', borderRadius: '50px', border: filterJenjang === j ? '1.5px solid var(--accent-primary)' : '1.5px solid var(--glass-border)',
-            background: filterJenjang === j ? 'rgba(201,168,76,0.1)' : 'transparent', color: filterJenjang === j ? 'var(--accent-primary)' : 'var(--text-secondary)',
-            cursor: 'pointer', fontSize: '0.78rem', fontWeight: filterJenjang === j ? 600 : 400,
-          }}>{j === 'semua' ? 'Semua' : j}</button>
+          <button key={j} onClick={() => setFilterJenjang(j)}
+            className={`px-3 py-1.5 rounded-full border-[1.5px] cursor-pointer text-[0.78rem] transition-all duration-200
+              ${filterJenjang === j 
+                ? 'border-accent dark:border-dark-accent bg-accent-bg dark:bg-dark-accent-bg text-accent dark:text-dark-accent font-semibold' 
+                : 'border-border-default dark:border-dark-border-default bg-transparent text-text-secondary dark:text-dark-text-secondary font-normal hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary'}`}>
+            {j === 'semua' ? 'Semua' : j}
+          </button>
         ))}
       </div>
 
       {/* Content */}
       {loading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="flex flex-col gap-4">
           {[1,2,3].map(i => <Skeleton key={i} width="100%" height="3rem" />)}
         </div>
       ) : Object.keys(grouped).length === 0 ? (
-        <div className="glass-card-static" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
-          <FileText size={48} color="var(--text-muted)" style={{ marginBottom: '1rem', opacity: 0.5 }} />
-          <h4>Belum ada persyaratan dokumen</h4>
+        <div className="glass-card-static text-center py-12 px-8">
+          <FileText size={48} className="text-text-muted dark:text-dark-text-muted opacity-50 mx-auto mb-4" />
+          <h4 className="text-base">Belum ada persyaratan dokumen</h4>
         </div>
       ) : (
         Object.entries(grouped).map(([jenjang, items]) => (
-          <motion.div key={jenjang} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static" style={{ marginBottom: '1.25rem', overflow: 'hidden' }}>
-            <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ width: '10px', height: '10px', borderRadius: '3px', background: jenjangColors[jenjang] }} />
-              <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>Jenjang {jenjang}</span>
-              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginLeft: 'auto' }}>{items.length} dokumen</span>
+          <motion.div key={jenjang} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static mb-5 overflow-hidden">
+            <div className="px-5 py-4 border-b border-border-default dark:border-dark-border-default flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: jenjangColors[jenjang] }} />
+              <span className="font-bold text-[0.95rem]">Jenjang {jenjang}</span>
+              <span className="text-[0.72rem] text-text-muted dark:text-dark-text-muted ml-auto">{items.length} dokumen</span>
             </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-[0.85rem]">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                  <tr className="border-b border-border-default dark:border-dark-border-default">
                     {['#', 'Kode', 'Nama', 'Format', 'Maks', 'Wajib', 'Aksi'].map(h => (
-                      <th key={h} style={{ textAlign: 'left', padding: '0.65rem 0.75rem', fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>{h}</th>
+                      <th key={h} className="text-left px-3 py-2.5 text-[0.72rem] text-text-muted dark:text-dark-text-muted font-semibold uppercase tracking-wide">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {items.map(p => (
-                    <tr key={p.id} style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                      <td style={{ padding: '0.65rem 0.75rem', color: 'var(--text-muted)', fontSize: '0.78rem' }}>{p.urutan}</td>
-                      <td style={{ padding: '0.65rem 0.75rem', fontFamily: 'monospace', fontSize: '0.78rem', color: 'var(--accent-primary)' }}>{p.kode}</td>
-                      <td style={{ padding: '0.65rem 0.75rem', fontWeight: 500 }}>
+                    <tr key={p.id} className="border-b border-border-default dark:border-dark-border-default">
+                      <td className="px-3 py-2.5 text-text-muted dark:text-dark-text-muted text-[0.78rem]">{p.urutan}</td>
+                      <td className="px-3 py-2.5 font-mono text-[0.78rem] text-accent dark:text-dark-accent">{p.kode}</td>
+                      <td className="px-3 py-2.5 font-medium">
                         {p.nama}
-                        {p.keterangan && <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{p.keterangan}</div>}
+                        {p.keterangan && <div className="text-[0.72rem] text-text-muted dark:text-dark-text-muted mt-0.5">{p.keterangan}</div>}
                       </td>
-                      <td style={{ padding: '0.65rem 0.75rem', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{p.format_diterima}</td>
-                      <td style={{ padding: '0.65rem 0.75rem', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{p.maks_ukuran_mb} MB</td>
-                      <td style={{ padding: '0.65rem 0.75rem' }}>
+                      <td className="px-3 py-2.5 text-[0.78rem] text-text-secondary dark:text-dark-text-secondary">{p.format_diterima}</td>
+                      <td className="px-3 py-2.5 text-[0.78rem] text-text-secondary dark:text-dark-text-secondary">{p.maks_ukuran_mb} MB</td>
+                      <td className="px-3 py-2.5">
                         {p.wajib ? (
-                          <span style={{ color: 'var(--status-ditolak)', fontSize: '0.72rem', fontWeight: 600 }}>WAJIB</span>
+                          <span className="text-status-ditolak text-[0.72rem] font-semibold">WAJIB</span>
                         ) : (
-                          <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>Opsional</span>
+                          <span className="text-text-muted dark:text-dark-text-muted text-[0.72rem]">Opsional</span>
                         )}
                       </td>
-                      <td style={{ padding: '0.65rem 0.75rem' }}>
-                        <div style={{ display: 'flex', gap: '0.35rem' }}>
-                          <button onClick={() => openEdit(p)} style={{ padding: '0.3rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--glass-border)', background: 'transparent', color: 'var(--accent-primary)', cursor: 'pointer' }}><Edit2 size={14} /></button>
-                          <button onClick={() => setDeleteConfirm(p.id)} style={{ padding: '0.3rem', borderRadius: 'var(--radius-sm)', border: '1px solid color-mix(in srgb, var(--status-ditolak) 40%, transparent)', background: 'transparent', color: 'var(--status-ditolak)', cursor: 'pointer' }}><Trash2 size={14} /></button>
+                      <td className="px-3 py-2.5">
+                        <div className="flex gap-1.5">
+                          <button onClick={() => openEdit(p)} className="p-1.5 rounded-sm border border-border-default dark:border-dark-border-default bg-transparent text-accent dark:text-dark-accent cursor-pointer hover:bg-accent-bg dark:hover:bg-dark-accent-bg transition-colors"><Edit2 size={14} /></button>
+                          <button onClick={() => setDeleteConfirm(p.id)} className="p-1.5 rounded-sm border bg-transparent cursor-pointer transition-colors text-status-ditolak hover:bg-status-ditolak/10" style={{ border: '1px solid color-mix(in srgb, var(--color-status-ditolak) 40%, transparent)' }}><Trash2 size={14} /></button>
                         </div>
                       </td>
                     </tr>
@@ -175,65 +174,65 @@ export default function PersyaratanPage() {
       {/* Create/Edit Modal */}
       <AnimatePresence>
         {showModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} onClick={e => e.stopPropagation()} className="glass-card" style={{ maxWidth: '520px', width: '100%', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.1rem' }}>{editId ? '✏️ Edit Persyaratan' : '➕ Tambah Persyaratan'}</h3>
-                <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><X size={20} /></button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center p-6">
+            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} onClick={e => e.stopPropagation()} className="glass-card max-w-[520px] w-full p-8 max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-heading">{editId ? '✏️ Edit Persyaratan' : '➕ Tambah Persyaratan'}</h3>
+                <button onClick={() => setShowModal(false)} className="bg-transparent border-none text-text-muted dark:text-dark-text-muted cursor-pointer hover:text-text-primary dark:hover:text-dark-text-primary"><X size={20} /></button>
               </div>
 
-              {error && showModal && <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: 'color-mix(in srgb, var(--status-ditolak) 10%, transparent)', color: 'var(--status-ditolak)', marginBottom: '1rem', fontSize: '0.82rem' }}>{error}</div>}
+              {error && showModal && <div className="p-2 rounded-sm mb-4 text-[0.82rem] text-status-ditolak bg-status-ditolak/10">{error}</div>}
 
               <form onSubmit={handleSubmit}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Jenjang</label>
-                    <select value={form.jenjang} onChange={e => setForm(f => ({ ...f, jenjang: e.target.value }))} style={inputStyle}>
+                    <label className="block mb-1.5 text-[0.85rem] text-text-secondary dark:text-dark-text-secondary">Jenjang</label>
+                    <select value={form.jenjang} onChange={e => setForm(f => ({ ...f, jenjang: e.target.value }))} className={inputClassName}>
                       {['TK', 'SD', 'SMP', 'SMA'].map(j => <option key={j} value={j}>{j}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Kode</label>
-                    <input type="text" value={form.kode} onChange={e => setForm(f => ({ ...f, kode: e.target.value }))} placeholder="akta_lahir" style={inputStyle} required />
+                    <label className="block mb-1.5 text-[0.85rem] text-text-secondary dark:text-dark-text-secondary">Kode</label>
+                    <input type="text" value={form.kode} onChange={e => setForm(f => ({ ...f, kode: e.target.value }))} placeholder="akta_lahir" className={inputClassName} required />
                   </div>
                 </div>
 
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Nama Dokumen</label>
-                  <input type="text" value={form.nama} onChange={e => setForm(f => ({ ...f, nama: e.target.value }))} placeholder="Akta Kelahiran" style={inputStyle} required />
+                <div className="mb-4">
+                  <label className="block mb-1.5 text-[0.85rem] text-text-secondary dark:text-dark-text-secondary">Nama Dokumen</label>
+                  <input type="text" value={form.nama} onChange={e => setForm(f => ({ ...f, nama: e.target.value }))} placeholder="Akta Kelahiran" className={inputClassName} required />
                 </div>
 
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Keterangan (opsional)</label>
-                  <input type="text" value={form.keterangan} onChange={e => setForm(f => ({ ...f, keterangan: e.target.value }))} placeholder="Scan atau foto yang jelas" style={inputStyle} />
+                <div className="mb-4">
+                  <label className="block mb-1.5 text-[0.85rem] text-text-secondary dark:text-dark-text-secondary">Keterangan (opsional)</label>
+                  <input type="text" value={form.keterangan} onChange={e => setForm(f => ({ ...f, keterangan: e.target.value }))} placeholder="Scan atau foto yang jelas" className={inputClassName} />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div className="grid grid-cols-3 gap-4 mb-4">
                   <div>
-                    <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Format</label>
-                    <input type="text" value={form.format_diterima} onChange={e => setForm(f => ({ ...f, format_diterima: e.target.value }))} style={inputStyle} />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Maks (MB)</label>
-                    <input type="number" min="1" max="20" value={form.maks_ukuran_mb} onChange={e => setForm(f => ({ ...f, maks_ukuran_mb: parseInt(e.target.value) }))} style={inputStyle} />
+                    <label className="block mb-1.5 text-[0.85rem] text-text-secondary dark:text-dark-text-secondary">Format</label>
+                    <input type="text" value={form.format_diterima} onChange={e => setForm(f => ({ ...f, format_diterima: e.target.value }))} className={inputClassName} />
                   </div>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Urutan</label>
-                    <input type="number" min="0" value={form.urutan} onChange={e => setForm(f => ({ ...f, urutan: parseInt(e.target.value) }))} style={inputStyle} />
+                    <label className="block mb-1.5 text-[0.85rem] text-text-secondary dark:text-dark-text-secondary">Maks (MB)</label>
+                    <input type="number" min="1" max="20" value={form.maks_ukuran_mb} onChange={e => setForm(f => ({ ...f, maks_ukuran_mb: parseInt(e.target.value) }))} className={inputClassName} />
+                  </div>
+                  <div>
+                    <label className="block mb-1.5 text-[0.85rem] text-text-secondary dark:text-dark-text-secondary">Urutan</label>
+                    <input type="number" min="0" value={form.urutan} onChange={e => setForm(f => ({ ...f, urutan: parseInt(e.target.value) }))} className={inputClassName} />
                   </div>
                 </div>
 
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <button type="button" onClick={() => setForm(f => ({ ...f, wajib: !f.wajib }))} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'none', border: 'none', cursor: 'pointer', color: form.wajib ? 'var(--status-ditolak)' : 'var(--text-muted)', fontSize: '0.88rem' }}>
+                <div className="mb-6">
+                  <button type="button" onClick={() => setForm(f => ({ ...f, wajib: !f.wajib }))} className={`flex items-center gap-2 bg-transparent border-none cursor-pointer text-[0.88rem] ${form.wajib ? 'text-status-ditolak' : 'text-text-muted dark:text-dark-text-muted'}`}>
                     {form.wajib ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
                     {form.wajib ? 'Wajib diupload' : 'Opsional'}
                   </button>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.75rem' }}>
-                  <button type="button" onClick={() => setShowModal(false)} className="btn btn-secondary" style={{ flex: 1 }}>Batal</button>
-                  <button type="submit" disabled={submitting} className="btn btn-primary" style={{ flex: 1, opacity: submitting ? 0.7 : 1 }}>
-                    {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : 'Simpan'}
+                <div className="flex gap-3">
+                  <button type="button" onClick={() => setShowModal(false)} className="btn btn-secondary flex-1">Batal</button>
+                  <button type="submit" disabled={submitting} className={`btn btn-primary flex-1 flex items-center justify-center gap-2 ${submitting ? 'opacity-70' : ''}`}>
+                    {submitting ? <Loader2 size={16} className="animate-spin" /> : 'Simpan'}
                   </button>
                 </div>
               </form>
@@ -245,21 +244,19 @@ export default function PersyaratanPage() {
       {/* Delete Confirm */}
       <AnimatePresence>
         {deleteConfirm && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDeleteConfirm(null)} style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} onClick={e => e.stopPropagation()} className="glass-card" style={{ maxWidth: '400px', width: '100%', padding: '2rem', textAlign: 'center' }}>
-              <AlertCircle size={40} color="var(--status-ditolak)" style={{ marginBottom: '1rem' }} />
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Hapus Persyaratan?</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '1.5rem' }}>Persyaratan ini akan dihapus secara permanen.</p>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <button onClick={() => setDeleteConfirm(null)} className="btn btn-secondary" style={{ flex: 1 }}>Batal</button>
-                <button onClick={() => handleDelete(deleteConfirm)} className="btn" style={{ flex: 1, background: 'var(--status-ditolak)', color: 'white', border: 'none', cursor: 'pointer' }}>Hapus</button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDeleteConfirm(null)} className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center p-6">
+            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} onClick={e => e.stopPropagation()} className="glass-card max-w-[400px] w-full p-8 text-center">
+              <AlertCircle size={40} className="text-status-ditolak mx-auto mb-4" />
+              <h3 className="text-lg font-heading mb-2">Hapus Persyaratan?</h3>
+              <p className="text-text-secondary dark:text-dark-text-secondary text-[0.88rem] mb-6">Persyaratan ini akan dihapus secara permanen.</p>
+              <div className="flex gap-3">
+                <button onClick={() => setDeleteConfirm(null)} className="btn btn-secondary flex-1">Batal</button>
+                <button onClick={() => handleDelete(deleteConfirm)} className="btn flex-1 bg-status-ditolak text-white border-none cursor-pointer hover:bg-status-ditolak/90">Hapus</button>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Target, Heart, Lightbulb, Users } from 'lucide-react';
+import { Target, Heart, Lightbulb } from 'lucide-react';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -8,102 +8,61 @@ const fadeInUp = {
 
 export default function TentangSection() {
   return (
-    <section style={{ padding: '5rem 0', background: 'var(--bg-secondary)', position: 'relative' }}>
+    <section className="py-20 relative bg-bg-secondary dark:bg-dark-bg-secondary">
       <div className="container">
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '4rem',
-          alignItems: 'center',
-        }} className="tentang-grid">
-          
-          {/* Left: Teks Visi Misi */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left */}
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={fadeInUp}>
-            <h2 style={{ marginBottom: '0.5rem' }}>Tentang Yayasan</h2>
-            <div style={{ width: '60px', height: '4px', background: 'var(--accent-primary)', borderRadius: '2px', marginBottom: '1.5rem' }} />
-            
-            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '2rem' }}>
+            <h2 className="mb-2">Tentang Yayasan</h2>
+            <div className="w-[60px] h-1 rounded-sm mb-6 bg-accent dark:bg-dark-accent" />
+
+            <p className="text-text-secondary dark:text-dark-text-secondary text-[1.05rem] leading-relaxed mb-8">
               Yayasan Al Istiqomah Al Islamiyah didirikan dengan niat tulus untuk berkontribusi dalam pendidikan anak bangsa. Kami menggabungkan kurikulum nasional dengan pendidikan agama Islam yang komprehensif.
             </p>
 
-            <div style={{ padding: '1.5rem', background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-default)', marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                <Target size={24} color="var(--accent-primary)" />
-                <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)' }}>Visi Kami</h3>
+            <div className="p-6 rounded-lg mb-6 bg-surface-card dark:bg-dark-surface-card border border-border-default dark:border-dark-border-default">
+              <div className="flex items-center gap-3 mb-3">
+                <Target size={24} className="text-accent dark:text-dark-accent" />
+                <h3 className="text-xl">Visi Kami</h3>
               </div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+              <p className="text-text-muted dark:text-dark-text-muted text-[0.95rem] leading-relaxed">
                 "Mencetak generasi muslim yang berakhlak mulia, cerdas secara akademik, dan mandiri dalam menghadapi tantangan global berdasarkan nilai-nilai Al-Qur'an dan As-Sunnah."
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                <Heart size={20} color="var(--accent-primary)" style={{ marginTop: '0.1rem' }} />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-start gap-3">
+                <Heart size={20} className="text-accent dark:text-dark-accent mt-0.5" />
                 <div>
-                  <h4 style={{ fontSize: '0.95rem', marginBottom: '0.25rem' }}>Akhlakul Karimah</h4>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Membentuk adab dan karakter Islami.</p>
+                  <h4 className="text-[0.95rem] mb-1">Akhlakul Karimah</h4>
+                  <p className="text-xs text-text-muted dark:text-dark-text-muted">Membentuk adab dan karakter Islami.</p>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                <Lightbulb size={20} color="var(--accent-primary)" style={{ marginTop: '0.1rem' }} />
+              <div className="flex items-start gap-3">
+                <Lightbulb size={20} className="text-accent dark:text-dark-accent mt-0.5" />
                 <div>
-                  <h4 style={{ fontSize: '0.95rem', marginBottom: '0.25rem' }}>Cerdas & Kritis</h4>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Pendidikan akademik berkualitas.</p>
+                  <h4 className="text-[0.95rem] mb-1">Cerdas & Kritis</h4>
+                  <p className="text-xs text-text-muted dark:text-dark-text-muted">Pendidikan akademik berkualitas.</p>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Right: Ilustrasi / Gambar */}
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }} 
-            whileInView={{ opacity: 1, x: 0 }} 
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.8 }}
-            style={{ position: 'relative' }}
-          >
-            <div style={{ 
-              aspectRatio: '4/3', 
-              background: 'url("/images/kegiatan-siswa.png") center/cover no-repeat', 
-              borderRadius: 'var(--radius-xl)',
-              overflow: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1px solid var(--border-default)',
-              boxShadow: 'var(--shadow-lg)'
-            }}>
-            </div>
-            
-            {/* Dekorasi Card Kecil */}
-            <div style={{ 
-              position: 'absolute', 
-              bottom: '-20px', 
-              left: '-20px', 
-              background: 'var(--surface-card)', 
-              padding: '1.25rem', 
-              borderRadius: 'var(--radius-md)',
-              boxShadow: 'var(--shadow-md)',
-              border: '1px solid var(--border-default)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1rem'
-            }}>
-              <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-primary)' }}>15+</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.2 }}>Tahun<br/>Pengalaman<br/>Mendidik</div>
+          {/* Right */}
+          <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.8 }} className="relative">
+            <div className="aspect-[4/3] rounded-xl overflow-hidden border border-border-default dark:border-dark-border-default shadow-lg"
+              style={{ background: 'url("/images/kegiatan-siswa.png") center/cover no-repeat' }} />
+
+            {/* Decorative Card */}
+            <div className="absolute -bottom-5 -left-5 p-5 rounded-md shadow-md flex items-center gap-4
+                            bg-surface-card dark:bg-dark-surface-card border border-border-default dark:border-dark-border-default">
+              <div className="text-[2rem] font-extrabold text-accent dark:text-dark-accent">15+</div>
+              <div className="text-sm text-text-secondary dark:text-dark-text-secondary leading-tight">Tahun<br/>Pengalaman<br/>Mendidik</div>
             </div>
           </motion.div>
-          
         </div>
       </div>
-      
-      <style>{`
-        @media (max-width: 900px) {
-          .tentang-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

@@ -11,67 +11,28 @@ const fadeInUp = {
 
 export default function JenjangSection({ jenjangData }) {
   return (
-    <section style={{ padding: '5rem 0', position: 'relative', background: 'var(--bg-secondary)' }}>
+    <section className="py-20 relative bg-bg-secondary dark:bg-dark-bg-secondary">
       <div className="container">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          variants={fadeInUp}
-          style={{ textAlign: 'center', marginBottom: '3rem' }}
-        >
-          <h2 style={{ marginBottom: '0.5rem' }}>Jenjang Pendidikan</h2>
-          <div style={{ width: '60px', height: '4px', background: 'var(--accent-primary)', borderRadius: '2px', margin: '0 auto 1rem' }} />
-          <p style={{ color: 'var(--text-secondary)' }}>Pilih jenjang yang sesuai untuk putra-putri Anda</p>
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={fadeInUp}
+          className="text-center mb-12">
+          <h2 className="mb-2">Jenjang Pendidikan</h2>
+          <div className="w-[60px] h-1 rounded-sm mx-auto mb-4 bg-accent dark:bg-dark-accent" />
+          <p className="text-text-secondary dark:text-dark-text-secondary">Pilih jenjang yang sesuai untuk putra-putri Anda</p>
         </motion.div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: '1.5rem',
-        }} className="jenjang-grid">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {jenjangData.map((j, i) => (
-            <motion.div
-              key={j.key}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              custom={i}
-              variants={fadeInUp}
-              className="card"
-              style={{ padding: '2rem' }}
-            >
-              <div style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '14px',
-                background: `color-mix(in srgb, ${j.color} 15%, transparent)`,
-                border: `1px solid color-mix(in srgb, ${j.color} 30%, transparent)`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '1.25rem',
-              }}>
-                <j.icon size={28} color={j.color} />
+            <motion.div key={j.key} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i} variants={fadeInUp}
+              className="card p-8">
+              <div className="w-14 h-14 rounded-[14px] flex items-center justify-center mb-5"
+                style={{ background: `color-mix(in srgb, ${j.color} 15%, transparent)`, border: `1px solid color-mix(in srgb, ${j.color} 30%, transparent)` }}>
+                <j.icon size={28} style={{ color: j.color }} />
               </div>
-
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{j.key}</h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: 1.6 }}>
-                {j.desc}
-              </p>
-
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                padding: '0.35rem 0.75rem',
-                borderRadius: '50px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                background: j.key === 'TK' ? 'var(--accent-primary-bg)' : 'rgba(59, 130, 246, 0.1)',
-                color: j.key === 'TK' ? 'var(--accent-primary)' : '#3B82F6',
-                border: `1px solid ${j.key === 'TK' ? 'color-mix(in srgb, var(--accent-primary) 20%, transparent)' : 'rgba(59,130,246,0.2)'}`,
-              }}>
+              <h3 className="text-xl mb-2">{j.key}</h3>
+              <p className="text-sm text-text-secondary dark:text-dark-text-secondary mb-4 leading-relaxed">{j.desc}</p>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold
+                              bg-accent-bg dark:bg-dark-accent-bg text-accent dark:text-dark-accent
+                              border border-accent-bg-strong dark:border-dark-accent-bg-strong">
                 <CheckCircle2 size={12} />
                 {j.highlight}
               </div>
@@ -79,11 +40,6 @@ export default function JenjangSection({ jenjangData }) {
           ))}
         </div>
       </div>
-      <style>{`
-        @media (min-width: 768px) {
-          .jenjang-grid { grid-template-columns: 1fr 1fr !important; }
-        }
-      `}</style>
     </section>
   );
 }

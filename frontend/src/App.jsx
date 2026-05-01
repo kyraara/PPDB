@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
+import { MapPin } from 'lucide-react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import BottomNav from './components/layout/BottomNav';
@@ -7,10 +8,12 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import LupaPasswordPage from './pages/LupaPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import CekStatusPage from './pages/CekStatusPage';
 import KontakPage from './pages/KontakPage';
 import BerandaPage from './pages/pendaftar/BerandaPage';
-import FormulirLayout from './pages/pendaftar/FormulirLayout';
+import FormulirLayout from './components/layout/FormulirLayout';
 import DataSiswaForm from './pages/pendaftar/DataSiswaForm';
 import DataOrtuForm from './pages/pendaftar/DataOrtuForm';
 import DokumenForm from './pages/pendaftar/DokumenForm';
@@ -79,6 +82,8 @@ function AppContent() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/daftar" element={<RegisterPage />} />
+          <Route path="/lupa-password" element={<LupaPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/cek-status" element={<CekStatusPage />} />
           <Route path="/kontak" element={<KontakPage />} />
 
@@ -176,11 +181,23 @@ function App() {
 
 function NotFoundPage() {
   return (
-    <div style={{ minHeight: '100vh', paddingTop: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-      <div>
-        <h1 style={{ fontSize: '5rem', marginBottom: '0.5rem', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-light))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>404</h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '1.5rem' }}>Halaman yang Anda cari tidak ditemukan.</p>
-        <a href="/" className="btn btn-primary">Kembali ke Beranda</a>
+    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center p-8 text-center">
+      <div className="max-w-[440px]">
+        <div className="text-[7rem] font-extrabold font-heading text-accent dark:text-dark-accent opacity-15 leading-none -mb-4 select-none">
+          404
+        </div>
+        <div className="w-[72px] h-[72px] rounded-full flex items-center justify-center mx-auto mb-6 relative z-10
+                        bg-accent-bg dark:bg-dark-accent-bg border-2 border-accent-bg-strong dark:border-dark-accent-bg-strong">
+          <MapPin size={32} className="text-accent dark:text-dark-accent" />
+        </div>
+        <h2 className="text-2xl font-bold mb-3">Halaman Tidak Ditemukan</h2>
+        <p className="text-text-secondary dark:text-dark-text-secondary leading-relaxed mb-8">
+          Halaman yang Anda cari tidak ada atau telah dipindahkan. Coba kembali ke beranda atau cek status pendaftaran Anda.
+        </p>
+        <div className="flex gap-3 justify-center flex-wrap">
+          <Link to="/" className="btn btn-primary">Kembali ke Beranda</Link>
+          <Link to="/cek-status" className="btn btn-secondary">Cek Status Pendaftaran</Link>
+        </div>
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ export default function GeometricPattern({ className = '', opacity = 0.06, size 
       transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}
     >
       {/* 8-pointed star */}
-      <g stroke="#C9A84C" strokeWidth="1" fill="none">
+      <g stroke="var(--color-accent)" strokeWidth="1" fill="none">
         {/* Outer octagon */}
         <polygon points="200,20 283,58 342,117 380,200 342,283 283,342 200,380 117,342 58,283 20,200 58,117 117,58" />
 
@@ -47,7 +47,7 @@ export default function GeometricPattern({ className = '', opacity = 0.06, size 
       </g>
 
       {/* Small diamonds at cardinal points */}
-      <g fill="#C9A84C" opacity="0.4">
+      <g fill="var(--color-accent)" opacity="0.4">
         <polygon points="200,10 208,20 200,30 192,20" />
         <polygon points="200,370 208,380 200,390 192,380" />
         <polygon points="10,200 20,208 30,200 20,192" />

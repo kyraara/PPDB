@@ -6,12 +6,12 @@ import {
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
-  PieChart, Pie, Cell, Legend
+  PieChart, Pie, Cell
 } from 'recharts';
 import api from '../../services/api';
 import { Skeleton, SkeletonCard } from '../../components/SkeletonLoader';
 
-const jenjangColors = { TK: '#C9A84C', SD: '#2D8A6B', SMP: '#1A6B5A', SMA: '#E0C76A' };
+const jenjangColors = { TK: 'var(--color-accent)', SD: '#2D8A6B', SMP: '#1A6B5A', SMA: '#E0C76A' };
 const statusColors = {
   DRAFT: '#6B7280', SUBMITTED: '#F59E0B', MENUNGGU_REVIEW: '#F59E0B',
   REVISI: '#F97316', DITERIMA: '#10B981', DITOLAK: '#EF4444',
@@ -39,12 +39,11 @@ export default function KepsekDashboardPage() {
       <div>
         <Skeleton width="260px" height="1.75rem" style={{ marginBottom: '0.5rem' }} />
         <Skeleton width="180px" height="0.85rem" style={{ marginBottom: '2rem' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {[1,2,3,4,5].map(i => <SkeletonCard key={i} height="110px" />)}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-          <SkeletonCard height="320px" />
-          <SkeletonCard height="320px" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <SkeletonCard height="320px" /><SkeletonCard height="320px" />
         </div>
       </div>
     );
@@ -52,8 +51,8 @@ export default function KepsekDashboardPage() {
 
   if (error || !data) {
     return (
-      <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-        <AlertCircle size={48} color="var(--status-ditolak)" style={{ marginBottom: '1rem' }} />
+      <div className="text-center py-16 px-8">
+        <AlertCircle size={48} className="text-status-ditolak mx-auto mb-4" />
         <h3>{error || 'Data tidak tersedia'}</h3>
       </div>
     );
@@ -62,92 +61,80 @@ export default function KepsekDashboardPage() {
   const { stats, per_jenjang, distribusi, gelombang, tren_mingguan } = data;
 
   const statCards = [
-    { label: 'Total Pendaftar', value: stats.total_pendaftar, icon: Users, color: 'var(--accent-primary)' },
-    { label: 'Diterima', value: stats.total_diterima, icon: UserCheck, color: 'var(--status-diterima)' },
-    { label: 'Terdaftar', value: stats.total_terdaftar, icon: GraduationCap, color: 'var(--status-terdaftar)' },
-    { label: 'Ditolak', value: stats.total_ditolak, icon: AlertCircle, color: 'var(--status-ditolak)' },
-    { label: 'Revenue', value: `Rp ${(stats.total_revenue || 0).toLocaleString('id-ID')}`, icon: DollarSign, color: 'var(--accent-primary-light)', small: true },
+    { label: 'Total Pendaftar', value: stats.total_pendaftar, icon: Users, color: 'var(--color-accent)' },
+    { label: 'Diterima', value: stats.total_diterima, icon: UserCheck, color: 'var(--color-status-diterima)' },
+    { label: 'Terdaftar', value: stats.total_terdaftar, icon: GraduationCap, color: 'var(--color-status-terdaftar)' },
+    { label: 'Ditolak', value: stats.total_ditolak, icon: AlertCircle, color: 'var(--color-status-ditolak)' },
+    { label: 'Revenue', value: `Rp ${(stats.total_revenue || 0).toLocaleString('id-ID')}`, icon: DollarSign, color: 'var(--color-accent-light)', small: true },
   ];
 
-  // Bar data: stacked per jenjang
   const barData = per_jenjang.map(j => ({
-    jenjang: j.jenjang,
-    'Menunggu': j.menunggu_review,
-    'Diterima': j.diterima,
-    'Ditolak': j.ditolak,
-    'Terdaftar': j.terdaftar,
-    'Revisi': j.revisi,
+    jenjang: j.jenjang, 'Menunggu': j.menunggu_review, 'Diterima': j.diterima,
+    'Ditolak': j.ditolak, 'Terdaftar': j.terdaftar, 'Revisi': j.revisi,
   }));
 
-  // Donut data
   const donutData = distribusi.filter(d => d.jumlah > 0).map(d => ({
-    name: statusLabels[d.status] || d.status,
-    value: d.jumlah,
-    color: statusColors[d.status] || '#6B7280',
+    name: statusLabels[d.status] || d.status, value: d.jumlah, color: statusColors[d.status] || '#6B7280',
   }));
 
   return (
     <div>
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+        className="mb-8 flex justify-between items-center flex-wrap gap-4">
         <div>
-          <h1 style={{ fontSize: '1.75rem', marginBottom: '0.25rem' }}>
-            Dashboard <span style={{ color: 'var(--accent-primary-light)' }}>Kepala Sekolah</span>
+          <h1 className="text-[1.75rem] mb-1">
+            Dashboard <span className="text-accent-light">Kepala Sekolah</span>
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+          <p className="text-text-secondary dark:text-dark-text-secondary text-sm">
             {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
         </div>
-        <button 
-          onClick={async () => {
-            try {
-              const res = await api.get('/kepsek/export/laporan', { responseType: 'blob' });
-              const url = window.URL.createObjectURL(new Blob([res.data]));
-              const link = document.createElement('a');
-              link.href = url;
-              link.setAttribute('download', `Laporan_Kepsek_${new Date().getTime()}.pdf`);
-              document.body.appendChild(link);
-              link.click();
-              link.parentNode.removeChild(link);
-            } catch (e) {
-              alert('Gagal mencetak laporan');
-            }
-          }}
-          className="btn btn-primary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <button onClick={async () => {
+          try {
+            const res = await api.get('/kepsek/export/laporan', { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a'); link.href = url;
+            link.setAttribute('download', `Laporan_Kepsek_${new Date().getTime()}.pdf`);
+            document.body.appendChild(link); link.click(); link.parentNode.removeChild(link);
+          } catch { alert('Gagal mencetak laporan'); }
+        }} className="btn btn-primary btn-sm flex items-center gap-2">
           Cetak Laporan
         </button>
       </motion.div>
 
       {/* Stat Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         {statCards.map((card, i) => {
           const Icon = card.icon;
           return (
-            <motion.div key={card.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass-card-static" style={{ padding: '1.25rem' }}>
-              <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `color-mix(in srgb, ${card.color} 12%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.75rem' }}>
-                <Icon size={18} color={card.color} />
+            <motion.div key={card.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+              className="glass-card-static p-5">
+              <div className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center mb-3"
+                style={{ background: `color-mix(in srgb, ${card.color} 12%, transparent)` }}>
+                <Icon size={18} style={{ color: card.color }} />
               </div>
-              <div style={{ fontSize: card.small ? '1.1rem' : '1.85rem', fontWeight: 800, fontFamily: 'var(--font-heading)', lineHeight: 1 }}>{card.value}</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.3rem' }}>{card.label}</div>
+              <div className={`${card.small ? 'text-lg' : 'text-3xl'} font-extrabold font-heading leading-none`}>{card.value}</div>
+              <div className="text-xs text-text-secondary dark:text-dark-text-secondary mt-1">{card.label}</div>
             </motion.div>
           );
         })}
       </div>
 
       {/* Charts */}
-      <div className="kepsek-chart-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.25rem', marginBottom: '2rem' }}>
+      <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-5 mb-8">
         {/* Stacked Bar Chart */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card-static" style={{ padding: '1.5rem' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <BarChart3 size={18} color="var(--accent-primary-light)" /> Distribusi per Jenjang
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card-static p-6">
+          <h3 className="text-base mb-5 flex items-center gap-1.5">
+            <BarChart3 size={18} className="text-accent-light" /> Distribusi per Jenjang
           </h3>
-          <div style={{ width: '100%', height: '260px' }}>
+          <div className="w-full h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} barSize={32}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--glass-border)" />
-                <XAxis dataKey="jenjang" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
-                <Tooltip contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--text-primary)' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-default)" />
+                <XAxis dataKey="jenjang" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+                <YAxis tick={{ fill: 'var(--color-text-muted)', fontSize: 11 }} />
+                <Tooltip contentStyle={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border-default)', borderRadius: '8px', fontSize: '0.82rem', color: 'var(--color-text-primary)' }} />
                 <Bar dataKey="Menunggu" stackId="a" fill="#F59E0B" />
                 <Bar dataKey="Diterima" stackId="a" fill="#10B981" />
                 <Bar dataKey="Ditolak" stackId="a" fill="#EF4444" />
@@ -158,97 +145,101 @@ export default function KepsekDashboardPage() {
         </motion.div>
 
         {/* Donut Chart */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="glass-card-static" style={{ padding: '1.5rem' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <TrendingUp size={18} color="var(--accent-primary-light)" /> Distribusi Status Global
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="glass-card-static p-6">
+          <h3 className="text-base mb-5 flex items-center gap-1.5">
+            <TrendingUp size={18} className="text-accent-light" /> Distribusi Status Global
           </h3>
           {donutData.length > 0 ? (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ width: '180px', height: '180px' }}>
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-[180px] h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie data={donutData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value" stroke="none">
                       {donutData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                     </Pie>
-                    <Tooltip contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem' }} />
+                    <Tooltip contentStyle={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border-default)', borderRadius: '8px', fontSize: '0.82rem' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem 1rem' }}>
+              <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
                 {donutData.map((d, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: d.color }} />
-                    <span style={{ color: 'var(--text-secondary)' }}>{d.name}</span>
-                    <span style={{ fontWeight: 600 }}>{d.value}</span>
+                  <div key={i} className="flex items-center gap-1.5 text-xs">
+                    <div className="w-2 h-2 rounded-sm" style={{ background: d.color }} />
+                    <span className="text-text-secondary dark:text-dark-text-secondary">{d.name}</span>
+                    <span className="font-semibold">{d.value}</span>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '2rem' }}>Belum ada data</p>
+            <p className="text-text-muted dark:text-dark-text-muted text-center py-8">Belum ada data</p>
           )}
         </motion.div>
       </div>
 
       {/* Tren Mingguan */}
       {tren_mingguan && tren_mingguan.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card-static" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <CalendarDays size={18} color="var(--accent-primary-light)" /> Tren 4 Minggu Terakhir
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card-static p-6 mb-8">
+          <h3 className="text-base mb-5 flex items-center gap-1.5">
+            <CalendarDays size={18} className="text-accent-light" /> Tren 4 Minggu Terakhir
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem' }}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {tren_mingguan.map((t, i) => (
-              <div key={i} style={{ padding: '1rem', borderRadius: 'var(--radius-md)', background: 'var(--bg-tertiary)', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>{t.label}</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, fontFamily: 'var(--font-heading)', color: 'var(--accent-primary-light)' }}>{t.pendaftar}</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>pendaftar baru</div>
-                <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--status-diterima)', marginTop: '0.5rem' }}>{t.diterima} diterima</div>
+              <div key={i} className="p-4 rounded-md text-center bg-bg-tertiary dark:bg-dark-bg-tertiary">
+                <div className="text-[0.72rem] text-text-muted dark:text-dark-text-muted mb-2">{t.label}</div>
+                <div className="text-2xl font-extrabold font-heading text-accent-light">{t.pendaftar}</div>
+                <div className="text-[0.72rem] text-text-secondary dark:text-dark-text-secondary mt-1">pendaftar baru</div>
+                <div className="text-sm font-semibold text-status-diterima mt-2">{t.diterima} diterima</div>
               </div>
             ))}
           </div>
         </motion.div>
       )}
 
-      {/* Gelombang Overview Table */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="glass-card-static" style={{ overflow: 'hidden' }}>
-        <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--glass-border)' }}>
-          <h3 style={{ fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <CalendarDays size={18} color="var(--accent-primary-light)" /> Ringkasan Gelombang
+      {/* Gelombang Table */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="glass-card-static overflow-hidden">
+        <div className="px-6 py-5 border-b border-border-default dark:border-dark-border-default">
+          <h3 className="text-base flex items-center gap-1.5">
+            <CalendarDays size={18} className="text-accent-light" /> Ringkasan Gelombang
           </h3>
         </div>
         {gelombang.length > 0 ? (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                <tr className="border-b border-border-default dark:border-dark-border-default">
                   {['Jenjang', 'Gelombang', 'Kuota', 'Terisi', 'Sisa', 'Status', 'Tutup'].map(h => (
-                    <th key={h} style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>{h}</th>
+                    <th key={h} className="text-left px-3 py-3 text-[0.72rem] font-semibold uppercase text-text-muted dark:text-dark-text-muted">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {gelombang.map(g => (
-                  <tr key={g.id} style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                    <td style={{ padding: '0.75rem' }}>
-                      <span style={{ display: 'inline-flex', padding: '0.15rem 0.5rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 600, color: 'white', background: jenjangColors[g.jenjang] }}>{g.jenjang}</span>
+                  <tr key={g.id} className="border-b border-border-default dark:border-dark-border-default">
+                    <td className="px-3 py-3">
+                      <span className="inline-flex px-2 py-0.5 rounded-full text-[0.65rem] font-semibold text-white" style={{ background: jenjangColors[g.jenjang] }}>{g.jenjang}</span>
                     </td>
-                    <td style={{ padding: '0.75rem', fontWeight: 500 }}>{g.nama}</td>
-                    <td style={{ padding: '0.75rem', fontWeight: 600 }}>{g.kuota}</td>
-                    <td style={{ padding: '0.75rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontWeight: 600 }}>{g.terisi}</span>
-                        <div style={{ height: '5px', borderRadius: '3px', background: 'var(--bg-primary)', overflow: 'hidden', width: '60px' }}>
-                          <div style={{ height: '100%', borderRadius: '3px', background: g.sisa <= 5 ? 'var(--status-ditolak)' : 'var(--accent-primary-light)', width: `${Math.min(100, (g.terisi / g.kuota) * 100)}%` }} />
+                    <td className="px-3 py-3 font-medium">{g.nama}</td>
+                    <td className="px-3 py-3 font-semibold">{g.kuota}</td>
+                    <td className="px-3 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold">{g.terisi}</span>
+                        <div className="h-[5px] rounded-sm overflow-hidden w-[60px] bg-bg-primary dark:bg-dark-bg-primary">
+                          <div className="h-full rounded-sm" style={{
+                            background: g.sisa <= 5 ? 'var(--color-status-ditolak)' : 'var(--color-accent-light)',
+                            width: `${Math.min(100, (g.terisi / g.kuota) * 100)}%`
+                          }} />
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: '0.75rem', fontWeight: 600, color: g.sisa <= 5 ? 'var(--status-ditolak)' : 'var(--accent-primary-light)' }}>{g.sisa}</td>
-                    <td style={{ padding: '0.75rem' }}>
-                      <span style={{ display: 'inline-flex', padding: '0.15rem 0.5rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 600, color: 'white', background: g.status === 'BUKA' ? 'var(--status-diterima)' : g.status === 'TUTUP' ? 'var(--status-ditolak)' : 'var(--status-submitted)' }}>
+                    <td className="px-3 py-3 font-semibold" style={{ color: g.sisa <= 5 ? 'var(--color-status-ditolak)' : 'var(--color-accent-light)' }}>{g.sisa}</td>
+                    <td className="px-3 py-3">
+                      <span className="inline-flex px-2 py-0.5 rounded-full text-[0.65rem] font-semibold text-white"
+                        style={{ background: g.status === 'BUKA' ? 'var(--color-status-diterima)' : g.status === 'TUTUP' ? 'var(--color-status-ditolak)' : 'var(--color-status-submitted)' }}>
                         {g.status === 'BUKA' ? 'Buka' : g.status === 'TUTUP' ? 'Tutup' : 'Akan Datang'}
                       </span>
                     </td>
-                    <td style={{ padding: '0.75rem', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+                    <td className="px-3 py-3 text-sm text-text-muted dark:text-dark-text-muted">
                       {g.tanggal_tutup ? new Date(g.tanggal_tutup).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'}
                     </td>
                   </tr>
@@ -257,15 +248,9 @@ export default function KepsekDashboardPage() {
             </table>
           </div>
         ) : (
-          <p style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Belum ada gelombang</p>
+          <p className="text-text-muted dark:text-dark-text-muted text-center py-8">Belum ada gelombang</p>
         )}
       </motion.div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .kepsek-chart-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </div>
   );
 }

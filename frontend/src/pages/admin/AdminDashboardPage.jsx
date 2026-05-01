@@ -10,22 +10,17 @@ import api from '../../services/api';
 import { Skeleton, SkeletonCard } from '../../components/SkeletonLoader';
 
 const statusBadge = {
-  DRAFT: { bg: 'var(--status-draft)', label: 'Draft' },
-  SUBMITTED: { bg: 'var(--status-submitted)', label: 'Menunggu' },
-  MENUNGGU_REVIEW: { bg: 'var(--status-review)', label: 'Review' },
-  REVISI: { bg: 'var(--status-revisi)', label: 'Revisi' },
-  DITERIMA: { bg: 'var(--status-diterima)', label: 'Diterima' },
-  DITOLAK: { bg: 'var(--status-ditolak)', label: 'Ditolak' },
-  MENUNGGU_BAYAR: { bg: 'var(--status-bayar)', label: 'Bayar' },
-  TERDAFTAR: { bg: 'var(--status-terdaftar)', label: 'Terdaftar' },
+  DRAFT: { bg: 'var(--color-status-draft)', label: 'Draft' },
+  SUBMITTED: { bg: 'var(--color-status-submitted)', label: 'Menunggu' },
+  MENUNGGU_REVIEW: { bg: 'var(--color-status-review)', label: 'Review' },
+  REVISI: { bg: 'var(--color-status-revisi)', label: 'Revisi' },
+  DITERIMA: { bg: 'var(--color-status-diterima)', label: 'Diterima' },
+  DITOLAK: { bg: 'var(--color-status-ditolak)', label: 'Ditolak' },
+  MENUNGGU_BAYAR: { bg: 'var(--color-status-bayar)', label: 'Bayar' },
+  TERDAFTAR: { bg: 'var(--color-status-terdaftar)', label: 'Terdaftar' },
 };
 
-const jenjangColors = {
-  TK: '#C9A84C',
-  SD: '#2D8A6B',
-  SMP: '#1A6B5A',
-  SMA: '#E0C76A',
-};
+const jenjangColors = { TK: 'var(--color-accent)', SD: '#2D8A6B', SMP: '#1A6B5A', SMA: '#E0C76A' };
 
 export default function AdminDashboardPage() {
   const [data, setData] = useState(null);
@@ -33,10 +28,9 @@ export default function AdminDashboardPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.get('/admin/dashboard').then(res => {
-      setData(res.data.data);
-    }).catch(() => setError('Gagal memuat dashboard.'))
-    .finally(() => setLoading(false));
+    api.get('/admin/dashboard').then(res => setData(res.data.data))
+      .catch(() => setError('Gagal memuat dashboard.'))
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) {
@@ -44,12 +38,11 @@ export default function AdminDashboardPage() {
       <div>
         <Skeleton width="220px" height="1.75rem" style={{ marginBottom: '0.5rem' }} />
         <Skeleton width="160px" height="0.85rem" style={{ marginBottom: '2rem' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {[1,2,3,4,5,6].map(i => <SkeletonCard key={i} height="110px" />)}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-          <SkeletonCard height="300px" />
-          <SkeletonCard height="300px" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <SkeletonCard height="300px" /><SkeletonCard height="300px" />
         </div>
       </div>
     );
@@ -57,8 +50,8 @@ export default function AdminDashboardPage() {
 
   if (error || !data) {
     return (
-      <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-        <AlertCircle size={48} color="var(--status-ditolak)" style={{ marginBottom: '1rem' }} />
+      <div className="text-center py-16 px-8">
+        <AlertCircle size={48} className="text-status-ditolak mx-auto mb-4" />
         <h3>{error || 'Data tidak tersedia'}</h3>
       </div>
     );
@@ -67,68 +60,64 @@ export default function AdminDashboardPage() {
   const { stats, per_jenjang, tren, terbaru } = data;
 
   const statCards = [
-    { label: 'Total Pendaftar', value: stats.total_pendaftar, icon: Users, color: 'var(--accent-primary)' },
-    { label: 'Menunggu Review', value: stats.menunggu_review, icon: Clock, color: 'var(--status-submitted)' },
-    { label: 'Diterima', value: stats.diterima, icon: UserCheck, color: 'var(--status-diterima)' },
-    { label: 'Ditolak', value: stats.ditolak, icon: UserX, color: 'var(--status-ditolak)' },
-    { label: 'Terdaftar', value: stats.terdaftar, icon: GraduationCap, color: 'var(--status-terdaftar)' },
-    { label: 'Revenue', value: `Rp ${(stats.total_revenue || 0).toLocaleString('id-ID')}`, icon: DollarSign, color: 'var(--accent-primary-light)', small: true },
+    { label: 'Total Pendaftar', value: stats.total_pendaftar, icon: Users, color: 'var(--color-accent)' },
+    { label: 'Menunggu Review', value: stats.menunggu_review, icon: Clock, color: 'var(--color-status-submitted)' },
+    { label: 'Diterima', value: stats.diterima, icon: UserCheck, color: 'var(--color-status-diterima)' },
+    { label: 'Ditolak', value: stats.ditolak, icon: UserX, color: 'var(--color-status-ditolak)' },
+    { label: 'Terdaftar', value: stats.terdaftar, icon: GraduationCap, color: 'var(--color-status-terdaftar)' },
+    { label: 'Revenue', value: `Rp ${(stats.total_revenue || 0).toLocaleString('id-ID')}`, icon: DollarSign, color: 'var(--color-accent-light)', small: true },
   ];
 
-  // Bar chart data: per jenjang
   const barData = per_jenjang.map(j => ({
-    jenjang: j.jenjang,
-    'Menunggu': j.menunggu_review,
-    'Diterima': j.diterima,
-    'Ditolak': j.ditolak,
-    'Terdaftar': j.terdaftar,
-    'Revisi': j.revisi,
+    jenjang: j.jenjang, 'Menunggu': j.menunggu_review, 'Diterima': j.diterima,
+    'Ditolak': j.ditolak, 'Terdaftar': j.terdaftar, 'Revisi': j.revisi,
   }));
 
   return (
     <div>
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.75rem', marginBottom: '0.25rem' }}>
-          Dashboard <span style={{ color: 'var(--accent-primary)' }}>Admin</span>
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+        <h1 className="text-[1.75rem] mb-1">
+          Dashboard <span className="text-accent dark:text-dark-accent">Admin</span>
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+        <p className="text-text-secondary dark:text-dark-text-secondary text-sm">
           {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
         </p>
       </motion.div>
 
       {/* Stat Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
         {statCards.map((card, i) => {
           const Icon = card.icon;
           return (
-            <motion.div key={card.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass-card-static" style={{ padding: '1.25rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `color-mix(in srgb, ${card.color} 12%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon size={18} color={card.color} />
+            <motion.div key={card.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+              className="glass-card-static p-5">
+              <div className="flex justify-between items-start mb-3">
+                <div className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center"
+                  style={{ background: `color-mix(in srgb, ${card.color} 12%, transparent)` }}>
+                  <Icon size={18} style={{ color: card.color }} />
                 </div>
               </div>
-              <div style={{ fontSize: card.small ? '1.1rem' : '1.85rem', fontWeight: 800, fontFamily: 'var(--font-heading)', lineHeight: 1 }}>{card.value}</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.3rem' }}>{card.label}</div>
+              <div className={`${card.small ? 'text-lg' : 'text-3xl'} font-extrabold font-heading leading-none`}>{card.value}</div>
+              <div className="text-xs text-text-secondary dark:text-dark-text-secondary mt-1">{card.label}</div>
             </motion.div>
           );
         })}
       </div>
 
-      {/* Charts Row */}
-      <div className="admin-chart-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '2rem' }}>
-        {/* Stacked Bar Chart — Per Jenjang */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card-static" style={{ padding: '1.5rem' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <BarChart3 size={18} color="var(--accent-primary)" /> Status per Jenjang
+      {/* Charts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card-static p-6">
+          <h3 className="text-base mb-5 flex items-center gap-1.5">
+            <BarChart3 size={18} className="text-accent dark:text-dark-accent" /> Status per Jenjang
           </h3>
-          <div style={{ width: '100%', height: '220px' }}>
+          <div className="w-full h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} barSize={28}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--glass-border)" />
-                <XAxis dataKey="jenjang" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
-                <Tooltip contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--text-primary)' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-default)" />
+                <XAxis dataKey="jenjang" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+                <YAxis tick={{ fill: 'var(--color-text-muted)', fontSize: 11 }} />
+                <Tooltip contentStyle={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border-default)', borderRadius: '8px', fontSize: '0.82rem', color: 'var(--color-text-primary)' }} />
                 <Bar dataKey="Menunggu" stackId="a" fill="#F59E0B" radius={[0,0,0,0]} />
                 <Bar dataKey="Diterima" stackId="a" fill="#10B981" />
                 <Bar dataKey="Ditolak" stackId="a" fill="#EF4444" />
@@ -138,19 +127,18 @@ export default function AdminDashboardPage() {
           </div>
         </motion.div>
 
-        {/* Line Chart — Tren 7 Hari */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="glass-card-static" style={{ padding: '1.5rem' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <TrendingUp size={18} color="var(--accent-primary)" /> Tren 7 Hari Terakhir
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="glass-card-static p-6">
+          <h3 className="text-base mb-5 flex items-center gap-1.5">
+            <TrendingUp size={18} className="text-accent dark:text-dark-accent" /> Tren 7 Hari Terakhir
           </h3>
-          <div style={{ width: '100%', height: '220px' }}>
+          <div className="w-full h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={tren}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--glass-border)" />
-                <XAxis dataKey="label" tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} />
-                <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
-                <Tooltip contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--text-primary)' }} />
-                <Line type="monotone" dataKey="pendaftar" stroke="#C9A84C" strokeWidth={2} dot={{ r: 4, fill: '#C9A84C' }} name="Pendaftar Baru" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-default)" />
+                <XAxis dataKey="label" tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} />
+                <YAxis tick={{ fill: 'var(--color-text-muted)', fontSize: 11 }} />
+                <Tooltip contentStyle={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border-default)', borderRadius: '8px', fontSize: '0.82rem', color: 'var(--color-text-primary)' }} />
+                <Line type="monotone" dataKey="pendaftar" stroke="var(--color-accent)" strokeWidth={2} dot={{ r: 4, fill: 'var(--color-accent)' }} name="Pendaftar Baru" />
                 <Line type="monotone" dataKey="submit" stroke="#2D8A6B" strokeWidth={2} dot={{ r: 4, fill: '#2D8A6B' }} name="Submit" />
               </LineChart>
             </ResponsiveContainer>
@@ -158,25 +146,26 @@ export default function AdminDashboardPage() {
         </motion.div>
       </div>
 
-      {/* Jenjang Summary Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+      {/* Jenjang Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {per_jenjang.map((j, i) => (
-          <motion.div key={j.jenjang} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05 }} className="glass-card-static" style={{ padding: '1.25rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.85rem' }}>
-              <div style={{ width: '10px', height: '10px', borderRadius: '3px', background: jenjangColors[j.jenjang] }} />
-              <span style={{ fontWeight: 700, fontSize: '1rem', fontFamily: 'var(--font-heading)' }}>Jenjang {j.jenjang}</span>
-              <span style={{ marginLeft: 'auto', fontSize: '1.25rem', fontWeight: 800, color: jenjangColors[j.jenjang] }}>{j.total}</span>
+          <motion.div key={j.jenjang} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05 }}
+            className="glass-card-static p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: jenjangColors[j.jenjang] }} />
+              <span className="font-bold font-heading">Jenjang {j.jenjang}</span>
+              <span className="ml-auto text-xl font-extrabold" style={{ color: jenjangColors[j.jenjang] }}>{j.total}</span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.35rem', fontSize: '0.78rem' }}>
+            <div className="grid grid-cols-2 gap-1 text-[0.78rem]">
               {[
-                { l: 'Menunggu', v: j.menunggu_review, c: 'var(--status-submitted)' },
-                { l: 'Diterima', v: j.diterima, c: 'var(--status-diterima)' },
-                { l: 'Ditolak', v: j.ditolak, c: 'var(--status-ditolak)' },
-                { l: 'Terdaftar', v: j.terdaftar, c: 'var(--status-terdaftar)' },
+                { l: 'Menunggu', v: j.menunggu_review, c: 'var(--color-status-submitted)' },
+                { l: 'Diterima', v: j.diterima, c: 'var(--color-status-diterima)' },
+                { l: 'Ditolak', v: j.ditolak, c: 'var(--color-status-ditolak)' },
+                { l: 'Terdaftar', v: j.terdaftar, c: 'var(--color-status-terdaftar)' },
               ].map(s => (
-                <div key={s.l} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.25rem 0' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>{s.l}</span>
-                  <span style={{ fontWeight: 600, color: s.c }}>{s.v}</span>
+                <div key={s.l} className="flex justify-between py-0.5">
+                  <span className="text-text-muted dark:text-dark-text-muted">{s.l}</span>
+                  <span className="font-semibold" style={{ color: s.c }}>{s.v}</span>
                 </div>
               ))}
             </div>
@@ -184,44 +173,44 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* Recent Pendaftar Table */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card-static" style={{ padding: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h3 style={{ fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Users size={18} color="var(--accent-primary)" /> Pendaftar Terbaru
+      {/* Recent Pendaftar */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card-static p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-base flex items-center gap-1.5">
+            <Users size={18} className="text-accent dark:text-dark-accent" /> Pendaftar Terbaru
           </h3>
-          <Link to="/admin/pendaftar" style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+          <Link to="/admin/pendaftar" className="text-xs flex items-center gap-1 text-accent dark:text-dark-accent">
             Lihat Semua <ChevronRight size={14} />
           </Link>
         </div>
 
         {terbaru.length > 0 ? (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                <tr className="border-b border-border-default dark:border-dark-border-default">
                   {['Nama', 'No Daftar', 'Jenjang', 'Status', 'Tanggal'].map(h => (
-                    <th key={h} style={{ textAlign: 'left', padding: '0.65rem 0.5rem', fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
+                    <th key={h} className="text-left px-2 py-2.5 text-[0.72rem] font-semibold uppercase tracking-wide text-text-muted dark:text-dark-text-muted">{h}</th>
                   ))}
-                  <th style={{ width: '40px' }} />
+                  <th className="w-10" />
                 </tr>
               </thead>
               <tbody>
                 {terbaru.map(p => {
-                  const badge = statusBadge[p.status] || { bg: 'var(--text-muted)', label: p.status };
+                  const badge = statusBadge[p.status] || { bg: 'var(--color-text-muted)', label: p.status };
                   return (
-                    <tr key={p.id} style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                      <td style={{ padding: '0.65rem 0.5rem', fontWeight: 500 }}>{p.nama}</td>
-                      <td style={{ padding: '0.65rem 0.5rem', color: 'var(--text-secondary)', fontFamily: 'monospace', fontSize: '0.78rem' }}>{p.nomor_daftar}</td>
-                      <td style={{ padding: '0.65rem 0.5rem' }}>
-                        <span style={{ display: 'inline-flex', padding: '0.15rem 0.5rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 600, color: 'white', background: jenjangColors[p.jenjang] || 'var(--text-muted)' }}>{p.jenjang}</span>
+                    <tr key={p.id} className="border-b border-border-default dark:border-dark-border-default">
+                      <td className="px-2 py-2.5 font-medium">{p.nama}</td>
+                      <td className="px-2 py-2.5 font-mono text-[0.78rem] text-text-secondary dark:text-dark-text-secondary">{p.nomor_daftar}</td>
+                      <td className="px-2 py-2.5">
+                        <span className="inline-flex px-2 py-0.5 rounded-full text-[0.65rem] font-semibold text-white" style={{ background: jenjangColors[p.jenjang] || 'var(--color-text-muted)' }}>{p.jenjang}</span>
                       </td>
-                      <td style={{ padding: '0.65rem 0.5rem' }}>
-                        <span style={{ display: 'inline-flex', padding: '0.15rem 0.5rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 600, color: 'white', background: badge.bg }}>{badge.label}</span>
+                      <td className="px-2 py-2.5">
+                        <span className="inline-flex px-2 py-0.5 rounded-full text-[0.65rem] font-semibold text-white" style={{ background: badge.bg }}>{badge.label}</span>
                       </td>
-                      <td style={{ padding: '0.65rem 0.5rem', color: 'var(--text-muted)', fontSize: '0.78rem' }}>{p.created_at ? new Date(p.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '-'}</td>
-                      <td style={{ padding: '0.65rem 0.5rem' }}>
-                        <Link to={`/admin/pendaftar`} style={{ color: 'var(--accent-primary)' }}><ChevronRight size={16} /></Link>
+                      <td className="px-2 py-2.5 text-[0.78rem] text-text-muted dark:text-dark-text-muted">{p.created_at ? new Date(p.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '-'}</td>
+                      <td className="px-2 py-2.5">
+                        <Link to="/admin/pendaftar" className="text-accent dark:text-dark-accent"><ChevronRight size={16} /></Link>
                       </td>
                     </tr>
                   );
@@ -230,15 +219,9 @@ export default function AdminDashboardPage() {
             </table>
           </div>
         ) : (
-          <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '2rem' }}>Belum ada pendaftar</p>
+          <p className="text-text-muted dark:text-dark-text-muted text-center py-8">Belum ada pendaftar</p>
         )}
       </motion.div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .admin-chart-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </div>
   );
 }

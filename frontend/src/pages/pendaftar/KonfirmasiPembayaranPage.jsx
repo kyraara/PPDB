@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CheckCircle2, Download, Home, Hash, GraduationCap,
-  CalendarDays, CreditCard, Banknote, ArrowLeft, Loader2
+  CalendarDays, CreditCard, Banknote
 } from 'lucide-react';
 import useAuthStore from '../../stores/authStore';
 import api from '../../services/api';
@@ -19,97 +19,90 @@ export default function KonfirmasiPembayaranPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Sync dengan Midtrans dulu jika webhook gagal masuk (kasus localhost)
         await api.post('/pembayaran/sync').catch(() => {});
-
         const res = await api.get('/pendaftaran/saya');
         const pendaftaran = res.data.data?.pendaftaran;
-        if (!pendaftaran || pendaftaran.status !== 'TERDAFTAR') {
-          navigate('/beranda');
-          return;
-        }
+        if (!pendaftaran || pendaftaran.status !== 'TERDAFTAR') { navigate('/beranda'); return; }
         setData(pendaftaran);
-      } catch {
-        navigate('/beranda');
-      } finally {
-        setLoading(false);
-      }
+      } catch { navigate('/beranda'); }
+      finally { setLoading(false); }
     };
     fetchData();
   }, [navigate]);
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', paddingTop: '85px', paddingBottom: '2rem' }}>
-        <div className="container" style={{ maxWidth: '640px' }}><PembayaranSkeleton /></div>
+      <div className="min-h-screen pt-[85px] pb-8">
+        <div className="container max-w-[640px]"><PembayaranSkeleton /></div>
       </div>
     );
   }
 
   if (!data) return null;
-
   const pembayaran = data.pembayaran;
 
   return (
-    <div style={{ minHeight: '100vh', paddingTop: '85px', paddingBottom: '6rem', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: '-80px', right: '-80px', zIndex: 0 }}><GeometricPattern size={350} opacity={0.03} /></div>
+    <div className="min-h-screen pt-[85px] pb-24 relative overflow-hidden">
+      <div className="absolute -top-20 -right-20 z-0"><GeometricPattern size={350} opacity={0.03} /></div>
 
-      <div className="container" style={{ maxWidth: '640px', position: 'relative', zIndex: 1 }}>
+      <div className="container max-w-[640px] relative z-10">
         {/* Success animation */}
-        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }} style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
+        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 15 }} className="text-center mb-8">
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 12 }}
-            style={{ width: '88px', height: '88px', borderRadius: '50%', background: 'color-mix(in srgb, var(--status-terdaftar) 12%, transparent)', border: '3px solid var(--status-terdaftar)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}
+            className="w-[88px] h-[88px] rounded-full flex items-center justify-center mx-auto mb-5 bg-status-terdaftar/10 border-[3px] border-status-terdaftar"
           >
-            <CheckCircle2 size={44} color="var(--status-terdaftar)" />
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ delay: 0.4, type: 'spring', stiffness: 400, damping: 10 }}>
+              <CheckCircle2 size={44} className="text-status-terdaftar" />
+            </motion.div>
           </motion.div>
-          <h2 style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>
-            Pembayaran <span style={{ color: 'var(--status-terdaftar)' }}>Berhasil!</span>
+          <h2 className="text-[1.75rem] mb-2">
+            Pembayaran <span className="text-status-terdaftar">Berhasil!</span>
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '380px', margin: '0 auto', lineHeight: 1.7 }}>
+          <p className="text-text-secondary dark:text-dark-text-secondary text-[0.95rem] max-w-[380px] mx-auto leading-relaxed">
             Selamat! Anda telah resmi terdaftar sebagai peserta didik baru di Yayasan Al Istiqomah Al Islamiyah.
           </p>
         </motion.div>
 
-        {/* Bukti Pembayaran Card */}
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card-static" style={{ padding: '2rem', marginBottom: '1.25rem', border: '1.5px solid color-mix(in srgb, var(--status-terdaftar) 25%, transparent)' }}>
-          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.3rem 0.85rem', borderRadius: '50px', background: 'color-mix(in srgb, var(--status-terdaftar) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-terdaftar) 25%, transparent)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--status-terdaftar)' }}>
+        {/* Bukti Pembayaran */}
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          className="glass-card-static p-8 mb-5 border-[1.5px] border-status-terdaftar/25">
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-status-terdaftar bg-status-terdaftar/10 border border-status-terdaftar/25">
               <CheckCircle2 size={12} /> TERDAFTAR
             </div>
           </div>
 
-          {/* Detail rows */}
           {[
             [Hash, 'Nomor Daftar', data.nomor_daftar],
             [GraduationCap, 'Jenjang', data.jenjang],
-            [Banknote, 'Jumlah Bayar', pembayaran ? `Rp ${Number(pembayaran.jumlah).toLocaleString('id-ID')}` : '-'],
-            [CreditCard, 'Metode', pembayaran?.metode === 'simulasi' ? 'Sandbox (Simulasi)' : (pembayaran?.metode || '-')],
-            [CalendarDays, 'Tanggal Bayar', pembayaran?.paid_at ? new Date(pembayaran.paid_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'],
-            [Hash, 'ID Transaksi', pembayaran?.transaction_id || '-'],
-          ].map(([Icon, label, value]) => (
-            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.55rem 0', borderBottom: '1px solid var(--glass-border)', fontSize: '0.85rem' }}>
-              <span style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Icon size={14} color="var(--accent-primary)" />{label}
+            [Banknote, 'Jumlah Bayar', pembayaran ? `Rp ${Number(pembayaran.jumlah).toLocaleString('id-ID')}` : null],
+            [CreditCard, 'Metode', pembayaran?.metode === 'simulasi' ? 'Sandbox (Simulasi)' : pembayaran?.metode],
+            [CalendarDays, 'Tanggal Bayar', pembayaran?.paid_at ? new Date(pembayaran.paid_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null],
+            [Hash, 'ID Transaksi', pembayaran?.transaction_id],
+          ]
+          .filter(item => item[2])
+          .map(([Icon, label, value]) => (
+            <div key={label} className="flex justify-between items-center py-2 text-sm border-b border-border-default dark:border-dark-border-default">
+              <span className="flex items-center gap-1.5 text-text-muted dark:text-dark-text-muted">
+                <Icon size={14} className="text-accent dark:text-dark-accent" />{label}
               </span>
-              <span style={{ fontWeight: 500, textAlign: 'right', maxWidth: '55%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</span>
+              <span className="font-medium text-right max-w-[55%] truncate">{value}</span>
             </div>
           ))}
         </motion.div>
 
         {/* Actions */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <button
-            className="btn btn-primary btn-lg"
-            style={{ width: '100%', justifyContent: 'center' }}
-            onClick={() => alert('Fitur unduh PDF akan tersedia segera.')}
-          >
-            <Download size={20} /> Unduh Bukti Pendaftaran (PDF)
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button className="btn btn-primary justify-center py-3 flex items-center gap-2"
+            onClick={() => alert('Fitur unduh PDF akan tersedia segera.')}>
+            <Download size={18} /> Unduh Bukti (PDF)
           </button>
-          <Link to="/beranda" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
-            <Home size={18} /> Kembali ke Beranda
+          <Link to="/beranda" className="btn btn-secondary justify-center py-3 flex items-center gap-2">
+            <Home size={18} /> Beranda
           </Link>
         </motion.div>
       </div>

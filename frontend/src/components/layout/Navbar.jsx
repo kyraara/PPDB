@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, GraduationCap, LogIn, UserPlus, LogOut, LayoutDashboard, Home, Moon, Sun, Bell, UserCircle, Phone, Settings } from 'lucide-react';
+import { Menu, X, LogIn, UserPlus, LogOut, LayoutDashboard, Home, Moon, Sun, Bell, UserCircle, Phone, Settings } from 'lucide-react';
 import useAuthStore from '../../stores/authStore';
 import useThemeStore from '../../stores/themeStore';
 import api from '../../services/api';
@@ -18,6 +18,62 @@ const pendaftarLinks = [
   { label: 'Pembayaran', path: '/pembayaran' },
   { label: 'Kontak Panitia', path: '/kontak' },
 ];
+
+/* Notification Item */
+function NotifItem({ n }) {
+  return (
+    <div className={`flex gap-3 items-start p-3 border-b border-border-subtle dark:border-dark-border-subtle ${n.is_read ? 'opacity-65' : ''}`}>
+      <Bell size={15} className="text-accent dark:text-dark-accent shrink-0 mt-0.5" />
+      <div className="flex-1 min-w-0">
+        <div className={`text-sm mb-0.5 text-text-primary dark:text-dark-text-primary ${n.is_read ? 'font-normal' : 'font-semibold'}`}>{n.judul}</div>
+        <div className="text-[0.78rem] text-text-muted dark:text-dark-text-muted truncate">{n.pesan}</div>
+      </div>
+      <span className="text-[0.7rem] text-text-muted dark:text-dark-text-muted shrink-0">
+        {new Date(n.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+      </span>
+    </div>
+  );
+}
+
+/* Notification Dropdown */
+function NotifDropdown({ notifikasi, unreadCount, setUnreadCount, setNotifikasi, setShowNotif, width = 'w-[340px]' }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+      className={`absolute top-full right-0 ${width} mt-2 z-[200] overflow-hidden rounded-lg shadow-lg
+                  bg-surface-card dark:bg-dark-surface-card border border-border-default dark:border-dark-border-default`}
+    >
+      <div className="flex justify-between items-center px-4 py-3 border-b border-border-subtle dark:border-dark-border-subtle">
+        <h4 className="text-[0.95rem] m-0">Notifikasi</h4>
+        {unreadCount > 0 && (
+          <button onClick={() => {
+            api.patch('/notifikasi/read-all').then(() => {
+              setUnreadCount(0);
+              setNotifikasi(notifikasi.map(n => ({ ...n, is_read: true })));
+            });
+          }} className="text-[0.78rem] text-accent dark:text-dark-accent bg-transparent border-none cursor-pointer p-0">
+            Tandai semua dibaca
+          </button>
+        )}
+      </div>
+      <div className="max-h-[300px] overflow-y-auto">
+        {notifikasi.length === 0 ? (
+          <div className="p-6 text-center text-text-muted dark:text-dark-text-muted text-sm">Belum ada notifikasi</div>
+        ) : (
+          notifikasi.slice(0, 5).map((n) => <NotifItem key={n.id} n={n} />)
+        )}
+      </div>
+      {notifikasi.length > 5 && (
+        <Link to="/notifikasi" onClick={() => setShowNotif(false)}
+          className="block py-3 text-center text-sm text-accent dark:text-dark-accent border-t border-border-subtle dark:border-dark-border-subtle no-underline">
+          Lihat semua notifikasi →
+        </Link>
+      )}
+    </motion.div>
+  );
+}
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,7 +100,6 @@ export default function Navbar() {
     }
   }, [isAuthenticated, location.pathname]);
 
-  // Click outside to close dropdowns
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notifRef.current && !notifRef.current.contains(event.target)) setShowNotif(false);
@@ -54,11 +109,7 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/');
-  };
-
+  const handleLogout = async () => { await logout(); navigate('/'); };
   const getDashboardPath = () => {
     if (!user) return '/beranda';
     switch (user.role) {
@@ -69,271 +120,110 @@ export default function Navbar() {
     }
   };
 
-  const getDashboardLabel = () => user?.role === 'pendaftar' ? 'Beranda' : 'Dashboard';
-  const DashboardIcon = user?.role === 'pendaftar' ? Home : LayoutDashboard;
-
   const ThemeIcon = theme === 'dark' ? Sun : Moon;
+  const isLinkActive = (path) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
+
+  const notifProps = { notifikasi, unreadCount, setUnreadCount, setNotifikasi, setShowNotif };
 
   return (
     <motion.nav
-      initial={{ y: -80 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        background: 'var(--glass-bg)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: '1px solid var(--glass-border)',
-      }}
+      initial={{ y: -80 }} animate={{ y: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }}
+      className="fixed top-0 left-0 right-0 z-[1000] backdrop-blur-2xl
+                 bg-surface-card dark:bg-dark-surface-card
+                 border-b border-border-default dark:border-dark-border-default
+                 transition-colors duration-300"
     >
-      <div className="container" style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '70px',
-      }}>
+      <div className="container flex items-center justify-between h-[70px]">
         {/* Logo */}
-        <Link to="/" style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.75rem',
-          textDecoration: 'none',
-        }}>
-          <img 
-            src="/images/logo.png" 
-            alt="Logo Al Istiqomah" 
-            style={{ width: '40px', height: '40px', objectFit: 'contain' }}
-          />
+        <Link to="/" className="flex items-center gap-3 no-underline">
+          <img src="/images/logo.png" alt="Logo Al Istiqomah" className="w-10 h-10 object-contain" />
           <div>
-            <div style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '1.1rem',
-              color: 'var(--text-heading)',
-              lineHeight: 1.2,
-            }}>
-              PPDB Online
-            </div>
-            <div style={{
-              fontSize: '0.65rem',
-              color: 'var(--accent-primary)',
-              fontWeight: 600,
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-            }}>
-              Al Istiqomah Al Islamiyah
-            </div>
+            <div className="font-heading font-bold text-[1.1rem] leading-tight text-text-primary dark:text-dark-text-primary">PPDB Online</div>
+            <div className="text-[0.65rem] text-accent dark:text-dark-accent font-semibold uppercase tracking-wide">Al Istiqomah Al Islamiyah</div>
           </div>
         </Link>
 
         {/* Desktop Nav */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '2rem',
-        }} className="desktop-nav">
+        <div className="hidden md:flex items-center gap-8">
           {activeLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              style={{
-                fontSize: '0.9rem',
-                fontWeight: 500,
-                color: (location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path))) ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                transition: 'color 0.3s',
-                position: 'relative',
-              }}
-            >
+            <Link key={link.path} to={link.path}
+              className={`text-sm font-medium relative transition-colors duration-300
+                ${isLinkActive(link.path)
+                  ? 'text-accent dark:text-dark-accent'
+                  : 'text-text-secondary dark:text-dark-text-secondary hover:text-accent dark:hover:text-dark-accent'}`}>
               {link.label}
-              {(location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path))) && (
-                <motion.div
-                  layoutId="navbar-indicator"
-                  style={{
-                    position: 'absolute',
-                    bottom: '-4px',
-                    left: 0,
-                    right: 0,
-                    height: '2px',
-                    background: 'var(--accent-primary)',
-                    borderRadius: '1px',
-                  }}
-                />
+              {isLinkActive(link.path) && (
+                <motion.div layoutId="navbar-indicator"
+                  className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-sm bg-accent dark:bg-dark-accent" />
               )}
             </Link>
           ))}
 
           {/* Theme Toggle (Public) */}
           {!isAuthenticated && (
-            <button
-              onClick={toggleTheme}
-              aria-label={theme === 'dark' ? 'Aktifkan mode terang' : 'Aktifkan mode gelap'}
-              style={{
-                background: 'transparent',
-                border: '1px solid var(--glass-border)',
-                borderRadius: '50%',
-                width: '36px',
-                height: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: 'var(--accent-primary)',
-                transition: 'all 0.3s',
-              }}
-            >
+            <button onClick={toggleTheme} aria-label={theme === 'dark' ? 'Aktifkan mode terang' : 'Aktifkan mode gelap'}
+              className="w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300
+                         bg-transparent border border-border-default dark:border-dark-border-default
+                         text-accent dark:text-dark-accent hover:bg-accent-bg dark:hover:bg-dark-accent-bg">
               <ThemeIcon size={16} />
             </button>
           )}
 
           {isAuthenticated ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              {/* Notification Bell (Desktop) */}
-              <div style={{ position: 'relative' }} ref={notifRef}>
-                <button
-                  onClick={() => {
-                    setShowNotif(!showNotif);
-                    if (unreadCount > 0 && !showNotif) {
-                      api.patch('/notifikasi/read-all').then(() => setUnreadCount(0));
-                    }
-                  }}
-                  style={{
-                    background: 'transparent', border: 'none', cursor: 'pointer',
-                    color: 'var(--text-secondary)', position: 'relative', padding: '0.2rem'
-                  }}
-                >
+            <div className="flex items-center gap-4">
+              {/* Notification Bell */}
+              <div className="relative" ref={notifRef}>
+                <button onClick={() => setShowNotif(!showNotif)}
+                  className="bg-transparent border-none cursor-pointer text-text-secondary dark:text-dark-text-secondary relative p-1">
                   <Bell size={20} />
                   {unreadCount > 0 && (
-                    <span style={{
-                      position: 'absolute', top: 0, right: 0, background: 'var(--status-ditolak)',
-                      color: 'white', fontSize: '0.6rem', fontWeight: 'bold', width: '16px', height: '16px',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%'
-                    }}>
-                      {unreadCount}
+                    <span className="absolute -top-1 -right-1 w-[18px] h-[18px] rounded-full bg-status-ditolak text-white text-[0.65rem] font-bold flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
                 </button>
-
-                {/* Dropdown Desktop */}
-                <AnimatePresence>
-                  {showNotif && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      style={{
-                        position: 'absolute', top: '100%', right: 0, width: '300px',
-                        background: 'var(--glass-bg)', backdropFilter: 'blur(16px)',
-                        border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 100
-                      }}
-                    >
-                      <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--glass-border)', fontWeight: 600 }}>
-                        Notifikasi
-                      </div>
-                      <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                        {notifikasi.length === 0 ? (
-                          <div style={{ padding: '1.5rem 1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                            Belum ada notifikasi
-                          </div>
-                        ) : (
-                          notifikasi.map((n) => (
-                            <div key={n.id} style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--glass-border)', background: n.is_read ? 'transparent' : 'rgba(201, 168, 76, 0.05)' }}>
-                              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.2rem' }}>{n.judul}</div>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{n.pesan}</div>
-                              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
-                                {new Date(n.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                              </div>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <AnimatePresence>{showNotif && <NotifDropdown {...notifProps} />}</AnimatePresence>
               </div>
 
               {/* Profile Dropdown */}
-              <div style={{ position: 'relative' }} ref={profileRef}>
-                <button
-                  onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  style={{
-                    background: 'transparent',
-                    border: '1px solid var(--glass-border)',
-                    borderRadius: '20px',
-                    padding: '0.3rem 0.8rem 0.3rem 0.4rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    cursor: 'pointer',
-                    color: 'var(--text-primary)',
-                    transition: 'all 0.3s'
-                  }}
-                >
-                  <div style={{
-                    width: '28px', height: '28px', borderRadius: '50%',
-                    background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover))',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFFFFF'
-                  }}>
+              <div className="relative" ref={profileRef}>
+                <button onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  className="bg-transparent border border-border-default dark:border-dark-border-default rounded-full
+                             px-3 py-1 pl-1.5 flex items-center gap-2 cursor-pointer
+                             text-text-primary dark:text-dark-text-primary transition-all duration-300
+                             hover:border-border-strong dark:hover:border-dark-border-strong">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-accent to-accent-hover dark:from-dark-accent dark:to-dark-accent-hover
+                                  flex items-center justify-center text-white">
                     <UserCircle size={18} />
                   </div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>
-                    {user?.nama_lengkap?.split(' ')[0] || 'User'}
-                  </span>
+                  <span className="text-sm font-medium">{user?.nama_lengkap?.split(' ')[0] || 'User'}</span>
                 </button>
 
                 <AnimatePresence>
                   {showProfileMenu && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      style={{
-                        position: 'absolute', top: '100%', right: 0, width: '220px', marginTop: '0.5rem',
-                        background: 'var(--glass-bg)', backdropFilter: 'blur(16px)',
-                        border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 100
-                      }}
-                    >
-                      <div style={{ padding: '1rem', borderBottom: '1px solid var(--glass-border)' }}>
-                        <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                          {user?.nama_lengkap}
-                        </div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                          {user?.email}
-                        </div>
+                    <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute top-full right-0 w-[220px] mt-2 z-[100] overflow-hidden rounded-md shadow-lg
+                                 bg-surface-card dark:bg-dark-surface-card border border-border-default dark:border-dark-border-default">
+                      <div className="p-4 border-b border-border-default dark:border-dark-border-default">
+                        <div className="font-semibold text-sm text-text-primary dark:text-dark-text-primary">{user?.nama_lengkap}</div>
+                        <div className="text-xs text-text-muted dark:text-dark-text-muted">{user?.email}</div>
                       </div>
-                      <div style={{ padding: '0.5rem' }}>
-                        <Link to="/profil" onClick={() => setShowProfileMenu(false)} style={{
-                          display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.75rem',
-                          color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)'
-                        }}>
+                      <div className="p-2">
+                        <Link to="/profil" onClick={() => setShowProfileMenu(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-sm rounded-sm no-underline
+                                     text-text-secondary dark:text-dark-text-secondary hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary">
                           <UserCircle size={16} /> Profil Saya
                         </Link>
-                        <Link to="/kontak" onClick={() => setShowProfileMenu(false)} style={{
-                          display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.75rem',
-                          color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)'
-                        }}>
-                          <Phone size={16} /> Kontak Panitia
-                        </Link>
-                        <button onClick={toggleTheme} style={{
-                          width: '100%', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.75rem',
-                          background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
-                          fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', textAlign: 'left'
-                        }}>
+                        <button onClick={toggleTheme}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-sm text-left cursor-pointer
+                                     bg-transparent border-none text-text-secondary dark:text-dark-text-secondary hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary">
                           <ThemeIcon size={16} /> Mode {theme === 'dark' ? 'Terang' : 'Gelap'}
                         </button>
                       </div>
-                      <div style={{ padding: '0.5rem', borderTop: '1px solid var(--glass-border)' }}>
-                        <button onClick={handleLogout} style={{
-                          width: '100%', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.75rem',
-                          background: 'transparent', border: 'none', color: 'var(--status-ditolak)', cursor: 'pointer',
-                          fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', textAlign: 'left', fontWeight: 500
-                        }}>
+                      <div className="p-2 border-t border-border-default dark:border-dark-border-default">
+                        <button onClick={handleLogout}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-sm text-left cursor-pointer font-medium
+                                     bg-transparent border-none text-status-ditolak hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary">
                           <LogOut size={16} /> Keluar
                         </button>
                       </div>
@@ -343,116 +233,39 @@ export default function Navbar() {
               </div>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <Link to="/login" className="btn btn-secondary btn-sm">
-                <LogIn size={16} />
-                Masuk
-              </Link>
-              <Link to="/daftar" className="btn btn-primary btn-sm">
-                <UserPlus size={16} />
-                Daftar
-              </Link>
+            <div className="flex items-center gap-3">
+              <Link to="/login" className="btn btn-secondary btn-sm"><LogIn size={16} /> Masuk</Link>
+              <Link to="/daftar" className="btn btn-primary btn-sm"><UserPlus size={16} /> Daftar</Link>
             </div>
           )}
         </div>
 
         {/* Mobile Right Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="mobile-controls">
+        <div className="flex md:hidden items-center gap-2">
           {isAuthenticated && (
-            <div style={{ position: 'relative' }} className="mobile-only-flex">
-              <button
-                onClick={() => {
-                  setShowNotif(!showNotif);
-                  if (unreadCount > 0 && !showNotif) {
-                    api.patch('/notifikasi/read-all').then(() => setUnreadCount(0));
-                  }
-                }}
-                style={{
-                  background: 'transparent', border: 'none', cursor: 'pointer',
-                  color: 'var(--accent-primary)', position: 'relative', padding: '0.5rem'
-                }}
-              >
+            <div className="relative" ref={notifRef}>
+              <button onClick={() => setShowNotif(!showNotif)}
+                className="bg-transparent border-none cursor-pointer text-accent dark:text-dark-accent relative p-2">
                 <Bell size={20} />
                 {unreadCount > 0 && (
-                  <span style={{
-                    position: 'absolute', top: '4px', right: '4px', background: 'var(--status-ditolak)',
-                    color: 'white', fontSize: '0.6rem', fontWeight: 'bold', width: '16px', height: '16px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%'
-                  }}>
-                    {unreadCount}
+                  <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-status-ditolak text-white text-[0.6rem] font-bold flex items-center justify-center">
+                    {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
                 )}
               </button>
-
-              {/* Dropdown Mobile */}
-              <AnimatePresence>
-                {showNotif && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    style={{
-                      position: 'absolute', top: '100%', right: '-40px', width: '280px',
-                      background: 'var(--glass-bg)', backdropFilter: 'blur(16px)',
-                      border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)',
-                      boxShadow: '0 10px 25px rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 100
-                    }}
-                  >
-                    <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--glass-border)', fontWeight: 600 }}>
-                      Notifikasi
-                    </div>
-                    <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
-                      {notifikasi.length === 0 ? (
-                        <div style={{ padding: '1.5rem 1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                          Belum ada notifikasi
-                        </div>
-                      ) : (
-                        notifikasi.map((n) => (
-                          <div key={n.id} style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--glass-border)', background: n.is_read ? 'transparent' : 'rgba(201, 168, 76, 0.05)' }}>
-                            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.2rem' }}>{n.judul}</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{n.pesan}</div>
-                            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
-                              {new Date(n.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <AnimatePresence>{showNotif && <NotifDropdown {...notifProps} width="w-[320px] -right-10" />}</AnimatePresence>
             </div>
           )}
 
           {!isAuthenticated && (
-            <button
-              onClick={toggleTheme}
-              aria-label={theme === 'dark' ? 'Aktifkan mode terang' : 'Aktifkan mode gelap'}
-              style={{
-                display: 'none',
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--accent-primary)',
-                cursor: 'pointer',
-                padding: '0.5rem',
-              }}
-              className="mobile-theme-btn"
-            >
+            <button onClick={toggleTheme} aria-label={theme === 'dark' ? 'Aktifkan mode terang' : 'Aktifkan mode gelap'}
+              className="bg-transparent border-none text-accent dark:text-dark-accent cursor-pointer p-2">
               <ThemeIcon size={20} />
             </button>
           )}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="mobile-menu-btn"
-            style={{
-              display: 'none',
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-primary)',
-              cursor: 'pointer',
-              padding: '0.5rem',
-            }}
-          >
+
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="bg-transparent border-none text-text-primary dark:text-dark-text-primary cursor-pointer p-2">
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
@@ -461,96 +274,42 @@ export default function Navbar() {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            style={{
-              background: 'var(--bg-secondary)',
-              borderTop: '1px solid var(--glass-border)',
-              overflow: 'hidden',
-            }}
-            className="mobile-menu"
-          >
-            <div style={{ padding: '1rem 1.5rem' }}>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+            className="bg-bg-secondary dark:bg-dark-bg-secondary border-t border-border-default dark:border-dark-border-default overflow-hidden md:hidden">
+            <div className="px-6 py-4">
               {activeLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsMenuOpen(false)}
-                  style={{
-                    display: 'block',
-                    padding: '0.75rem 0',
-                    fontSize: '1rem',
-                    fontWeight: 500,
-                    color: (location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path))) ? 'var(--accent-primary)' : 'var(--text-primary)',
-                    borderBottom: '1px solid var(--glass-border)',
-                  }}
-                >
+                <Link key={link.path} to={link.path} onClick={() => setIsMenuOpen(false)}
+                  className={`block py-3 text-base font-medium border-b border-border-default dark:border-dark-border-default no-underline
+                    ${isLinkActive(link.path) ? 'text-accent dark:text-dark-accent' : 'text-text-primary dark:text-dark-text-primary'}`}>
                   {link.label}
                 </Link>
               ))}
 
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
+              <div className="flex flex-col gap-3 mt-4">
                 {isAuthenticated ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%' }}>
-                    <Link to="/profil" onClick={() => setIsMenuOpen(false)} className="btn btn-secondary btn-sm" style={{ width: '100%', justifyContent: 'center' }}>
+                  <>
+                    <Link to="/profil" onClick={() => setIsMenuOpen(false)} className="btn btn-secondary btn-sm w-full justify-center">
                       <UserCircle size={16} /> Profil Saya
                     </Link>
-                    <button onClick={() => { toggleTheme(); setIsMenuOpen(false); }} className="btn btn-secondary btn-sm" style={{ width: '100%', justifyContent: 'center' }}>
+                    <button onClick={() => { toggleTheme(); setIsMenuOpen(false); }} className="btn btn-secondary btn-sm w-full justify-center">
                       <ThemeIcon size={16} /> Mode {theme === 'dark' ? 'Terang' : 'Gelap'}
                     </button>
-                    <button
-                      onClick={() => { handleLogout(); setIsMenuOpen(false); }}
-                      className="btn btn-sm"
-                      style={{
-                        width: '100%',
-                        background: 'transparent',
-                        color: 'var(--status-ditolak)',
-                        border: '1px solid var(--status-ditolak)',
-                        cursor: 'pointer',
-                        justifyContent: 'center',
-                      }}
-                    >
+                    <button onClick={() => { handleLogout(); setIsMenuOpen(false); }}
+                      className="btn btn-sm w-full justify-center bg-transparent text-status-ditolak border border-status-ditolak cursor-pointer">
                       <LogOut size={16} /> Keluar
                     </button>
-                  </div>
-                ) : (
-                  <>
-                    <Link
-                      to="/login"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="btn btn-secondary btn-sm"
-                      style={{ flex: 1 }}
-                    >
-                      Masuk
-                    </Link>
-                    <Link
-                      to="/daftar"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="btn btn-primary btn-sm"
-                      style={{ flex: 1 }}
-                    >
-                      Daftar
-                    </Link>
                   </>
+                ) : (
+                  <div className="flex gap-3">
+                    <Link to="/login" onClick={() => setIsMenuOpen(false)} className="btn btn-secondary btn-sm flex-1">Masuk</Link>
+                    <Link to="/daftar" onClick={() => setIsMenuOpen(false)} className="btn btn-primary btn-sm flex-1">Daftar</Link>
+                  </div>
                 )}
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Mobile CSS */}
-      <style>{`
-        .mobile-only-flex { display: none; }
-        @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-          .mobile-menu-btn { display: block !important; }
-          .mobile-theme-btn { display: block !important; }
-          .mobile-only-flex { display: block !important; }
-        }
-      `}</style>
     </motion.nav>
   );
 }

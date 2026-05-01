@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, GraduationCap } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle } from 'lucide-react';
 import useAuthStore from '../stores/authStore';
 import GeometricPattern from '../components/GeometricPattern';
 
@@ -25,36 +25,45 @@ export default function LoginPage() {
     e.preventDefault();
     clearError();
     const result = await login(email, password);
-    if (result.success) {
-      navigate(getDashboardPath(result.user.role));
-    }
+    if (result.success) navigate(getDashboardPath(result.user.role));
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', padding: '2rem 1rem' }}>
-      <div style={{ position: 'absolute', top: '-100px', right: '-100px', zIndex: 0 }}><GeometricPattern size={400} opacity={0.03} /></div>
-      <div style={{ position: 'absolute', bottom: '-100px', left: '-100px', zIndex: 0 }}><GeometricPattern size={350} opacity={0.03} /></div>
+    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center relative overflow-hidden p-8
+                    bg-bg-secondary dark:bg-dark-bg-secondary">
+      <div className="absolute -top-[100px] -right-[100px] z-0"><GeometricPattern size={400} opacity={0.03} /></div>
+      <div className="absolute -bottom-[100px] -left-[100px] z-0"><GeometricPattern size={350} opacity={0.03} /></div>
 
-      {/* Gold gradient orb */}
-      <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%)', filter: 'blur(60px)', zIndex: 0 }} />
+      {/* Green gradient orb */}
+      <div className="absolute top-[30%] left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full blur-[60px] z-0"
+        style={{ background: 'radial-gradient(circle, rgba(45,138,107,0.08) 0%, transparent 70%)' }} />
 
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '440px' }}>
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+        className="relative z-10 w-full max-w-[440px]">
+
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ width: '56px', height: '56px', borderRadius: '14px', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', boxShadow: '0 4px 20px rgba(201,168,76,0.3)' }}>
-            <GraduationCap size={28} color="#0B1A0F" />
-          </div>
-          <h1 style={{ fontSize: '1.75rem', marginBottom: '0.4rem' }}>
-            Masuk ke <span style={{ background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-light))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PPDB Online</span>
+        <div className="text-center mb-8">
+          <img src="/images/logo.png" alt="Logo Al Istiqomah"
+            className="block mx-auto mb-4 w-[72px] h-[72px] object-contain"
+            style={{ filter: 'drop-shadow(0 4px 12px rgba(45,138,107,0.3))' }} />
+          <h1 className="text-[1.75rem] mb-1">
+            Masuk ke{' '}
+            <span className="bg-gradient-to-br from-accent to-accent-light dark:from-dark-accent dark:to-dark-accent-light bg-clip-text text-transparent">
+              PPDB Online
+            </span>
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Yayasan Al Istiqomah Al Islamiyah</p>
+          <p className="text-text-secondary dark:text-dark-text-secondary text-sm">Yayasan Al Istiqomah Al Islamiyah</p>
         </div>
 
         {/* Login Card */}
-        <div className="glass-card" style={{ padding: '2rem' }}>
+        <div className="p-8 rounded-xl shadow-md relative z-10
+                        bg-surface-card dark:bg-dark-surface-card
+                        border border-border-default dark:border-dark-border-default">
           <AnimatePresence>
             {error && (
-              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ padding: '0.85rem', borderRadius: 'var(--radius-md)', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#EF4444', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem' }}>
+              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                className="flex items-center gap-2 p-3 mb-5 rounded-md text-[0.88rem]
+                           bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.3)] text-status-ditolak">
                 <AlertCircle size={16} />{error}
               </motion.div>
             )}
@@ -62,55 +71,73 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label"><Mail size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.35rem' }} />Email</label>
-              <input type="email" className="form-input" placeholder="Masukkan email Anda" value={email} onChange={(e) => { setEmail(e.target.value); clearError(); }} required />
+              <label className="form-label"><Mail size={14} className="inline align-middle mr-1.5" />Email</label>
+              <input type="email" className="form-input" placeholder="Masukkan email Anda"
+                value={email} onChange={(e) => { setEmail(e.target.value); clearError(); }} required />
             </div>
 
             <div className="form-group">
-              <label className="form-label"><Lock size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.35rem' }} />Password</label>
-              <div style={{ position: 'relative' }}>
-                <input type={showPassword ? 'text' : 'password'} className="form-input" placeholder="Masukkan password" value={password} onChange={(e) => { setPassword(e.target.value); clearError(); }} required style={{ paddingRight: '3rem' }} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+              <label className="form-label"><Lock size={14} className="inline align-middle mr-1.5" />Password</label>
+              <div className="relative">
+                <input type={showPassword ? 'text' : 'password'} className="form-input pr-12"
+                  placeholder="Masukkan password" value={password}
+                  onChange={(e) => { setPassword(e.target.value); clearError(); }} required />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer
+                             text-text-muted dark:text-dark-text-muted">
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
-            <button type="submit" disabled={isLoading} className="btn btn-primary" style={{ width: '100%', marginTop: '0.5rem', opacity: isLoading ? 0.7 : 1 }}>
+            <div className="text-right mb-6 -mt-2">
+              <Link to="/lupa-password" className="text-sm font-medium text-accent dark:text-dark-accent no-underline">
+                Lupa Password?
+              </Link>
+            </div>
+
+            <button type="submit" disabled={isLoading}
+              className={`btn btn-primary w-full mt-2 ${isLoading ? 'opacity-70' : ''}`}>
               {isLoading ? 'Memproses...' : <><LogIn size={18} />Masuk</>}
             </button>
           </form>
         </div>
 
-        {/* Links */}
-        <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Belum punya akun? <Link to="/daftar" style={{ fontWeight: 600 }}>Daftar Sekarang</Link>
+        <div className="text-center mt-6">
+          <p className="text-text-secondary dark:text-dark-text-secondary text-sm">
+            Belum punya akun? <Link to="/daftar" className="font-semibold">Daftar Sekarang</Link>
           </p>
         </div>
 
         {/* Demo credentials */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ marginTop: '2rem' }}>
-          <div className="glass-card" style={{ padding: '1.25rem' }}>
-            <p style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 600, marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>🔑 Akun Demo</p>
-            <div style={{ display: 'grid', gap: '0.5rem', fontSize: '0.8rem' }}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-8">
+          <div className="glass-card p-5">
+            <p className="text-xs text-accent dark:text-dark-accent font-semibold mb-3 uppercase tracking-wide">🔑 Akun Demo</p>
+            <div className="grid gap-2 text-xs">
               {[
                 { label: 'Admin', email: 'admin@ppdb.test' },
                 { label: 'Kepsek', email: 'kepsek@ppdb.test' },
                 { label: 'Panitia TK', email: 'panitia.tk@ppdb.test' },
                 { label: 'Panitia SD', email: 'panitia.sd@ppdb.test' },
               ].map(acc => (
-                <div key={acc.email} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>{acc.label}</span>
-                  <button onClick={() => { setEmail(acc.email); setPassword('password'); clearError(); }} style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-sm)', padding: '0.2rem 0.5rem', fontSize: '0.75rem', color: 'var(--accent-primary)', cursor: 'pointer', fontFamily: 'monospace' }}>
+                <div key={acc.email} className="flex justify-between items-center">
+                  <span className="text-text-secondary dark:text-dark-text-secondary">{acc.label}</span>
+                  <button onClick={() => { setEmail(acc.email); setPassword('password'); clearError(); }}
+                    className="px-2 py-0.5 text-xs font-mono rounded-sm cursor-pointer
+                               bg-bg-tertiary dark:bg-dark-bg-tertiary
+                               border border-border-default dark:border-dark-border-default
+                               text-accent dark:text-dark-accent">
                     {acc.email}
                   </button>
                 </div>
               ))}
             </div>
-            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>Password: <code style={{ color: 'var(--accent-primary)' }}>password</code></p>
+            <p className="text-[0.7rem] text-text-muted dark:text-dark-text-muted mt-2">
+              Password: <code className="text-accent dark:text-dark-accent">password</code>
+            </p>
           </div>
         </motion.div>
+
       </motion.div>
     </div>
   );

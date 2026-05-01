@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard, CalendarDays, FileText, Users, UserCircle,
-  LogOut, GraduationCap, Menu, X, Shield, CreditCard, Sun, Moon
+  LogOut, GraduationCap, Menu, Shield, CreditCard, Sun, Moon
 } from 'lucide-react';
 import useAuthStore from '../../stores/authStore';
 import useThemeStore from '../../stores/themeStore';
@@ -25,11 +25,7 @@ export default function AdminLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/');
-  };
-
+  const handleLogout = async () => { await logout(); navigate('/'); };
   const ThemeIcon = theme === 'dark' ? Sun : Moon;
 
   const isActive = (path) => {
@@ -38,45 +34,35 @@ export default function AdminLayout() {
   };
 
   const SidebarContent = ({ onNavigate }) => (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div className="flex flex-col h-full">
       {/* Logo */}
-      <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--glass-border)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="p-6 border-b border-border-default dark:border-dark-border-default">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-[10px] flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))' }}>
             <GraduationCap size={20} color="#0B1A0F" />
           </div>
           <div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.95rem' }}>Panel Admin</div>
-            <div style={{ fontSize: '0.68rem', color: 'var(--accent-primary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              PPDB Online
-            </div>
+            <div className="font-heading font-bold text-[0.95rem]">Panel Admin</div>
+            <div className="text-[0.68rem] font-semibold uppercase tracking-wide text-accent dark:text-dark-accent">PPDB Online</div>
           </div>
         </div>
       </div>
 
-      {/* Nav items */}
-      <nav style={{ flex: 1, padding: '1rem 0.75rem', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+      {/* Nav */}
+      <nav className="flex-1 py-4 px-3 overflow-y-auto">
+        <div className="flex flex-col gap-1">
           {navItems.map(item => {
             const Icon = item.icon;
             const active = isActive(item.path);
             return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={onNavigate}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '0.75rem',
-                  padding: '0.7rem 1rem', borderRadius: 'var(--radius-md)',
-                  textDecoration: 'none', fontSize: '0.88rem', fontWeight: active ? 600 : 400,
-                  color: active ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                  background: active ? 'rgba(201,168,76,0.1)' : 'transparent',
-                  border: active ? '1px solid rgba(201,168,76,0.2)' : '1px solid transparent',
-                  transition: 'all 0.2s',
-                }}
-              >
-                <Icon size={18} />
-                {item.label}
+              <NavLink key={item.path} to={item.path} onClick={onNavigate}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-md no-underline text-[0.88rem] transition-all duration-200
+                  ${active
+                    ? 'font-semibold text-accent dark:text-dark-accent bg-accent-bg dark:bg-dark-accent-bg border border-accent-bg-strong dark:border-dark-accent-bg-strong'
+                    : 'font-normal text-text-secondary dark:text-dark-text-secondary border border-transparent hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary'
+                  }`}>
+                <Icon size={18} />{item.label}
               </NavLink>
             );
           })}
@@ -84,20 +70,23 @@ export default function AdminLayout() {
       </nav>
 
       {/* Bottom */}
-      <div style={{ padding: '1rem 0.75rem', borderTop: '1px solid var(--glass-border)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.75rem', padding: '0 0.25rem' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700, color: '#0B1A0F' }}>
+      <div className="py-4 px-3 border-t border-border-default dark:border-dark-border-default">
+        <div className="flex items-center gap-2.5 mb-3 px-1">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-[#0B1A0F] shrink-0"
+            style={{ background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))' }}>
             {user?.nama_lengkap?.[0]?.toUpperCase() || 'A'}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.nama_lengkap}</div>
-            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Administrator</div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-semibold truncate">{user?.nama_lengkap}</div>
+            <div className="text-[0.65rem] text-text-muted dark:text-dark-text-muted">Administrator</div>
           </div>
-          <button onClick={toggleTheme} style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', cursor: 'pointer', padding: '0.25rem' }}>
+          <button onClick={toggleTheme} className="bg-transparent border-none text-accent dark:text-dark-accent cursor-pointer p-1">
             <ThemeIcon size={16} />
           </button>
         </div>
-        <button onClick={handleLogout} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.6rem', borderRadius: 'var(--radius-md)', background: 'transparent', border: '1px solid color-mix(in srgb, var(--status-ditolak) 40%, transparent)', color: 'var(--status-ditolak)', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 500, transition: 'all 0.2s' }}>
+        <button onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md bg-transparent cursor-pointer text-sm font-medium transition-all duration-200 text-status-ditolak"
+          style={{ border: '1px solid color-mix(in srgb, var(--color-status-ditolak) 40%, transparent)' }}>
           <LogOut size={14} /> Keluar
         </button>
       </div>
@@ -105,68 +94,67 @@ export default function AdminLayout() {
   );
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="flex min-h-screen">
       {/* Desktop Sidebar */}
-      <aside className="admin-sidebar" style={{
-        width: '260px', flexShrink: 0, background: 'var(--bg-secondary)',
-        borderRight: '1px solid var(--glass-border)', position: 'fixed',
-        top: 0, left: 0, bottom: 0, zIndex: 100, transition: 'background-color 0.3s',
-      }}>
+      <aside className="admin-sidebar w-[260px] shrink-0 fixed top-0 left-0 bottom-0 z-[100] transition-colors duration-300
+                         bg-bg-secondary dark:bg-dark-bg-secondary border-r border-border-default dark:border-dark-border-default">
         <SidebarContent onNavigate={() => {}} />
       </aside>
 
       {/* Mobile header */}
-      <div className="admin-mobile-header" style={{
-        display: 'none', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        background: 'var(--glass-bg)', backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid var(--glass-border)',
-        padding: '0.75rem 1rem', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="admin-mobile-header hidden fixed top-0 left-0 right-0 z-[100] items-center justify-between px-4 py-3 backdrop-blur-2xl
+                       bg-surface-card/80 dark:bg-dark-surface-card/80 border-b border-border-default dark:border-dark-border-default">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))' }}>
             <GraduationCap size={16} color="#0B1A0F" />
           </div>
           <div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem' }}>Panel Admin</div>
-            <div style={{ fontSize: '0.6rem', color: 'var(--accent-primary)', fontWeight: 600 }}>PPDB Online</div>
+            <div className="font-heading font-bold text-sm">Panel Admin</div>
+            <div className="text-[0.6rem] font-semibold text-accent dark:text-dark-accent">PPDB Online</div>
           </div>
         </div>
-        <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', padding: '0.4rem' }}>
+        <button onClick={() => setSidebarOpen(true)} className="bg-transparent border-none cursor-pointer p-1 text-text-primary dark:text-dark-text-primary">
           <Menu size={22} />
         </button>
       </div>
 
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 200 }}>
-          <motion.div initial={{ x: -280 }} animate={{ x: 0 }} onClick={e => e.stopPropagation()} style={{ width: '280px', height: '100%', background: 'var(--bg-secondary)', borderRight: '1px solid var(--glass-border)' }}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 z-[200]">
+          <motion.div initial={{ x: -280 }} animate={{ x: 0 }} onClick={e => e.stopPropagation()}
+            className="w-[280px] h-full bg-bg-secondary dark:bg-dark-bg-secondary border-r border-border-default dark:border-dark-border-default">
             <SidebarContent onNavigate={() => setSidebarOpen(false)} />
           </motion.div>
         </motion.div>
       )}
 
       {/* Main content */}
-      <main className="admin-main" style={{ flex: 1, marginLeft: '260px', minHeight: '100vh', background: 'var(--bg-primary)', transition: 'background-color 0.3s' }}>
-        <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+      <main className="admin-main flex-1 ml-[260px] min-h-screen transition-colors duration-300 bg-bg-primary dark:bg-dark-bg-primary">
+        <div className="p-8 max-w-[1200px] mx-auto">
           <Outlet />
         </div>
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="admin-bottom-nav" style={{
-        display: 'none', position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
-        background: 'var(--glass-bg)', backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)', borderTop: '1px solid var(--glass-border)',
-        padding: '0.5rem 0 env(safe-area-inset-bottom, 0.5rem)',
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-around', maxWidth: '520px', margin: '0 auto' }}>
+      <nav className="admin-bottom-nav hidden fixed bottom-0 left-0 right-0 z-[100] backdrop-blur-2xl
+                       bg-surface-card/80 dark:bg-dark-surface-card/80 border-t border-border-default dark:border-dark-border-default
+                       pb-[env(safe-area-inset-bottom,0.5rem)] pt-2">
+        <div className="flex justify-around max-w-[520px] mx-auto">
           {navItems.slice(0, 5).map(item => {
             const Icon = item.icon;
             const active = isActive(item.path);
             return (
-              <NavLink key={item.path} to={item.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.15rem', padding: '0.3rem 0.6rem', borderRadius: '12px', textDecoration: 'none', background: active ? 'rgba(201,168,76,0.1)' : 'transparent' }}>
-                <Icon size={19} strokeWidth={active ? 2.5 : 1.8} color={active ? 'var(--accent-primary)' : 'var(--text-muted)'} />
-                <span style={{ fontSize: '0.55rem', fontWeight: active ? 700 : 500, color: active ? 'var(--accent-primary)' : 'var(--text-muted)' }}>{item.label}</span>
+              <NavLink key={item.path} to={item.path}
+                className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl no-underline
+                  ${active ? 'bg-accent-bg dark:bg-dark-accent-bg' : ''}`}>
+                <Icon size={19} strokeWidth={active ? 2.5 : 1.8}
+                  className={active ? 'text-accent dark:text-dark-accent' : 'text-text-muted dark:text-dark-text-muted'} />
+                <span className={`text-[0.55rem] ${active ? 'font-bold text-accent dark:text-dark-accent' : 'font-medium text-text-muted dark:text-dark-text-muted'}`}>
+                  {item.label}
+                </span>
               </NavLink>
             );
           })}

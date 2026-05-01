@@ -5,9 +5,9 @@ import { ArrowLeft, ArrowRight, Upload, CheckCircle2, XCircle, AlertCircle, File
 import api from '../../services/api';
 
 const docStatusConfig = {
-  PENDING: { label: 'Menunggu Verifikasi', color: '#F59E0B', icon: AlertCircle },
-  VALID: { label: 'Valid', color: '#10B981', icon: CheckCircle2 },
-  INVALID: { label: 'Perlu Diperbaiki', color: '#EF4444', icon: XCircle },
+  PENDING: { label: 'Menunggu Verifikasi', color: 'text-[#F59E0B]', bg: 'bg-[#F59E0B]/15', border: 'border-[#F59E0B]/30', icon: AlertCircle },
+  VALID: { label: 'Valid', color: 'text-[#10B981]', bg: 'bg-[#10B981]/15', border: 'border-[#10B981]/30', icon: CheckCircle2 },
+  INVALID: { label: 'Perlu Diperbaiki', color: 'text-[#EF4444]', bg: 'bg-[#EF4444]/15', border: 'border-[#EF4444]/30', icon: XCircle },
 };
 
 export default function DokumenForm() {
@@ -85,17 +85,17 @@ export default function DokumenForm() {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass-card" style={{ padding: '2rem' }}>
-      <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>
-        <Upload size={18} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem', color: 'var(--accent-primary)' }} />
+    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass-card p-6 md:p-8">
+      <h3 className="text-[1.15rem] mb-1 flex items-center gap-2">
+        <Upload size={18} className="text-accent dark:text-dark-accent" />
         Upload Dokumen
       </h3>
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginBottom: '1.5rem' }}>
+      <p className="text-text-muted dark:text-dark-text-muted text-sm mb-6">
         Upload dokumen persyaratan sesuai jenjang {pendaftaran?.jenjang}
-        {isRevisi && <span style={{ color: '#F97316', fontWeight: 600 }}> — Perbaiki dokumen yang ditandai</span>}
+        {isRevisi && <span className="text-[#F97316] font-semibold ml-1">— Perbaiki dokumen yang ditandai</span>}
       </p>
 
-      <div style={{ display: 'grid', gap: '1rem' }}>
+      <div className="grid gap-4">
         {persyaratan.map((req) => {
           const uploaded = getUploadedDoc(req.kode);
           const status = uploaded ? docStatusConfig[uploaded.status] : null;
@@ -104,26 +104,24 @@ export default function DokumenForm() {
           const canDelete = uploaded && (!isRevisi || uploaded.status === 'INVALID');
 
           return (
-            <div key={req.kode} style={{
-              padding: '1.25rem', borderRadius: 'var(--radius-md)',
-              background: 'var(--bg-tertiary)',
-              border: `1.5px solid ${uploaded ? (status?.color + '30') : errors[req.kode] ? 'rgba(239,68,68,0.3)' : 'var(--glass-border)'}`,
-              transition: 'all 0.3s',
-            }}>
+            <div key={req.kode} className={`
+              p-5 rounded-md bg-bg-tertiary dark:bg-dark-bg-tertiary border-[1.5px] transition-all duration-300
+              ${uploaded ? status?.border : errors[req.kode] ? 'border-status-ditolak/30' : 'border-border-default dark:border-dark-border-default'}
+            `}>
               {/* Doc header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+              <div className="flex justify-between items-start mb-3 gap-2">
                 <div>
-                  <div style={{ fontSize: '0.9rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <div className="text-[0.9rem] font-semibold flex items-center gap-1.5">
                     {req.nama}
-                    {req.wajib && <span style={{ color: 'var(--status-ditolak)', fontSize: '0.85rem' }}>*</span>}
+                    {req.wajib && <span className="text-status-ditolak text-[0.85rem]">*</span>}
                   </div>
-                  {req.keterangan && <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>{req.keterangan}</p>}
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                  {req.keterangan && <p className="text-[0.75rem] text-text-muted dark:text-dark-text-muted mt-1">{req.keterangan}</p>}
+                  <p className="text-[0.7rem] text-text-muted dark:text-dark-text-muted mt-0.5">
                     Format: {req.format_diterima.toUpperCase()} • Maks: {req.maks_ukuran_mb}MB
                   </p>
                 </div>
                 {status && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.5rem', borderRadius: '50px', background: `${status.color}15`, fontSize: '0.7rem', fontWeight: 600, color: status.color, flexShrink: 0 }}>
+                  <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-[0.7rem] font-semibold shrink-0 ${status.bg} ${status.color}`}>
                     <status.icon size={12} />
                     {status.label}
                   </div>
@@ -132,27 +130,27 @@ export default function DokumenForm() {
 
               {/* Catatan panitia for invalid docs */}
               {uploaded?.catatan && uploaded.status === 'INVALID' && (
-                <div style={{ padding: '0.6rem', borderRadius: 'var(--radius-sm)', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', marginBottom: '0.75rem', fontSize: '0.78rem', color: '#EF4444' }}>
-                  <strong>Catatan:</strong> {uploaded.catatan}
+                <div className="p-2.5 rounded-sm bg-status-ditolak/10 border border-status-ditolak/20 mb-3 text-[0.78rem] text-status-ditolak">
+                  <strong className="font-semibold">Catatan:</strong> {uploaded.catatan}
                 </div>
               )}
 
               {/* Uploaded file info */}
               {uploaded && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg-secondary)', marginBottom: canUpload ? '0.75rem' : 0 }}>
-                  <File size={18} color="var(--accent-primary)" />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: '0.8rem', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{uploaded.nama_file}</p>
-                    <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{formatSize(uploaded.ukuran_file)}</p>
+                <div className={`flex items-center gap-3 p-2.5 rounded-sm bg-bg-secondary dark:bg-dark-bg-secondary ${canUpload ? 'mb-3' : 'mb-0'}`}>
+                  <File size={18} className="text-accent dark:text-dark-accent shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[0.8rem] font-medium truncate">{uploaded.nama_file}</p>
+                    <p className="text-[0.7rem] text-text-muted dark:text-dark-text-muted">{formatSize(uploaded.ukuran_file)}</p>
                   </div>
-                  <div style={{ display: 'flex', gap: '0.35rem' }}>
+                  <div className="flex gap-1.5 shrink-0">
                     {uploaded.mime_type?.startsWith('image/') && (
-                      <button onClick={() => setPreviewUrl(`/storage/${uploaded.path_file}`)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-primary)', padding: '0.35rem' }}>
+                      <button onClick={() => setPreviewUrl(`/storage/${uploaded.path_file}`)} className="bg-transparent border-none cursor-pointer text-accent dark:text-dark-accent p-1.5 hover:bg-accent/10 rounded-sm transition-colors">
                         <Eye size={16} />
                       </button>
                     )}
                     {canDelete && (
-                      <button onClick={() => handleDelete(req.kode)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#EF4444', padding: '0.35rem' }}>
+                      <button onClick={() => handleDelete(req.kode)} className="bg-transparent border-none cursor-pointer text-status-ditolak p-1.5 hover:bg-status-ditolak/10 rounded-sm transition-colors">
                         <Trash2 size={16} />
                       </button>
                     )}
@@ -165,46 +163,41 @@ export default function DokumenForm() {
                 <label
                   onDrop={handleDrop(req.kode)}
                   onDragOver={(e) => e.preventDefault()}
-                  style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                    padding: '1.25rem', borderRadius: 'var(--radius-sm)', border: '2px dashed var(--glass-border)',
-                    cursor: isUploading ? 'wait' : 'pointer', textAlign: 'center', transition: 'all 0.2s',
-                    opacity: isUploading ? 0.6 : 1,
-                  }}
+                  className={`
+                    flex flex-col items-center justify-center gap-2 p-5 rounded-sm border-2 border-dashed border-border-default dark:border-dark-border-default
+                    text-center transition-all duration-200
+                    ${isUploading ? 'cursor-wait opacity-60' : 'cursor-pointer hover:border-text-muted dark:hover:border-dark-text-muted hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary'}
+                  `}
                 >
-                  <input type="file" onChange={handleFileInput(req.kode)} accept={req.format_diterima.split(',').map(f => `.${f.trim()}`).join(',')} style={{ display: 'none' }} disabled={isUploading} />
+                  <input type="file" onChange={handleFileInput(req.kode)} accept={req.format_diterima.split(',').map(f => `.${f.trim()}`).join(',')} className="hidden" disabled={isUploading} />
                   {isUploading ? (
-                    <><Loader2 size={20} color="var(--accent-primary)" style={{ animation: 'spin 1s linear infinite' }} /><span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Mengupload...</span></>
+                    <><Loader2 size={20} className="text-accent dark:text-dark-accent animate-spin" /><span className="text-[0.8rem] text-text-muted dark:text-dark-text-muted">Mengupload...</span></>
                   ) : (
-                    <><Upload size={20} color="var(--text-muted)" /><span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{uploaded ? 'Ganti file' : 'Pilih atau seret file ke sini'}</span></>
+                    <><Upload size={20} className="text-text-muted dark:text-dark-text-muted" /><span className="text-[0.8rem] text-text-muted dark:text-dark-text-muted">{uploaded ? 'Ganti file' : 'Pilih atau seret file ke sini'}</span></>
                   )}
                 </label>
               )}
 
-              {errors[req.kode] && <span className="form-error" style={{ marginTop: '0.35rem', display: 'block' }}>{errors[req.kode]}</span>}
+              {errors[req.kode] && <span className="form-error mt-1.5 block">{errors[req.kode]}</span>}
             </div>
           );
         })}
       </div>
 
       {/* Navigation */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
-        <button onClick={() => navigate('/formulir/data-ortu')} className="btn btn-secondary"><ArrowLeft size={18} /> Kembali</button>
-        <button onClick={() => navigate('/formulir/review')} className="btn btn-primary">
+      <div className="flex justify-between mt-8">
+        <button onClick={() => navigate('/formulir/data-ortu')} className="btn btn-secondary flex items-center gap-2"><ArrowLeft size={18} /> Kembali</button>
+        <button onClick={() => navigate('/formulir/review')} className="btn btn-primary flex items-center gap-2">
           Lanjut: Review <ArrowRight size={18} />
         </button>
       </div>
 
       {/* Image Preview Modal */}
       {previewUrl && (
-        <div onClick={() => setPreviewUrl(null)} style={{
-          position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', cursor: 'pointer',
-        }}>
-          <img src={previewUrl} alt="Preview" style={{ maxWidth: '90%', maxHeight: '90%', borderRadius: 'var(--radius-lg)', objectFit: 'contain' }} />
+        <div onClick={() => setPreviewUrl(null)} className="fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-8 cursor-pointer">
+          <img src={previewUrl} alt="Preview" className="max-w-[90%] max-h-[90%] rounded-lg object-contain shadow-2xl" />
         </div>
       )}
-
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </motion.div>
   );
 }

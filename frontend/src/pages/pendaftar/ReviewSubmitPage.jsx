@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import { useOutletContext, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, Send, User, Users, FileText, CheckCircle2, XCircle,
@@ -50,15 +50,15 @@ export default function ReviewSubmitPage() {
   };
 
   const CheckItem = ({ ok, label }) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0' }}>
-      {ok ? <CheckCircle2 size={16} color="#10B981" /> : <XCircle size={16} color="#EF4444" />}
-      <span style={{ fontSize: '0.88rem', color: ok ? 'var(--text-primary)' : '#EF4444' }}>{label}</span>
+    <div className="flex items-center gap-2 py-2">
+      {ok ? <CheckCircle2 size={16} className="text-[#10B981] shrink-0" /> : <XCircle size={16} className="text-status-ditolak shrink-0" />}
+      <span className={`text-[0.88rem] ${ok ? 'text-text-primary dark:text-dark-text-primary' : 'text-status-ditolak'}`}>{label}</span>
     </div>
   );
 
   const Section = ({ icon: Icon, title, children }) => (
-    <div style={{ marginBottom: '1.25rem' }}>
-      <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+    <div className="mb-5">
+      <h4 className="text-[0.9rem] font-semibold text-accent dark:text-dark-accent mb-3 flex items-center gap-1.5">
         <Icon size={16} /> {title}
       </h4>
       {children}
@@ -66,26 +66,26 @@ export default function ReviewSubmitPage() {
   );
 
   const InfoRow = ({ label, value }) => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.4rem 0', borderBottom: '1px solid var(--glass-border)', fontSize: '0.85rem' }}>
-      <span style={{ color: 'var(--text-muted)' }}>{label}</span>
-      <span style={{ fontWeight: 500, textAlign: 'right', maxWidth: '60%' }}>{value || '—'}</span>
+    <div className="flex justify-between py-2 border-b border-border-default dark:border-dark-border-default text-[0.85rem]">
+      <span className="text-text-muted dark:text-dark-text-muted shrink-0 pr-4">{label}</span>
+      <span className="font-medium text-right max-w-[60%]">{value || '—'}</span>
     </div>
   );
 
   return (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
       {/* Header */}
-      <div className="glass-card" style={{ padding: '2rem', marginBottom: '1rem' }}>
-        <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>
-          <FileText size={18} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem', color: 'var(--accent-primary)' }} />
+      <div className="glass-card p-6 md:p-8 mb-4">
+        <h3 className="text-[1.15rem] mb-1 flex items-center gap-2">
+          <FileText size={18} className="text-accent dark:text-dark-accent" />
           Review Pendaftaran
         </h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>Periksa kembali semua data sebelum mengirim</p>
+        <p className="text-text-muted dark:text-dark-text-muted text-[0.82rem]">Periksa kembali semua data sebelum mengirim</p>
       </div>
 
       {/* Checklist */}
-      <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '1rem' }}>
-        <h4 style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Kelengkapan</h4>
+      <div className="glass-card p-5 mb-4">
+        <h4 className="text-[0.85rem] font-semibold text-text-muted dark:text-dark-text-muted mb-2 uppercase tracking-wide">Kelengkapan</h4>
         <CheckItem ok={hasSiswa} label="Data siswa lengkap" />
         <CheckItem ok={hasOrtu} label="Data orang tua/wali lengkap" />
         {requiredDocs.map(p => (
@@ -94,7 +94,7 @@ export default function ReviewSubmitPage() {
       </div>
 
       {/* Data Siswa Summary */}
-      <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '1rem' }}>
+      <div className="glass-card p-5 mb-4">
         <Section icon={User} title="Data Siswa">
           {hasSiswa ? (
             <div>
@@ -108,44 +108,44 @@ export default function ReviewSubmitPage() {
               {siswa.asal_sekolah && <InfoRow label="Asal Sekolah" value={siswa.asal_sekolah} />}
             </div>
           ) : (
-            <p style={{ color: '#EF4444', fontSize: '0.85rem' }}>Belum diisi — <a href="/formulir/data-siswa" style={{ fontWeight: 600 }}>Isi sekarang</a></p>
+            <p className="text-status-ditolak text-[0.85rem]">Belum diisi — <Link to="/formulir/data-siswa" className="font-semibold text-status-ditolak hover:underline">Isi sekarang</Link></p>
           )}
         </Section>
       </div>
 
       {/* Data Orang Tua Summary */}
-      <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '1rem' }}>
+      <div className="glass-card p-5 mb-4">
         <Section icon={Users} title="Data Orang Tua / Wali">
           {hasOrtu ? ortu.map((o, i) => (
-            <div key={i} style={{ marginBottom: i < ortu.length - 1 ? '0.75rem' : 0, paddingBottom: i < ortu.length - 1 ? '0.75rem' : 0, borderBottom: i < ortu.length - 1 ? '1px solid var(--glass-border)' : 'none' }}>
-              <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '0.35rem' }}>{o.tipe}</div>
+            <div key={i} className={i < ortu.length - 1 ? 'mb-3 pb-3 border-b border-border-default dark:border-dark-border-default' : ''}>
+              <div className="text-[0.82rem] font-semibold text-accent dark:text-dark-accent mb-1.5">{o.tipe}</div>
               <InfoRow label="Nama" value={o.nama} />
               <InfoRow label="No HP" value={o.no_hp} />
               {o.pekerjaan && <InfoRow label="Pekerjaan" value={o.pekerjaan} />}
             </div>
           )) : (
-            <p style={{ color: '#EF4444', fontSize: '0.85rem' }}>Belum diisi — <a href="/formulir/data-ortu" style={{ fontWeight: 600 }}>Isi sekarang</a></p>
+            <p className="text-status-ditolak text-[0.85rem]">Belum diisi — <Link to="/formulir/data-ortu" className="font-semibold text-status-ditolak hover:underline">Isi sekarang</Link></p>
           )}
         </Section>
       </div>
 
       {/* Dokumen Summary */}
-      <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '1rem' }}>
+      <div className="glass-card p-5 mb-4">
         <Section icon={File} title="Dokumen">
           {docs.length > 0 ? docs.map(d => {
             const req = persyaratan.find(p => p.kode === d.jenis_dokumen);
             return (
-              <div key={d.id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0', borderBottom: '1px solid var(--glass-border)' }}>
-                <File size={14} color="var(--accent-primary)" />
-                <span style={{ flex: 1, fontSize: '0.85rem' }}>{req?.nama || d.jenis_dokumen}</span>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{d.nama_file}</span>
+              <div key={d.id} className="flex items-center gap-2 py-1.5 border-b border-border-default dark:border-dark-border-default">
+                <File size={14} className="text-accent dark:text-dark-accent shrink-0" />
+                <span className="flex-1 text-[0.85rem] truncate pr-2">{req?.nama || d.jenis_dokumen}</span>
+                <span className="text-[0.75rem] text-text-muted dark:text-dark-text-muted truncate max-w-[40%]">{d.nama_file}</span>
               </div>
             );
           }) : (
-            <p style={{ color: '#EF4444', fontSize: '0.85rem' }}>Belum ada dokumen — <a href="/formulir/dokumen" style={{ fontWeight: 600 }}>Upload sekarang</a></p>
+            <p className="text-status-ditolak text-[0.85rem]">Belum ada dokumen — <Link to="/formulir/dokumen" className="font-semibold text-status-ditolak hover:underline">Upload sekarang</Link></p>
           )}
           {missingDocs.length > 0 && (
-            <div style={{ marginTop: '0.5rem', padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(239,68,68,0.08)', fontSize: '0.8rem', color: '#EF4444' }}>
+            <div className="mt-2 p-2 rounded-sm bg-status-ditolak/10 text-[0.8rem] text-status-ditolak">
               Belum diupload: {missingDocs.map(d => d.nama).join(', ')}
             </div>
           )}
@@ -154,48 +154,50 @@ export default function ReviewSubmitPage() {
 
       {/* Error messages */}
       {error && (
-        <div style={{ padding: '0.85rem', borderRadius: 'var(--radius-md)', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#EF4444', marginBottom: '1rem', fontSize: '0.88rem' }}>
-          <AlertTriangle size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.35rem' }} />
-          {error}
-          {submitErrors.length > 0 && (
-            <ul style={{ marginTop: '0.5rem', paddingLeft: '1.25rem', fontSize: '0.82rem' }}>
-              {submitErrors.map((e, i) => <li key={i}>{e}</li>)}
-            </ul>
-          )}
+        <div className="p-3.5 rounded-md bg-status-ditolak/10 border border-status-ditolak/30 text-status-ditolak mb-4 text-[0.88rem]">
+          <div className="flex items-start gap-1.5">
+            <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+            <div>
+              <span>{error}</span>
+              {submitErrors.length > 0 && (
+                <ul className="mt-2 pl-5 text-[0.82rem] space-y-1">
+                  {submitErrors.map((e, i) => <li key={i}>{e}</li>)}
+                </ul>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
       {/* Navigation */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
-        <button onClick={() => navigate('/formulir/dokumen')} className="btn btn-secondary"><ArrowLeft size={18} /> Kembali</button>
-        <button onClick={() => setShowConfirm(true)} disabled={!isComplete || submitting} className="btn btn-primary" style={{ opacity: !isComplete || submitting ? 0.5 : 1 }}>
-          {submitting ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> Mengirim...</> : <><Send size={18} /> Kirim Pendaftaran</>}
+      <div className="flex justify-between mt-6">
+        <button onClick={() => navigate('/formulir/dokumen')} className="btn btn-secondary flex items-center gap-2"><ArrowLeft size={18} /> Kembali</button>
+        <button onClick={() => setShowConfirm(true)} disabled={!isComplete || submitting} className={`btn btn-primary flex items-center gap-2 ${!isComplete || submitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+          {submitting ? <><Loader2 size={18} className="animate-spin" /> Mengirim...</> : <><Send size={18} /> Kirim Pendaftaran</>}
         </button>
       </div>
 
       {/* Confirm Modal */}
       <AnimatePresence>
         {showConfirm && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowConfirm(false)} style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} onClick={e => e.stopPropagation()} className="glass-card" style={{ maxWidth: '420px', width: '100%', padding: '2rem', textAlign: 'center' }}>
-              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(201,168,76,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
-                <Send size={24} color="var(--accent-primary)" />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowConfirm(false)} className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center p-6">
+            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} onClick={e => e.stopPropagation()} className="glass-card max-w-[420px] w-full p-8 text-center">
+              <div className="w-14 h-14 rounded-full bg-accent-bg dark:bg-dark-accent-bg flex items-center justify-center mx-auto mb-4">
+                <Send size={24} className="text-accent dark:text-dark-accent" />
               </div>
-              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>Kirim Pendaftaran?</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+              <h3 className="text-[1.15rem] mb-2 font-heading">Kirim Pendaftaran?</h3>
+              <p className="text-text-secondary dark:text-dark-text-secondary text-[0.88rem] mb-6 leading-relaxed">
                 Setelah dikirim, data formulir <strong>tidak bisa diubah lagi</strong>.
                 {pendaftaran?.jenjang === 'TK' ? ' Pendaftaran TK akan langsung diterima.' : ' Panitia akan melakukan review dalam 1-3 hari kerja.'}
               </p>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <button onClick={() => setShowConfirm(false)} className="btn btn-secondary" style={{ flex: 1 }}>Batal</button>
-                <button onClick={handleSubmit} className="btn btn-primary" style={{ flex: 1 }}><Send size={16} /> Ya, Kirim</button>
+              <div className="flex gap-3">
+                <button onClick={() => setShowConfirm(false)} className="btn btn-secondary flex-1">Batal</button>
+                <button onClick={handleSubmit} className="btn btn-primary flex-1 flex items-center justify-center gap-2"><Send size={16} /> Ya, Kirim</button>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </motion.div>
   );
 }

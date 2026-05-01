@@ -12,13 +12,15 @@ import api from '../../services/api';
 import GeometricPattern from '../../components/GeometricPattern';
 import { BerandaSkeleton } from '../../components/SkeletonLoader';
 
-/* ===== Status Config — uses CSS variable tokens ===== */
+/* ===== Status Config — uses Tailwind utility classes ===== */
 const statusConfig = {
   DRAFT: {
     label: 'Belum Selesai',
-    color: 'var(--status-draft)',
-    bg: 'color-mix(in srgb, var(--status-draft) 10%, transparent)',
-    border: 'color-mix(in srgb, var(--status-draft) 25%, transparent)',
+    color: 'text-status-draft',
+    bg: 'bg-status-draft/10',
+    border: 'border-status-draft/25',
+    borderLeft: 'border-l-[4px] border-l-status-draft',
+    ring: 'ring-1 ring-status-draft/20',
     icon: FileText,
     cta: 'Lanjutkan Isi Formulir',
     ctaAction: 'navigate',
@@ -27,9 +29,11 @@ const statusConfig = {
   },
   SUBMITTED: {
     label: 'Menunggu Verifikasi',
-    color: 'var(--status-submitted)',
-    bg: 'color-mix(in srgb, var(--status-submitted) 10%, transparent)',
-    border: 'color-mix(in srgb, var(--status-submitted) 25%, transparent)',
+    color: 'text-status-submitted',
+    bg: 'bg-status-submitted/10',
+    border: 'border-status-submitted/25',
+    borderLeft: 'border-l-[4px] border-l-status-submitted',
+    ring: 'ring-1 ring-status-submitted/20',
     icon: Clock,
     cta: 'Lihat Detail Formulir',
     ctaAction: 'navigate',
@@ -38,9 +42,11 @@ const statusConfig = {
   },
   MENUNGGU_REVIEW: {
     label: 'Sedang Diproses',
-    color: 'var(--status-review)',
-    bg: 'color-mix(in srgb, var(--status-review) 10%, transparent)',
-    border: 'color-mix(in srgb, var(--status-review) 25%, transparent)',
+    color: 'text-status-review',
+    bg: 'bg-status-review/10',
+    border: 'border-status-review/25',
+    borderLeft: 'border-l-[4px] border-l-status-review',
+    ring: 'ring-1 ring-status-review/20',
     icon: Clock,
     cta: 'Lihat Detail Formulir',
     ctaAction: 'navigate',
@@ -49,9 +55,11 @@ const statusConfig = {
   },
   REVISI: {
     label: 'Perlu Revisi Dokumen',
-    color: 'var(--status-revisi)',
-    bg: 'color-mix(in srgb, var(--status-revisi) 10%, transparent)',
-    border: 'color-mix(in srgb, var(--status-revisi) 25%, transparent)',
+    color: 'text-status-revisi',
+    bg: 'bg-status-revisi/10',
+    border: 'border-status-revisi/25',
+    borderLeft: 'border-l-[4px] border-l-status-revisi',
+    ring: 'ring-1 ring-status-revisi/20',
     icon: AlertCircle,
     cta: 'Perbaiki Dokumen Sekarang',
     ctaAction: 'navigate',
@@ -60,9 +68,11 @@ const statusConfig = {
   },
   DITERIMA: {
     label: 'Diterima! 🎉',
-    color: 'var(--status-diterima)',
-    bg: 'color-mix(in srgb, var(--status-diterima) 10%, transparent)',
-    border: 'color-mix(in srgb, var(--status-diterima) 25%, transparent)',
+    color: 'text-status-diterima',
+    bg: 'bg-status-diterima/10',
+    border: 'border-status-diterima/25',
+    borderLeft: 'border-l-[4px] border-l-status-diterima',
+    ring: 'ring-1 ring-status-diterima/20',
     icon: CheckCircle2,
     cta: 'Lanjutkan ke Pembayaran →',
     ctaAction: 'navigate',
@@ -71,9 +81,11 @@ const statusConfig = {
   },
   DITOLAK: {
     label: 'Tidak Diterima',
-    color: 'var(--status-ditolak)',
-    bg: 'color-mix(in srgb, var(--status-ditolak) 10%, transparent)',
-    border: 'color-mix(in srgb, var(--status-ditolak) 25%, transparent)',
+    color: 'text-status-ditolak',
+    bg: 'bg-status-ditolak/10',
+    border: 'border-status-ditolak/25',
+    borderLeft: 'border-l-[4px] border-l-status-ditolak',
+    ring: 'ring-1 ring-status-ditolak/20',
     icon: XCircle,
     cta: 'Lihat Alasan Penolakan',
     ctaAction: 'accordion',
@@ -82,9 +94,11 @@ const statusConfig = {
   },
   MENUNGGU_BAYAR: {
     label: 'Menunggu Pembayaran',
-    color: 'var(--status-bayar)',
-    bg: 'color-mix(in srgb, var(--status-bayar) 10%, transparent)',
-    border: 'color-mix(in srgb, var(--status-bayar) 25%, transparent)',
+    color: 'text-status-bayar',
+    bg: 'bg-status-bayar/10',
+    border: 'border-status-bayar/25',
+    borderLeft: 'border-l-[4px] border-l-status-bayar',
+    ring: 'ring-1 ring-status-bayar/20',
     icon: CreditCard,
     cta: 'Selesaikan Pembayaran',
     ctaAction: 'navigate',
@@ -93,9 +107,11 @@ const statusConfig = {
   },
   TERDAFTAR: {
     label: 'Terdaftar ✓',
-    color: 'var(--status-terdaftar)',
-    bg: 'color-mix(in srgb, var(--status-terdaftar) 10%, transparent)',
-    border: 'color-mix(in srgb, var(--status-terdaftar) 25%, transparent)',
+    color: 'text-status-terdaftar',
+    bg: 'bg-status-terdaftar/10',
+    border: 'border-status-terdaftar/25',
+    borderLeft: 'border-l-[4px] border-l-status-terdaftar',
+    ring: 'ring-1 ring-status-terdaftar/20',
     icon: CheckCircle2,
     cta: 'Unduh Bukti Pendaftaran',
     ctaAction: 'download',
@@ -104,9 +120,11 @@ const statusConfig = {
   },
   EXPIRED: {
     label: 'Pembayaran Kadaluarsa',
-    color: 'var(--status-expired)',
-    bg: 'color-mix(in srgb, var(--status-expired) 10%, transparent)',
-    border: 'color-mix(in srgb, var(--status-expired) 25%, transparent)',
+    color: 'text-status-expired',
+    bg: 'bg-status-expired/10',
+    border: 'border-status-expired/25',
+    borderLeft: 'border-l-[4px] border-l-status-expired',
+    ring: 'ring-1 ring-status-expired/20',
     icon: XCircle,
     cta: 'Hubungi Panitia',
     ctaAction: 'navigate',
@@ -129,7 +147,7 @@ function getActiveStep(status) {
     case 'SUBMITTED': case 'MENUNGGU_REVIEW': case 'REVISI': return 2;
     case 'DITERIMA': case 'DITOLAK': return 3;
     case 'MENUNGGU_BAYAR': return 3;
-    case 'TERDAFTAR': return 4;
+    case 'TERDAFTAR': return 5; // Full hijau
     case 'EXPIRED': return 3;
     default: return 0;
   }
@@ -201,10 +219,8 @@ export default function BerandaPage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', paddingTop: '85px', paddingBottom: '2rem', position: 'relative', overflow: 'hidden' }}>
-        <div className="container" style={{ maxWidth: '640px' }}>
-          <BerandaSkeleton />
-        </div>
+      <div className="min-h-screen pt-[85px] pb-8 relative overflow-hidden">
+        <div className="container max-w-[640px]"><BerandaSkeleton /></div>
       </div>
     );
   }
@@ -215,85 +231,81 @@ export default function BerandaPage() {
   const isFinalStatus = pendaftaran && ['TERDAFTAR', 'DITOLAK', 'EXPIRED'].includes(pendaftaran.status);
 
   return (
-    <div style={{ minHeight: '100vh', paddingTop: '85px', paddingBottom: '2rem', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: '-80px', right: '-80px', zIndex: 0 }}>
+    <div className="min-h-screen pt-[85px] pb-8 relative overflow-hidden">
+      <div className="absolute -top-20 -right-20 z-0">
         <GeometricPattern size={350} opacity={0.03} />
       </div>
 
-      <div className="container" style={{ maxWidth: '640px', position: 'relative', zIndex: 1 }}>
+      <div className="container max-w-[640px] relative z-10">
         {/* Header greeting */}
-        <motion.div initial={{ opacity: 0, y: -15 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: '1.75rem' }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>
-            Assalamu'alaikum, <span style={{ color: 'var(--accent-primary)' }}>{user?.nama_lengkap?.split(' ')[0]}</span> 👋
+        <motion.div initial={{ opacity: 0, y: -15 }} animate={{ opacity: 1, y: 0 }} className="mb-7">
+          <h2 className="text-2xl mb-1">
+            Assalamu'alaikum, <span className="text-accent dark:text-dark-accent">{user?.nama_lengkap?.split(' ')[0]}</span> 👋
           </h2>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ padding: '0.2rem 0.6rem', borderRadius: '50px', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.2)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent-primary)' }}>
-              <GraduationCap size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.25rem' }} />
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold
+                             bg-accent-bg dark:bg-dark-accent-bg border border-accent-bg-strong dark:border-dark-accent-bg-strong
+                             text-accent dark:text-dark-accent">
+              <GraduationCap size={12} className="inline align-middle mr-1" />
               {user?.jenjang_daftar}
             </span>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>PPDB Online</span>
+            <span className="text-text-muted dark:text-dark-text-muted text-sm">PPDB Online</span>
           </div>
         </motion.div>
 
         {/* Error */}
         {error && (
-          <div style={{ padding: '0.85rem', borderRadius: 'var(--radius-md)', background: 'color-mix(in srgb, var(--status-ditolak) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-ditolak) 30%, transparent)', color: 'var(--status-ditolak)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem' }}>
+          <div className="flex items-center gap-2 p-3 mb-5 rounded-md text-[0.88rem] text-status-ditolak bg-status-ditolak/10 border border-status-ditolak/30">
             <AlertCircle size={16} />{error}
           </div>
         )}
 
-        {/* EMPTY STATE — belum ada pendaftaran */}
+        {/* EMPTY STATE */}
         {!pendaftaran && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
-            <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(201,168,76,0.1)', border: '2px dashed rgba(201,168,76,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
-              <Plus size={32} color="var(--accent-primary)" />
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            className="glass-card-static py-12 px-8 text-center">
+            <div className="w-[72px] h-[72px] rounded-full flex items-center justify-center mx-auto mb-5
+                            bg-accent-bg dark:bg-dark-accent-bg border-2 border-dashed border-accent-bg-strong dark:border-dark-accent-bg-strong">
+              <Plus size={32} className="text-accent dark:text-dark-accent" />
             </div>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Belum Ada Pendaftaran</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.75rem', lineHeight: 1.7, maxWidth: '380px', margin: '0 auto 1.75rem' }}>
-              Mulai proses pendaftaran untuk jenjang <strong style={{ color: 'var(--accent-primary)' }}>{user?.jenjang_daftar}</strong>. Siapkan dokumen yang diperlukan sebelum mengisi formulir.
+            <h3 className="text-xl mb-2">Belum Ada Pendaftaran</h3>
+            <p className="text-text-secondary dark:text-dark-text-secondary text-sm mb-7 leading-relaxed max-w-[380px] mx-auto">
+              Mulai proses pendaftaran untuk jenjang <strong className="text-accent dark:text-dark-accent">{user?.jenjang_daftar}</strong>. Siapkan dokumen yang diperlukan sebelum mengisi formulir.
             </p>
-            <button onClick={handleMulaiPendaftaran} disabled={creating} className="btn btn-primary btn-lg" style={{ opacity: creating ? 0.7 : 1 }}>
-              {creating ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />Memproses...</> : <><Plus size={18} />Mulai Pendaftaran</>}
+            <button onClick={handleMulaiPendaftaran} disabled={creating}
+              className={`btn btn-primary btn-lg justify-center w-full sm:w-auto ${creating ? 'opacity-70' : ''}`}>
+              {creating ? <><Loader2 size={18} className="animate-spin" />Memproses...</> : <><Plus size={18} />Mulai Pendaftaran</>}
             </button>
           </motion.div>
         )}
 
-        {/* ACTIVE STATE — ada pendaftaran */}
+        {/* ACTIVE STATE */}
         {pendaftaran && st && (
           <>
-            {/* Kartu Status Tunggal */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static" style={{ padding: '2rem', marginBottom: '1.25rem', border: `1.5px solid ${st.border}` }}>
-              {/* Status badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: st.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <st.icon size={24} color={st.color} />
+            {/* Kartu Status */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              className={`glass-card-static p-6 md:p-8 mb-5 border-[1.5px] ${st.border} ${st.borderLeft} ${st.ring} shadow-card`}>
+              <div className="flex items-center gap-3 mb-5">
+                <div className={`w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 ${st.bg}`}>
+                  <st.icon size={24} className={st.color} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 700, fontFamily: 'var(--font-heading)', color: st.color }}>{st.label}</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                    {pendaftaran.nomor_daftar}
-                  </div>
+                  <div className={`text-xl font-bold font-heading ${st.color}`}>{st.label}</div>
+                  <div className="text-[0.78rem] text-text-muted dark:text-dark-text-muted">{pendaftaran.nomor_daftar}</div>
                 </div>
               </div>
 
-              {/* Description */}
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>{st.desc}</p>
+              <p className="text-text-secondary dark:text-dark-text-secondary text-sm leading-relaxed mb-6">{st.desc}</p>
 
-              {/* Catatan panitia for REVISI */}
               {pendaftaran.catatan_panitia && pendaftaran.status === 'REVISI' && (
-                <div style={{ padding: '0.85rem', borderRadius: 'var(--radius-sm)', background: st.bg, border: `1px solid ${st.border}`, marginBottom: '1.5rem', fontSize: '0.85rem' }}>
-                  <strong style={{ color: st.color }}>Catatan Panitia:</strong>
-                  <p style={{ color: 'var(--text-secondary)', marginTop: '0.35rem' }}>{pendaftaran.catatan_panitia}</p>
+                <div className={`p-3 rounded-sm mb-6 text-sm ${st.bg} border border-solid ${st.border}`}>
+                  <strong className={st.color}>Catatan Panitia:</strong>
+                  <p className="text-text-secondary dark:text-dark-text-secondary mt-1">{pendaftaran.catatan_panitia}</p>
                 </div>
               )}
 
-              {/* Single CTA */}
               {st.cta && (
-                <button
-                  onClick={() => handleCTA(st)}
-                  className={st.ctaAction === 'download' ? 'btn btn-primary' : 'btn btn-primary'}
-                  style={{ width: '100%', justifyContent: 'center' }}
-                >
+                <button onClick={() => handleCTA(st)} className="btn btn-primary w-full justify-center">
                   {st.ctaAction === 'download' && <Download size={18} />}
                   {st.cta}
                   {st.ctaAction === 'navigate' && <ArrowRight size={18} />}
@@ -301,13 +313,13 @@ export default function BerandaPage() {
                 </button>
               )}
 
-              {/* Accordion: Alasan penolakan */}
               <AnimatePresence>
                 {showAlasan && pendaftaran.status === 'DITOLAK' && pendaftaran.catatan_panitia && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden', marginTop: '1rem' }}>
-                    <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: st.bg, border: `1px solid ${st.border}`, fontSize: '0.88rem' }}>
-                      <strong style={{ color: st.color, fontSize: '0.82rem' }}>Alasan Penolakan:</strong>
-                      <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', lineHeight: 1.7 }}>{pendaftaran.catatan_panitia}</p>
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden mt-4">
+                    <div className={`p-4 rounded-sm text-[0.88rem] ${st.bg} border border-solid ${st.border}`}>
+                      <strong className={`text-sm ${st.color}`}>Alasan Penolakan:</strong>
+                      <p className="text-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed">{pendaftaran.catatan_panitia}</p>
                     </div>
                   </motion.div>
                 )}
@@ -315,31 +327,30 @@ export default function BerandaPage() {
             </motion.div>
 
             {/* Timeline Stepper */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card-static" style={{ padding: '1.5rem', marginBottom: '1.25rem', overflowX: 'auto' }}>
-              <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontWeight: 600, marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Progress Pendaftaran</h4>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minWidth: '350px' }}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+              className="glass-card-static p-5 md:p-6 mb-5 overflow-x-auto">
+              <h4 className="text-sm font-semibold uppercase tracking-wide mb-5
+                             text-text-muted dark:text-dark-text-muted">Progress Pendaftaran</h4>
+              <div className="flex items-center justify-between min-w-[350px]">
                 {timelineSteps.map((step, i) => {
                   const isDone = i < activeStep;
                   const isActive = i === activeStep;
                   const isFailed = ['DITOLAK', 'EXPIRED'].includes(pendaftaran.status) && i === activeStep;
                   return (
-                    <div key={step.key} style={{ display: 'flex', alignItems: 'center', flex: i < timelineSteps.length - 1 ? 1 : 'none' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem' }}>
-                        <div style={{
-                          width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 700,
-                          background: isDone ? 'var(--accent-primary)' : isActive ? 'transparent' : 'var(--bg-tertiary)',
-                          color: isDone ? 'var(--bg-primary)' : isActive ? (isFailed ? 'var(--status-ditolak)' : 'var(--accent-primary)') : 'var(--text-muted)',
-                          border: isActive ? `2px solid ${isFailed ? 'var(--status-ditolak)' : 'var(--accent-primary)'}` : isDone ? 'none' : '1px solid var(--border-default)',
-                          animation: isActive && !isFailed ? 'pulse-primary 2s ease-in-out infinite' : 'none',
-                        }}>
+                    <div key={step.key} className={`flex items-center ${i < timelineSteps.length - 1 ? 'flex-1' : ''}`}>
+                      <div className="flex flex-col items-center gap-1">
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[0.7rem] font-bold transition-all
+                            ${isDone ? 'bg-accent text-bg-primary border-none' : isActive ? 'bg-transparent' : 'bg-bg-tertiary text-text-muted border border-border-default'}
+                            ${isActive ? (isFailed ? 'border-2 border-status-ditolak text-status-ditolak' : 'border-2 border-accent text-accent animate-pulse-primary') : ''}
+                          `}>
                           {isDone ? <CheckCircle2 size={14} /> : i + 1}
                         </div>
-                        <span style={{ fontSize: '0.6rem', fontWeight: isDone || isActive ? 600 : 400, color: isDone ? 'var(--accent-primary)' : isActive ? (isFailed ? 'var(--status-ditolak)' : 'var(--accent-primary)') : 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                        <span className={`text-[0.6rem] whitespace-nowrap ${isDone || isActive ? 'font-semibold' : 'font-normal'} ${isDone ? 'text-accent' : isActive ? (isFailed ? 'text-status-ditolak' : 'text-accent') : 'text-text-muted'}`}>
                           {step.label}
                         </span>
                       </div>
                       {i < timelineSteps.length - 1 && (
-                        <div style={{ flex: 1, height: '2px', background: isDone ? 'var(--accent-primary)' : 'var(--border-default)', margin: '0 0.35rem', marginBottom: '1.25rem', borderRadius: '1px', transition: 'background 0.3s' }} />
+                        <div className={`flex-1 h-0.5 mx-1.5 mb-5 rounded-sm transition-colors duration-300 ${isDone ? 'bg-accent' : 'bg-border-default'}`} />
                       )}
                     </div>
                   );
@@ -347,81 +358,89 @@ export default function BerandaPage() {
               </div>
             </motion.div>
 
-            {/* Info Panel — grid card style */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '1.25rem' }}>
+            {/* Info Panel */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+              className="grid grid-cols-2 gap-3 mb-5">
               {[
                 [Hash, 'Nomor Daftar', pendaftaran.nomor_daftar],
                 [GraduationCap, 'Jenjang', pendaftaran.jenjang],
                 [CalendarDays, 'Gelombang', pendaftaran.gelombang?.nama?.replace(/Gelombang \d+ - /, '') || '-'],
                 [Clock, 'Tanggal Submit', pendaftaran.submitted_at ? new Date(pendaftaran.submitted_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Belum'],
               ].map(([Icon, label, value]) => (
-                <div key={label} className="glass-card-static" style={{ padding: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(201,168,76,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Icon size={15} color="var(--accent-primary)" />
+                <div key={label} className="glass-card-static p-3 flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0
+                                  bg-accent-bg dark:bg-dark-accent-bg">
+                    <Icon size={15} className="text-accent dark:text-dark-accent" />
                   </div>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>{label}</div>
-                    <div style={{ fontSize: '0.82rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[0.68rem] text-text-muted dark:text-dark-text-muted uppercase tracking-wide">{label}</div>
+                    <div className="text-sm font-semibold truncate">{value}</div>
                   </div>
                 </div>
               ))}
             </motion.div>
 
             {/* Notifikasi Terakhir */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card-static" style={{ padding: '1.25rem', marginBottom: '1.25rem' }}>
-              <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontWeight: 600, marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              className="glass-card-static p-5 mb-5">
+              <h4 className="text-sm font-semibold uppercase tracking-wide mb-3 flex items-center gap-1
+                             text-text-muted dark:text-dark-text-muted">
                 <Bell size={14} /> Notifikasi Terbaru
               </h4>
               {notifikasi.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {notifikasi.map(n => (
-                    <div key={n.id} style={{ padding: '0.65rem', borderRadius: 'var(--radius-sm)', background: n.is_read ? 'transparent' : 'color-mix(in srgb, var(--accent-primary) 5%, transparent)', border: `1px solid ${n.is_read ? 'var(--glass-border)' : 'color-mix(in srgb, var(--accent-primary) 15%, transparent)'}`, display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                      <Bell size={13} color={n.tipe === 'sukses' ? 'var(--status-diterima)' : n.tipe === 'peringatan' ? 'var(--status-revisi)' : 'var(--accent-primary)'} style={{ flexShrink: 0, marginTop: '0.15rem' }} />
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '0.82rem', fontWeight: 600, marginBottom: '0.15rem' }}>{n.judul}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.pesan}</div>
+                <div className="flex flex-col gap-2">
+                  {notifikasi.map(n => {
+                    const typeColor = n.tipe === 'sukses' ? 'text-status-diterima' : n.tipe === 'peringatan' ? 'text-status-revisi' : 'text-accent';
+                    return (
+                      <div key={n.id} className={`flex gap-2 items-start p-2.5 rounded-sm border ${n.is_read ? 'bg-transparent border-border-default' : 'bg-accent/5 border-accent/15'}`}>
+                        <Bell size={13} className={`shrink-0 mt-0.5 ${typeColor}`} />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-semibold mb-0.5">{n.judul}</div>
+                          <div className="text-xs text-text-muted dark:text-dark-text-muted truncate">{n.pesan}</div>
+                        </div>
+                        <span className="text-[0.65rem] text-text-muted dark:text-dark-text-muted whitespace-nowrap shrink-0">
+                          {new Date(n.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                        </span>
                       </div>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', flexShrink: 0 }}>{new Date(n.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center', padding: '1rem 0' }}>
-                  Belum ada notifikasi
-                </div>
+                <div className="text-sm text-text-muted dark:text-dark-text-muted text-center py-4">Belum ada notifikasi</div>
               )}
             </motion.div>
 
-            {/* Extra sections for final statuses / Contact Panitia */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card-static" style={{ padding: '1.25rem' }}>
-              <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontWeight: 600, marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            {/* Kontak Panitia */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+              className="glass-card-static p-5">
+              <h4 className="text-sm font-semibold uppercase tracking-wide mb-3 flex items-center gap-1
+                             text-text-muted dark:text-dark-text-muted">
                 <Phone size={14} /> Kontak Panitia
               </h4>
-              <div style={{ display: 'grid', gap: '0.5rem', fontSize: '0.85rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.4rem 0', borderBottom: '1px solid var(--glass-border)' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>WhatsApp</span>
-                  <span style={{ fontWeight: 500 }}>0812-3456-7890</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.4rem 0', borderBottom: '1px solid var(--glass-border)' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Email</span>
-                  <span style={{ fontWeight: 500 }}>ppdb@alistiqomah.sch.id</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.4rem 0' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Jam Layanan</span>
-                  <span style={{ fontWeight: 500 }}>08:00 - 16:00 WIB</span>
-                </div>
+              <div className="grid gap-2 text-sm">
+                {[
+                  ['WhatsApp', '0812-3456-7890'],
+                  ['Email', 'ppdb@alistiqomah.sch.id'],
+                  ['Jam Layanan', '08:00 - 16:00 WIB'],
+                ].map(([label, value], i) => (
+                  <div key={label} className={`flex justify-between py-1.5 ${i < 2 ? 'border-b border-border-default dark:border-dark-border-default' : ''}`}>
+                    <span className="text-text-muted dark:text-dark-text-muted">{label}</span>
+                    <span className="font-medium">{value}</span>
+                  </div>
+                ))}
               </div>
             </motion.div>
 
-            {/* Butuh Bantuan Section */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} style={{ marginTop: '2rem', textAlign: 'center' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                <span style={{ width: '30px', height: '1px', background: 'var(--border-default)' }} />
+            {/* Butuh Bantuan */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+              className="mt-8 text-center">
+              <div className="inline-flex items-center gap-2 text-text-muted dark:text-dark-text-muted text-sm">
+                <span className="w-[30px] h-px bg-border-default dark:bg-dark-border-default" />
                 Butuh Bantuan?
-                <span style={{ width: '30px', height: '1px', background: 'var(--border-default)' }} />
+                <span className="w-[30px] h-px bg-border-default dark:bg-dark-border-default" />
               </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
-                Silakan hubungi <a href="/kontak" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>Panitia PPDB</a> untuk pertanyaan lebih lanjut.
+              <p className="text-xs text-text-secondary dark:text-dark-text-secondary mt-2">
+                Silakan hubungi <Link to="/kontak" className="text-accent dark:text-dark-accent font-semibold hover:underline">Panitia PPDB</Link> untuk pertanyaan lebih lanjut.
               </p>
             </motion.div>
           </>

@@ -7,23 +7,23 @@ import {
   Phone, MapPin, Briefcase, Loader2, MessageSquare, Clock
 } from 'lucide-react';
 import api from '../../services/api';
-import { Skeleton, SkeletonText, SkeletonCard } from '../../components/SkeletonLoader';
+import { Skeleton, SkeletonCard } from '../../components/SkeletonLoader';
 
 const statusBadge = {
-  DRAFT: { bg: 'var(--status-draft)', label: 'Draft' },
-  SUBMITTED: { bg: 'var(--status-submitted)', label: 'Menunggu Review' },
-  MENUNGGU_REVIEW: { bg: 'var(--status-review)', label: 'Sedang Review' },
-  REVISI: { bg: 'var(--status-revisi)', label: 'Perlu Revisi' },
-  DITERIMA: { bg: 'var(--status-diterima)', label: 'Diterima' },
-  DITOLAK: { bg: 'var(--status-ditolak)', label: 'Ditolak' },
-  MENUNGGU_BAYAR: { bg: 'var(--status-bayar)', label: 'Menunggu Bayar' },
-  TERDAFTAR: { bg: 'var(--status-terdaftar)', label: 'Terdaftar' },
+  DRAFT: { bg: 'var(--color-status-draft)', label: 'Draft' },
+  SUBMITTED: { bg: 'var(--color-status-submitted)', label: 'Menunggu Review' },
+  MENUNGGU_REVIEW: { bg: 'var(--color-status-review)', label: 'Sedang Review' },
+  REVISI: { bg: 'var(--color-status-revisi)', label: 'Perlu Revisi' },
+  DITERIMA: { bg: 'var(--color-status-diterima)', label: 'Diterima' },
+  DITOLAK: { bg: 'var(--color-status-ditolak)', label: 'Ditolak' },
+  MENUNGGU_BAYAR: { bg: 'var(--color-status-bayar)', label: 'Menunggu Bayar' },
+  TERDAFTAR: { bg: 'var(--color-status-terdaftar)', label: 'Terdaftar' },
 };
 
 const docStatusBadge = {
-  PENDING: { bg: 'var(--status-submitted)', label: 'Pending' },
-  VALID: { bg: 'var(--status-diterima)', label: 'Valid' },
-  INVALID: { bg: 'var(--status-ditolak)', label: 'Invalid' },
+  PENDING: { bg: 'var(--color-status-submitted)', label: 'Pending' },
+  VALID: { bg: 'var(--color-status-diterima)', label: 'Valid' },
+  INVALID: { bg: 'var(--color-status-ditolak)', label: 'Invalid' },
 };
 
 export default function PendaftarDetailPage() {
@@ -82,17 +82,17 @@ export default function PendaftarDetailPage() {
       <div>
         <Skeleton width="120px" height="0.85rem" style={{ marginBottom: '1.5rem' }} />
         <SkeletonCard height="200px" />
-        <div style={{ marginTop: '1.25rem' }}><SkeletonCard height="300px" /></div>
+        <div className="mt-5"><SkeletonCard height="300px" /></div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-        <AlertTriangle size={48} color="var(--status-ditolak)" style={{ marginBottom: '1rem' }} />
-        <h3>Pendaftar tidak ditemukan</h3>
-        <Link to="/panitia/pendaftar" className="btn btn-secondary" style={{ marginTop: '1rem' }}>
+      <div className="text-center py-16 px-8">
+        <AlertTriangle size={48} className="text-status-ditolak mx-auto mb-4" />
+        <h3 className="text-lg">Pendaftar tidak ditemukan</h3>
+        <Link to="/panitia/pendaftar" className="btn btn-secondary mt-4 inline-flex items-center gap-2">
           <ArrowLeft size={16} /> Kembali
         </Link>
       </div>
@@ -103,7 +103,7 @@ export default function PendaftarDetailPage() {
   const siswa = p.data_siswa;
   const ortu = p.data_ortu || [];
   const docs = p.dokumen || [];
-  const badge = statusBadge[p.status] || { bg: 'var(--text-muted)', label: p.status };
+  const badge = statusBadge[p.status] || { bg: 'var(--color-text-muted)', label: p.status };
   const canReview = ['SUBMITTED', 'MENUNGGU_REVIEW'].includes(p.status);
 
   const tabs = [
@@ -113,47 +113,47 @@ export default function PendaftarDetailPage() {
   ];
 
   const InfoRow = ({ icon: Icon, label, value }) => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0.55rem 0', borderBottom: '1px solid var(--glass-border)', fontSize: '0.85rem' }}>
-      <span style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.4rem', minWidth: '120px' }}>
-        {Icon && <Icon size={13} color="var(--accent-primary)" />}{label}
+    <div className="flex justify-between items-start py-2 border-b border-border-default dark:border-dark-border-default text-[0.85rem]">
+      <span className="text-text-muted dark:text-dark-text-muted flex items-center gap-1.5 min-w-[120px]">
+        {Icon && <Icon size={13} className="text-accent dark:text-dark-accent" />}{label}
       </span>
-      <span style={{ fontWeight: 500, textAlign: 'right', flex: 1, marginLeft: '1rem' }}>{value || '—'}</span>
+      <span className="font-medium text-right flex-1 ml-4 text-text-primary dark:text-dark-text-primary">{value || '—'}</span>
     </div>
   );
 
   return (
     <div>
       {/* Breadcrumb */}
-      <Link to="/panitia/pendaftar" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
+      <Link to="/panitia/pendaftar" className="inline-flex items-center gap-1.5 text-[0.85rem] text-text-muted dark:text-dark-text-muted hover:text-accent dark:hover:text-dark-accent transition-colors mb-5 no-underline">
         <ArrowLeft size={16} /> Kembali ke Daftar
       </Link>
 
       {/* Header Card */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static" style={{ padding: '1.5rem', marginBottom: '1.25rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: '1.35rem', marginBottom: '0.35rem' }}>{siswa?.nama_lengkap || 'Nama belum diisi'}</h2>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Hash size={13} color="var(--accent-primary)" />{p.nomor_daftar}</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><GraduationCap size={13} color="var(--accent-primary)" />{p.jenjang}</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><CalendarDays size={13} color="var(--accent-primary)" />{p.gelombang?.nama || '-'}</span>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static p-6 mb-5">
+        <div className="flex justify-between items-start flex-wrap gap-4">
+          <div className="flex-1">
+            <h2 className="text-[1.35rem] font-heading font-bold mb-1.5">{siswa?.nama_lengkap || 'Nama belum diisi'}</h2>
+            <div className="flex flex-wrap gap-3 text-[0.82rem] text-text-secondary dark:text-dark-text-secondary">
+              <span className="flex items-center gap-1"><Hash size={13} className="text-accent dark:text-dark-accent" />{p.nomor_daftar}</span>
+              <span className="flex items-center gap-1"><GraduationCap size={13} className="text-accent dark:text-dark-accent" />{p.jenjang}</span>
+              <span className="flex items-center gap-1"><CalendarDays size={13} className="text-accent dark:text-dark-accent" />{p.gelombang?.nama || '-'}</span>
             </div>
           </div>
-          <span style={{ display: 'inline-flex', padding: '0.3rem 0.85rem', borderRadius: '50px', fontSize: '0.78rem', fontWeight: 600, color: 'white', background: badge.bg }}>{badge.label}</span>
+          <span className="inline-flex px-3.5 py-1 rounded-full text-[0.78rem] font-semibold text-white" style={{ background: badge.bg }}>{badge.label}</span>
         </div>
 
         {/* Catatan panitia sebelumnya */}
         {p.catatan_panitia && (
-          <div style={{ marginTop: '1rem', padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'color-mix(in srgb, var(--accent-primary) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-primary) 15%, transparent)', fontSize: '0.82rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent-primary)', fontWeight: 600, marginBottom: '0.3rem' }}>
+          <div className="mt-4 p-3 rounded-md bg-accent-bg/50 border border-accent-bg-strong text-[0.82rem]">
+            <div className="flex items-center gap-1.5 text-accent dark:text-dark-accent font-semibold mb-1">
               <MessageSquare size={13} /> Catatan Panitia
             </div>
-            <p style={{ color: 'var(--text-secondary)' }}>{p.catatan_panitia}</p>
+            <p className="text-text-secondary dark:text-dark-text-secondary">{p.catatan_panitia}</p>
           </div>
         )}
 
         {p.reviewed_at && (
-          <div style={{ marginTop: '0.5rem', fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+          <div className="mt-2 text-[0.72rem] text-text-muted dark:text-dark-text-muted flex items-center gap-1">
             <Clock size={11} /> Direview {new Date(p.reviewed_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
             {p.reviewer && <> oleh {p.reviewer.nama_lengkap}</>}
           </div>
@@ -161,30 +161,29 @@ export default function PendaftarDetailPage() {
       </motion.div>
 
       {/* Success / Error */}
-      {success && <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: 'color-mix(in srgb, var(--status-diterima) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-diterima) 25%, transparent)', color: 'var(--status-diterima)', marginBottom: '1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}><CheckCircle2 size={14} />{success}</div>}
-      {error && <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: 'color-mix(in srgb, var(--status-ditolak) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-ditolak) 25%, transparent)', color: 'var(--status-ditolak)', marginBottom: '1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}><AlertTriangle size={14} />{error}</div>}
+      {success && <div className="p-3 rounded-md mb-4 text-[0.85rem] flex items-center gap-1.5 text-status-diterima border border-status-diterima/25 bg-status-diterima/10"><CheckCircle2 size={14} />{success}</div>}
+      {error && <div className="p-3 rounded-md mb-4 text-[0.85rem] flex items-center gap-1.5 text-status-ditolak border border-status-ditolak/25 bg-status-ditolak/10"><AlertTriangle size={14} />{error}</div>}
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', overflowX: 'auto' }}>
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-1 no-scrollbar">
         {tabs.map(tab => {
           const Icon = tab.icon;
           const active = activeTab === tab.key;
           return (
-            <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
-              display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem',
-              borderRadius: 'var(--radius-md)', border: active ? '1.5px solid var(--accent-primary)' : '1.5px solid var(--glass-border)',
-              background: active ? 'rgba(201,168,76,0.1)' : 'transparent', color: active ? 'var(--accent-primary)' : 'var(--text-secondary)',
-              cursor: 'pointer', fontSize: '0.82rem', fontWeight: active ? 600 : 400, whiteSpace: 'nowrap', transition: 'all 0.2s',
-            }}>
+            <button key={tab.key} onClick={() => setActiveTab(tab.key)} 
+              className={`flex items-center gap-1.5 px-4 py-2.5 rounded-md border-[1.5px] cursor-pointer text-[0.82rem] whitespace-nowrap transition-all duration-200
+                ${active 
+                  ? 'border-accent dark:border-dark-accent bg-accent-bg dark:bg-dark-accent-bg text-accent dark:text-dark-accent font-semibold' 
+                  : 'border-border-default dark:border-dark-border-default bg-transparent text-text-secondary dark:text-dark-text-secondary font-normal hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary'}`}>
               <Icon size={15} />{tab.label}
-              {tab.count !== undefined && <span style={{ fontSize: '0.7rem', background: active ? 'var(--accent-primary)' : 'var(--text-muted)', color: active ? '#0B1A0F' : 'white', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{tab.count}</span>}
+              {tab.count !== undefined && <span className={`text-[0.7rem] w-4.5 h-4.5 rounded-full flex items-center justify-center ${active ? 'bg-accent dark:bg-dark-accent text-[#0B1A0F]' : 'bg-text-muted dark:bg-dark-text-muted text-white'}`}>{tab.count}</span>}
             </button>
           );
         })}
       </div>
 
       {/* Tab Content */}
-      <motion.div key={activeTab} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="glass-card-static" style={{ padding: '1.5rem', marginBottom: '1.25rem' }}>
+      <motion.div key={activeTab} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="glass-card-static p-6 mb-5">
         {activeTab === 'siswa' && (
           siswa ? (
             <div>
@@ -197,19 +196,19 @@ export default function PendaftarDetailPage() {
               <InfoRow icon={MapPin} label="Alamat" value={siswa.alamat} />
               {siswa.asal_sekolah && <InfoRow icon={GraduationCap} label="Asal Sekolah" value={siswa.asal_sekolah} />}
             </div>
-          ) : <p style={{ color: 'var(--text-muted)' }}>Data siswa belum diisi.</p>
+          ) : <p className="text-text-muted dark:text-dark-text-muted">Data siswa belum diisi.</p>
         )}
 
         {activeTab === 'ortu' && (
           ortu.length > 0 ? ortu.map((o, i) => (
-            <div key={i} style={{ marginBottom: i < ortu.length - 1 ? '1.25rem' : 0, paddingBottom: i < ortu.length - 1 ? '1.25rem' : 0, borderBottom: i < ortu.length - 1 ? '2px solid var(--glass-border)' : 'none' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{o.tipe}</div>
+            <div key={i} className={`mb-5 pb-5 ${i < ortu.length - 1 ? 'border-b-2 border-border-default dark:border-dark-border-default' : 'mb-0 pb-0'}`}>
+              <div className="text-[0.8rem] font-semibold text-accent dark:text-dark-accent mb-2 uppercase tracking-wide">{o.tipe}</div>
               <InfoRow icon={User} label="Nama" value={o.nama} />
               <InfoRow icon={Phone} label="No HP" value={o.no_hp} />
               {o.pekerjaan && <InfoRow icon={Briefcase} label="Pekerjaan" value={o.pekerjaan} />}
               {o.alamat && <InfoRow icon={MapPin} label="Alamat" value={o.alamat} />}
             </div>
-          )) : <p style={{ color: 'var(--text-muted)' }}>Data orang tua belum diisi.</p>
+          )) : <p className="text-text-muted dark:text-dark-text-muted">Data orang tua belum diisi.</p>
         )}
 
         {activeTab === 'dokumen' && (
@@ -218,43 +217,47 @@ export default function PendaftarDetailPage() {
               const doc = docs.find(d => d.jenis_dokumen === req.kode);
               const dBadge = doc ? (docStatusBadge[doc.status] || docStatusBadge.PENDING) : null;
               return (
-                <div key={req.kode} style={{ padding: '0.85rem 0', borderBottom: '1px solid var(--glass-border)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <File size={14} color="var(--accent-primary)" />
-                      <span style={{ fontWeight: 500, fontSize: '0.88rem' }}>{req.nama}</span>
-                      {req.wajib && <span style={{ fontSize: '0.6rem', color: 'var(--status-ditolak)', fontWeight: 600 }}>WAJIB</span>}
+                <div key={req.kode} className="py-3 border-b border-border-default dark:border-dark-border-default">
+                  <div className="flex justify-between items-center mb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <File size={14} className="text-accent dark:text-dark-accent" />
+                      <span className="font-medium text-[0.88rem]">{req.nama}</span>
+                      {req.wajib && <span className="text-[0.6rem] text-status-ditolak font-semibold">WAJIB</span>}
                     </div>
                     {doc && (
-                      <span style={{ display: 'inline-flex', padding: '0.15rem 0.5rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 600, color: 'white', background: dBadge.bg }}>{dBadge.label}</span>
+                      <span className="inline-flex px-2 py-0.5 rounded-full text-[0.65rem] font-semibold text-white" style={{ background: dBadge.bg }}>{dBadge.label}</span>
                     )}
                   </div>
 
                   {doc ? (
-                    <div style={{ marginLeft: '1.35rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+                    <div className="ml-5">
+                      <div className="flex items-center gap-3 flex-wrap text-[0.78rem] text-text-muted dark:text-dark-text-muted mb-2">
                         <span>{doc.nama_file}</span>
                         <span>{(doc.ukuran_file / 1024).toFixed(0)} KB</span>
-                        <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/storage/${doc.path_file}`} target="_blank" rel="noopener" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', color: 'var(--accent-primary)', fontSize: '0.78rem' }}>
+                        <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/storage/${doc.path_file}`} target="_blank" rel="noopener" className="flex items-center gap-1 text-accent dark:text-dark-accent hover:underline">
                           <Eye size={12} /> Lihat
                         </a>
                       </div>
-                      {doc.catatan && <div style={{ fontSize: '0.78rem', color: 'var(--status-revisi)', marginBottom: '0.35rem' }}>Catatan: {doc.catatan}</div>}
+                      {doc.catatan && <div className="text-[0.78rem] text-status-revisi mb-1.5">Catatan: {doc.catatan}</div>}
 
                       {/* Review actions */}
                       {canReview && (
-                        <div style={{ display: 'flex', gap: '0.35rem', marginTop: '0.35rem' }}>
-                          <button onClick={() => handleUpdateDoc(doc.id, 'VALID', null)} disabled={doc.status === 'VALID'} style={{ padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--status-diterima)', background: doc.status === 'VALID' ? 'color-mix(in srgb, var(--status-diterima) 15%, transparent)' : 'transparent', color: 'var(--status-diterima)', fontSize: '0.72rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                        <div className="flex gap-1.5 mt-1.5">
+                          <button onClick={() => handleUpdateDoc(doc.id, 'VALID', null)} disabled={doc.status === 'VALID'} 
+                            className={`px-2.5 py-1 rounded-sm border border-status-diterima text-[0.72rem] flex items-center gap-1 transition-colors
+                              ${doc.status === 'VALID' ? 'bg-status-diterima/15 text-status-diterima cursor-default' : 'bg-transparent text-status-diterima cursor-pointer hover:bg-status-diterima/10'}`}>
                             <CheckCircle2 size={11} /> Valid
                           </button>
-                          <button onClick={() => { const note = prompt('Catatan (opsional):'); handleUpdateDoc(doc.id, 'INVALID', note); }} disabled={doc.status === 'INVALID'} style={{ padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--status-ditolak)', background: doc.status === 'INVALID' ? 'color-mix(in srgb, var(--status-ditolak) 15%, transparent)' : 'transparent', color: 'var(--status-ditolak)', fontSize: '0.72rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                          <button onClick={() => { const note = prompt('Catatan (opsional):'); handleUpdateDoc(doc.id, 'INVALID', note); }} disabled={doc.status === 'INVALID'} 
+                            className={`px-2.5 py-1 rounded-sm border border-status-ditolak text-[0.72rem] flex items-center gap-1 transition-colors
+                              ${doc.status === 'INVALID' ? 'bg-status-ditolak/15 text-status-ditolak cursor-default' : 'bg-transparent text-status-ditolak cursor-pointer hover:bg-status-ditolak/10'}`}>
                             <XCircle size={11} /> Invalid
                           </button>
                         </div>
                       )}
                     </div>
                   ) : (
-                    <div style={{ marginLeft: '1.35rem', fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Belum diupload</div>
+                    <div className="ml-5 text-[0.78rem] text-text-muted dark:text-dark-text-muted italic">Belum diupload</div>
                   )}
                 </div>
               );
@@ -265,16 +268,16 @@ export default function PendaftarDetailPage() {
 
       {/* Status Actions */}
       {canReview && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static" style={{ padding: '1.5rem' }}>
-          <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tindakan</h4>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <button onClick={() => setShowStatusModal('DITERIMA')} className="btn btn-sm" style={{ background: 'var(--status-diterima)', color: 'white', border: 'none', cursor: 'pointer' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static p-6">
+          <h4 className="text-[0.85rem] text-text-muted dark:text-dark-text-muted font-semibold mb-4 uppercase tracking-wide">Tindakan</h4>
+          <div className="flex gap-3 flex-wrap">
+            <button onClick={() => setShowStatusModal('DITERIMA')} className="btn btn-sm bg-status-diterima text-white border-none hover:bg-status-diterima/90 flex items-center gap-1.5">
               <CheckCircle2 size={15} /> Terima
             </button>
-            <button onClick={() => setShowStatusModal('REVISI')} className="btn btn-sm" style={{ background: 'transparent', color: 'var(--status-revisi)', border: '1.5px solid var(--status-revisi)', cursor: 'pointer' }}>
+            <button onClick={() => setShowStatusModal('REVISI')} className="btn btn-sm bg-transparent text-status-revisi border-[1.5px] border-status-revisi hover:bg-status-revisi/10 flex items-center gap-1.5">
               <AlertTriangle size={15} /> Minta Revisi
             </button>
-            <button onClick={() => setShowStatusModal('DITOLAK')} className="btn btn-sm" style={{ background: 'transparent', color: 'var(--status-ditolak)', border: '1.5px solid var(--status-ditolak)', cursor: 'pointer' }}>
+            <button onClick={() => setShowStatusModal('DITOLAK')} className="btn btn-sm bg-transparent text-status-ditolak border-[1.5px] border-status-ditolak hover:bg-status-ditolak/10 flex items-center gap-1.5">
               <XCircle size={15} /> Tolak
             </button>
           </div>
@@ -284,23 +287,23 @@ export default function PendaftarDetailPage() {
       {/* Status Change Modal */}
       <AnimatePresence>
         {showStatusModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => { setShowStatusModal(null); setError(''); }} style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} onClick={e => e.stopPropagation()} className="glass-card" style={{ maxWidth: '460px', width: '100%', padding: '2rem' }}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => { setShowStatusModal(null); setError(''); }} className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center p-6">
+            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} onClick={e => e.stopPropagation()} className="glass-card max-w-[460px] w-full p-8">
+              <h3 className="text-lg font-heading mb-2">
                 {showStatusModal === 'DITERIMA' && '✅ Terima Pendaftar'}
                 {showStatusModal === 'REVISI' && '⚠️ Minta Revisi'}
                 {showStatusModal === 'DITOLAK' && '❌ Tolak Pendaftar'}
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '1.25rem' }}>
+              <p className="text-text-secondary dark:text-dark-text-secondary text-[0.88rem] mb-5">
                 {showStatusModal === 'DITERIMA' && 'Pendaftar akan diterima dan diminta melakukan pembayaran.'}
                 {showStatusModal === 'REVISI' && 'Pendaftar akan diminta memperbaiki dokumen. Catatan wajib diisi.'}
                 {showStatusModal === 'DITOLAK' && 'Pendaftar akan ditolak. Catatan/alasan wajib diisi.'}
               </p>
 
-              {error && <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: 'color-mix(in srgb, var(--status-ditolak) 10%, transparent)', color: 'var(--status-ditolak)', marginBottom: '1rem', fontSize: '0.82rem' }}>{error}</div>}
+              {error && <div className="p-2 rounded-sm mb-4 text-[0.82rem] text-status-ditolak bg-status-ditolak/10">{error}</div>}
 
-              <div style={{ marginBottom: '1.25rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+              <div className="mb-5">
+                <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">
                   Catatan {['DITOLAK', 'REVISI'].includes(showStatusModal) ? '(wajib)' : '(opsional)'}
                 </label>
                 <textarea
@@ -308,25 +311,22 @@ export default function PendaftarDetailPage() {
                   onChange={e => setCatatan(e.target.value)}
                   rows={3}
                   placeholder={showStatusModal === 'REVISI' ? 'Jelaskan dokumen apa yang perlu diperbaiki...' : showStatusModal === 'DITOLAK' ? 'Jelaskan alasan penolakan...' : 'Catatan tambahan...'}
-                  style={{ width: '100%', padding: '0.75rem 1rem', background: 'var(--bg-tertiary)', border: '1.5px solid var(--glass-border)', borderRadius: 'var(--radius-md)', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.88rem', resize: 'vertical', outline: 'none' }}
+                  className="w-full px-4 py-3 bg-bg-tertiary dark:bg-dark-bg-tertiary border-[1.5px] border-border-default dark:border-dark-border-default rounded-md text-text-primary dark:text-dark-text-primary font-body text-[0.88rem] resize-y outline-none focus:border-accent dark:focus:border-dark-accent transition-colors"
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <button onClick={() => { setShowStatusModal(null); setError(''); setCatatan(''); }} className="btn btn-secondary" style={{ flex: 1 }}>Batal</button>
-                <button onClick={handleUpdateStatus} disabled={submitting} className="btn" style={{
-                  flex: 1, cursor: submitting ? 'wait' : 'pointer', color: 'white', border: 'none', opacity: submitting ? 0.7 : 1,
-                  background: showStatusModal === 'DITERIMA' ? 'var(--status-diterima)' : showStatusModal === 'REVISI' ? 'var(--status-revisi)' : 'var(--status-ditolak)',
+              <div className="flex gap-3">
+                <button onClick={() => { setShowStatusModal(null); setError(''); setCatatan(''); }} className="btn btn-secondary flex-1">Batal</button>
+                <button onClick={handleUpdateStatus} disabled={submitting} className={`btn flex-1 text-white border-none flex items-center justify-center ${submitting ? 'opacity-70 cursor-wait' : 'cursor-pointer'}`} style={{
+                  background: showStatusModal === 'DITERIMA' ? 'var(--color-status-diterima)' : showStatusModal === 'REVISI' ? 'var(--color-status-revisi)' : 'var(--color-status-ditolak)',
                 }}>
-                  {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : 'Konfirmasi'}
+                  {submitting ? <Loader2 size={16} className="animate-spin" /> : 'Konfirmasi'}
                 </button>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

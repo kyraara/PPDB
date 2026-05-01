@@ -88,95 +88,91 @@ export default function DataOrtuForm() {
 
   const handleBack = () => navigate('/formulir/data-siswa');
 
-  const inputStyle = (errKey) => ({
-    width: '100%', padding: '0.75rem 1rem', background: 'var(--bg-tertiary)',
-    border: `1.5px solid ${errors[errKey] ? 'var(--status-ditolak)' : 'var(--glass-border)'}`,
-    borderRadius: 'var(--radius-md)', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem', outline: 'none', transition: 'border 0.3s',
-  });
+  const getInputClass = (errKey) => `
+    w-full px-4 py-3 bg-bg-tertiary dark:bg-dark-bg-tertiary border-[1.5px] rounded-md text-text-primary dark:text-dark-text-primary font-body text-[0.92rem] outline-none transition-colors
+    ${errors[errKey] ? 'border-status-ditolak' : 'border-border-default dark:border-dark-border-default focus:border-accent dark:focus:border-dark-accent'}
+  `;
 
   const current = entries[activeTab] || entries[0];
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass-card" style={{ padding: '2rem' }}>
-      <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>
-        <Users size={18} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem', color: 'var(--accent-primary)' }} />
+    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass-card p-6 md:p-8">
+      <h3 className="text-[1.15rem] mb-1 flex items-center gap-2">
+        <Users size={18} className="text-accent dark:text-dark-accent" />
         Data Orang Tua / Wali
       </h3>
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginBottom: '1.5rem' }}>Minimal 1 data orang tua wajib diisi</p>
+      <p className="text-text-muted dark:text-dark-text-muted text-sm mb-6">Minimal 1 data orang tua wajib diisi</p>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <div className="flex gap-2 mb-6 flex-wrap">
         {entries.map((e, i) => (
-          <button key={i} onClick={() => setActiveTab(i)} style={{
-            padding: '0.5rem 1rem', borderRadius: '50px', border: 'none', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, fontFamily: 'var(--font-body)', transition: 'all 0.2s',
-            background: activeTab === i ? 'rgba(201,168,76,0.15)' : 'var(--bg-tertiary)',
-            color: activeTab === i ? 'var(--accent-primary)' : 'var(--text-secondary)',
-            border: activeTab === i ? '1px solid rgba(201,168,76,0.3)' : '1px solid var(--glass-border)',
-          }}>
+          <button key={i} onClick={() => setActiveTab(i)} 
+            className={`px-4 py-2 rounded-full border cursor-pointer text-[0.82rem] font-semibold transition-all duration-200
+              ${activeTab === i 
+                ? 'bg-accent-bg dark:bg-dark-accent-bg text-accent dark:text-dark-accent border-accent-bg-strong dark:border-dark-accent-bg-strong' 
+                : 'bg-bg-tertiary dark:bg-dark-bg-tertiary text-text-secondary dark:text-dark-text-secondary border-border-default dark:border-dark-border-default'}`}>
             {e.tipe || `Orang Tua ${i + 1}`}
           </button>
         ))}
         {entries.length < 3 && (
-          <button onClick={addEntry} style={{
-            padding: '0.5rem 0.75rem', borderRadius: '50px', border: '1px dashed var(--glass-border)', background: 'transparent',
-            cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.25rem',
-          }}>
+          <button onClick={addEntry} 
+            className="px-3 py-2 rounded-full border border-dashed border-border-default dark:border-dark-border-default bg-transparent cursor-pointer text-text-muted dark:text-dark-text-muted text-[0.82rem] flex items-center gap-1 hover:border-text-muted transition-colors">
             <Plus size={14} /> Tambah
           </button>
         )}
       </div>
 
       {/* Form for active tab */}
-      <div style={{ display: 'grid', gap: '1rem' }}>
+      <div className="grid gap-4">
         {/* Tipe */}
         <div>
-          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Status *</label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">Status *</label>
+          <div className="flex gap-2">
             {tipeOptions.map(opt => (
-              <label key={opt.val} style={{
-                flex: 1, padding: '0.6rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', textAlign: 'center', fontSize: '0.85rem', fontWeight: 500, transition: 'all 0.2s',
-                background: current.tipe === opt.val ? 'rgba(201,168,76,0.1)' : 'var(--bg-tertiary)',
-                border: `1.5px solid ${current.tipe === opt.val ? 'var(--accent-primary)' : 'var(--glass-border)'}`,
-                color: current.tipe === opt.val ? 'var(--accent-primary)' : 'var(--text-secondary)',
-              }}>
-                <input type="radio" checked={current.tipe === opt.val} onChange={() => handleChange(activeTab, 'tipe', opt.val)} style={{ display: 'none' }} />
+              <label key={opt.val} className={`
+                flex-1 p-2.5 rounded-md cursor-pointer text-center text-[0.85rem] font-medium transition-colors border-[1.5px]
+                ${current.tipe === opt.val 
+                  ? 'bg-accent-bg dark:bg-dark-accent-bg border-accent dark:border-dark-accent text-accent dark:text-dark-accent' 
+                  : 'bg-bg-tertiary dark:bg-dark-bg-tertiary border-border-default dark:border-dark-border-default text-text-secondary dark:text-dark-text-secondary hover:border-border-hover dark:hover:border-dark-border-hover'}
+              `}>
+                <input type="radio" checked={current.tipe === opt.val} onChange={() => handleChange(activeTab, 'tipe', opt.val)} className="hidden" />
                 {opt.label}
               </label>
             ))}
           </div>
-          {errors[`${activeTab}.tipe`] && <span className="form-error">{errors[`${activeTab}.tipe`]}</span>}
+          {errors[`${activeTab}.tipe`] && <span className="form-error mt-1">{errors[`${activeTab}.tipe`]}</span>}
         </div>
 
         {/* Nama */}
         <div>
-          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Nama Lengkap *</label>
-          <input value={current.nama} onChange={(e) => handleChange(activeTab, 'nama', e.target.value)} placeholder="Nama lengkap orang tua" style={inputStyle(`${activeTab}.nama`)} />
-          {errors[`${activeTab}.nama`] && <span className="form-error">{errors[`${activeTab}.nama`]}</span>}
+          <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">Nama Lengkap *</label>
+          <input value={current.nama} onChange={(e) => handleChange(activeTab, 'nama', e.target.value)} placeholder="Nama lengkap orang tua" className={getInputClass(`${activeTab}.nama`)} />
+          {errors[`${activeTab}.nama`] && <span className="form-error mt-1">{errors[`${activeTab}.nama`]}</span>}
         </div>
 
         {/* NIK + No HP */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>NIK</label>
-            <input value={current.nik} onChange={(e) => handleChange(activeTab, 'nik', e.target.value)} placeholder="16 digit" maxLength={16} style={inputStyle(`${activeTab}.nik`)} />
-            {errors[`${activeTab}.nik`] && <span className="form-error">{errors[`${activeTab}.nik`]}</span>}
+            <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">NIK</label>
+            <input value={current.nik} onChange={(e) => handleChange(activeTab, 'nik', e.target.value)} placeholder="16 digit" maxLength={16} className={getInputClass(`${activeTab}.nik`)} />
+            {errors[`${activeTab}.nik`] && <span className="form-error mt-1">{errors[`${activeTab}.nik`]}</span>}
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>No HP *</label>
-            <input value={current.no_hp} onChange={(e) => handleChange(activeTab, 'no_hp', e.target.value)} placeholder="08xxxxxxxxxx" style={inputStyle(`${activeTab}.no_hp`)} />
-            {errors[`${activeTab}.no_hp`] && <span className="form-error">{errors[`${activeTab}.no_hp`]}</span>}
+            <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">No HP *</label>
+            <input value={current.no_hp} onChange={(e) => handleChange(activeTab, 'no_hp', e.target.value)} placeholder="08xxxxxxxxxx" className={getInputClass(`${activeTab}.no_hp`)} />
+            {errors[`${activeTab}.no_hp`] && <span className="form-error mt-1">{errors[`${activeTab}.no_hp`]}</span>}
           </div>
         </div>
 
         {/* Pekerjaan + Penghasilan */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Pekerjaan</label>
-            <input value={current.pekerjaan} onChange={(e) => handleChange(activeTab, 'pekerjaan', e.target.value)} placeholder="Contoh: Wiraswasta" style={inputStyle(`${activeTab}.pekerjaan`)} />
+            <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">Pekerjaan</label>
+            <input value={current.pekerjaan} onChange={(e) => handleChange(activeTab, 'pekerjaan', e.target.value)} placeholder="Contoh: Wiraswasta" className={getInputClass(`${activeTab}.pekerjaan`)} />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Penghasilan</label>
-            <select value={current.penghasilan} onChange={(e) => handleChange(activeTab, 'penghasilan', e.target.value)} style={{ ...inputStyle(`${activeTab}.penghasilan`), appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%238A9AB5\' d=\'M6 8L1 3h10z\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center' }}>
+            <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">Penghasilan</label>
+            <select value={current.penghasilan} onChange={(e) => handleChange(activeTab, 'penghasilan', e.target.value)} className={`${getInputClass(`${activeTab}.penghasilan`)} appearance-none bg-no-repeat bg-[position:right_1rem_center] bg-[url("data:image/svg+xml,%3Csvg_xmlns='http://www.w3.org/2000/svg'_width='12'_height='12'_viewBox='0_0_12_12'%3E%3Cpath_fill='%238A9AB5'_d='M6_8L1_3h10z'/%3E%3C/svg%3E")]`}>
               <option value="">Pilih</option>
               {penghasilanOptions.map(p => <option key={p} value={p}>{p}</option>)}
             </select>
@@ -185,21 +181,17 @@ export default function DataOrtuForm() {
 
         {/* Remove button */}
         {entries.length > 1 && (
-          <button onClick={() => removeEntry(activeTab)} style={{
-            display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.5rem 0.75rem', background: 'transparent',
-            border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-sm)', color: '#EF4444', cursor: 'pointer',
-            fontSize: '0.8rem', width: 'fit-content',
-          }}>
+          <button onClick={() => removeEntry(activeTab)} className="flex items-center gap-1.5 px-3 py-2 bg-transparent border border-status-ditolak/30 rounded-sm text-status-ditolak cursor-pointer text-[0.8rem] w-fit mt-2 hover:bg-status-ditolak/5 transition-colors">
             <Trash2 size={14} /> Hapus {current.tipe || 'data ini'}
           </button>
         )}
       </div>
 
       {/* Navigation */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
-        <button onClick={handleBack} className="btn btn-secondary"><ArrowLeft size={18} /> Kembali</button>
-        <button onClick={handleNext} disabled={saving} className="btn btn-primary">
-          {saving ? 'Menyimpan...' : 'Lanjut: Upload Dokumen'} <ArrowRight size={18} />
+      <div className="flex justify-between mt-8">
+        <button onClick={handleBack} className="btn btn-secondary flex items-center gap-2"><ArrowLeft size={18} /> Kembali</button>
+        <button onClick={handleNext} disabled={saving} className={`btn btn-primary flex items-center gap-2 ${saving ? 'opacity-70 cursor-wait' : ''}`}>
+          {saving ? 'Menyimpan...' : 'Lanjut: Upload Dokumen'} {!saving && <ArrowRight size={18} />}
         </button>
       </div>
     </motion.div>

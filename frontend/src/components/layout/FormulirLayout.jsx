@@ -68,13 +68,13 @@ export default function FormulirLayout() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', paddingTop: '85px', paddingBottom: '2rem' }}>
-        <div className="container" style={{ maxWidth: '720px' }}>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+      <div className="min-h-screen pt-[85px] pb-8">
+        <div className="container max-w-[720px]">
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
               {[1,2,3,4].map(i => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', flex: i < 4 ? 1 : 'none' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem' }}>
+                <div key={i} className={`flex items-center ${i < 4 ? 'flex-1' : ''}`}>
+                  <div className="flex flex-col items-center gap-1">
                     <Skeleton width="36px" height="36px" borderRadius="50%" />
                     <Skeleton width="45px" height="0.55rem" />
                   </div>
@@ -92,44 +92,58 @@ export default function FormulirLayout() {
 
   if (!pendaftaran || !['DRAFT', 'REVISI'].includes(pendaftaran.status)) {
     return (
-      <div style={{ minHeight: '100vh', paddingTop: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem' }}>
-        <div>
-          <h2 style={{ marginBottom: '0.75rem' }}>Formulir Tidak Tersedia</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Formulir hanya bisa diisi saat status pendaftaran adalah Draft atau Revisi.</p>
-          <Link to="/beranda" className="btn btn-primary">Kembali ke Beranda</Link>
+      <div className="min-h-[calc(100vh-70px)] flex items-center justify-center text-center p-8 bg-bg-secondary dark:bg-dark-bg-secondary">
+        <div className="max-w-[400px]">
+          <div className="w-[72px] h-[72px] rounded-full flex items-center justify-center mx-auto mb-6
+                          bg-accent-bg dark:bg-dark-accent-bg border-2 border-accent-bg-strong dark:border-dark-accent-bg-strong">
+            <FileText size={32} className="text-accent dark:text-dark-accent" />
+          </div>
+          <h2 className="mb-3 font-heading text-2xl">Akses Ditutup</h2>
+          <p className="text-text-secondary dark:text-dark-text-secondary mb-8 leading-relaxed">
+            Formulir hanya bisa diisi saat status pendaftaran Anda adalah <strong>Belum Selesai</strong> atau <strong>Perlu Revisi</strong>.
+          </p>
+          <Link to="/beranda" className="btn btn-primary inline-block">Kembali ke Beranda</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: '100vh', paddingTop: '85px', paddingBottom: '2rem' }}>
-      <div className="container" style={{ maxWidth: '720px' }}>
+    <div className="min-h-screen pt-[85px] pb-8">
+      <div className="container max-w-[720px]">
         {/* Step indicator */}
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+          <div className="flex items-center justify-between mb-4">
             {steps.map((step, i) => {
               const isDone = i < currentStepIdx;
               const isActive = i === currentStepIdx;
               const Icon = step.icon;
               return (
-                <div key={step.key} style={{ display: 'flex', alignItems: 'center', flex: i < steps.length - 1 ? 1 : 'none' }}>
-                  <Link to={step.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem', textDecoration: 'none' }}>
-                    <div style={{
-                      width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: isDone ? 'var(--accent-primary)' : isActive ? 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover))' : 'var(--bg-tertiary)',
-                      color: isDone || isActive ? 'var(--bg-primary)' : 'var(--text-muted)',
-                      boxShadow: isActive ? '0 0 0 4px rgba(201,168,76,0.15)' : 'none',
-                      transition: 'all 0.3s',
-                    }}>
+                <div key={step.key} className={`flex items-center ${i < steps.length - 1 ? 'flex-1' : ''}`}>
+                  <Link to={step.path} className="flex flex-col items-center gap-1 no-underline">
+                    <div
+                      className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300
+                        ${isDone || isActive
+                          ? 'bg-accent dark:bg-dark-accent text-white border-none'
+                          : 'bg-surface-card dark:bg-dark-surface-card text-text-muted dark:text-dark-text-muted border border-border-default dark:border-dark-border-default'
+                        }`}
+                      style={isActive ? { boxShadow: '0 0 0 4px var(--color-accent-bg)' } : undefined}
+                    >
                       {isDone ? <CheckCircle2 size={18} /> : <Icon size={18} />}
                     </div>
-                    <span style={{ fontSize: '0.65rem', fontWeight: isActive ? 700 : 500, color: isDone ? 'var(--accent-primary)' : isActive ? 'var(--text-primary)' : 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                    <span className={`text-[0.65rem] whitespace-nowrap
+                      ${isDone ? 'text-accent dark:text-dark-accent font-medium' : ''}
+                      ${isActive ? 'text-text-primary dark:text-dark-text-primary font-bold' : ''}
+                      ${!isDone && !isActive ? 'text-text-muted dark:text-dark-text-muted font-medium' : ''}`}>
                       {step.label}
                     </span>
                   </Link>
                   {i < steps.length - 1 && (
-                    <div style={{ flex: 1, height: '2px', background: isDone ? 'var(--accent-primary)' : 'var(--bg-tertiary)', margin: '0 0.5rem', marginBottom: '1.2rem', borderRadius: '1px' }} />
+                    <div className={`flex-1 h-0.5 mx-2 mb-5 rounded-sm
+                      ${isDone
+                        ? 'bg-accent dark:bg-dark-accent'
+                        : 'bg-bg-tertiary dark:bg-dark-bg-tertiary'}`}
+                    />
                   )}
                 </div>
               );
@@ -137,13 +151,13 @@ export default function FormulirLayout() {
           </div>
 
           {/* Save status bar */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg-secondary)', fontSize: '0.75rem' }}>
-            <span style={{ color: 'var(--text-muted)' }}>
+          <div className="flex items-center justify-between px-3 py-2 rounded-sm bg-bg-secondary dark:bg-dark-bg-secondary text-xs">
+            <span className="text-text-muted dark:text-dark-text-muted">
               Step {currentStepIdx + 1} dari {steps.length}
             </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: saving ? 'var(--accent-primary)' : 'var(--text-muted)' }}>
+            <div className={`flex items-center gap-1 ${saving ? 'text-accent dark:text-dark-accent' : 'text-text-muted dark:text-dark-text-muted'}`}>
               {saving ? (
-                <><Loader2 size={12} style={{ animation: 'spin 1s linear infinite' }} /> Menyimpan...</>
+                <><Loader2 size={12} className="animate-spin" /> Menyimpan...</>
               ) : lastSaved ? (
                 <><Save size={12} /> Tersimpan {lastSaved.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</>
               ) : (
@@ -156,8 +170,6 @@ export default function FormulirLayout() {
         {/* Step content */}
         <Outlet context={{ pendaftaran, persyaratan, onSave: handleSave, saving, refreshData }} />
       </div>
-
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

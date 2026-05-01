@@ -68,27 +68,22 @@ export default function ProfilPage() {
 
   const handleLogout = async () => { await logout(); navigate('/'); };
 
-  const inputStyle = {
-    width: '100%', padding: '0.75rem 1rem', background: 'var(--bg-tertiary)',
-    border: '1.5px solid var(--glass-border)', borderRadius: 'var(--radius-md)',
-    color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem',
-    outline: 'none', transition: 'border 0.3s',
-  };
+  const inputCls = "w-full px-4 py-3 rounded-md text-[0.92rem] outline-none transition-colors duration-300 bg-bg-tertiary dark:bg-dark-bg-tertiary border-[1.5px] border-border-default dark:border-dark-border-default text-text-primary dark:text-dark-text-primary focus:border-accent dark:focus:border-dark-accent";
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', paddingTop: '85px', paddingBottom: '2rem' }}>
-        <div className="container" style={{ maxWidth: '640px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <div className="min-h-screen pt-[85px] pb-8">
+        <div className="container max-w-[640px]">
+          <div className="flex flex-col gap-5">
             <Skeleton width="150px" height="1.5rem" />
-            <div className="glass-card-static" style={{ padding: '2rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div className="glass-card-static p-8">
+              <div className="flex items-center gap-4 mb-6">
                 <Skeleton width="64px" height="64px" borderRadius="50%" />
-                <div style={{ flex: 1 }}><Skeleton width="60%" height="1.1rem" /><Skeleton width="40%" height="0.75rem" style={{ marginTop: '0.4rem' }} /></div>
+                <div className="flex-1"><Skeleton width="60%" height="1.1rem" /><Skeleton width="40%" height="0.75rem" style={{ marginTop: '0.4rem' }} /></div>
               </div>
               <SkeletonText lines={4} gap="1rem" />
             </div>
-            <div className="glass-card-static" style={{ padding: '2rem' }}><SkeletonText lines={3} gap="1rem" /></div>
+            <div className="glass-card-static p-8"><SkeletonText lines={3} gap="1rem" /></div>
           </div>
         </div>
       </div>
@@ -98,101 +93,138 @@ export default function ProfilPage() {
   const pd = profileData?.pendaftaran;
 
   return (
-    <div style={{ minHeight: '100vh', paddingTop: '85px', paddingBottom: '6rem', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: '-80px', right: '-80px', zIndex: 0 }}><GeometricPattern size={350} opacity={0.03} /></div>
-      <div className="container" style={{ maxWidth: '640px', position: 'relative', zIndex: 1 }}>
+    <div className="min-h-screen pt-[85px] pb-24 relative overflow-hidden">
+      <div className="absolute -top-20 -right-20 z-0"><GeometricPattern size={350} opacity={0.03} /></div>
+      <div className="container max-w-[640px] relative z-10">
 
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -15 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: '1.75rem' }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>
-            <User size={22} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem', color: 'var(--accent-primary)' }} />
+        <motion.div initial={{ opacity: 0, y: -15 }} animate={{ opacity: 1, y: 0 }} className="mb-7">
+          <h2 className="text-2xl mb-1">
+            <User size={22} className="inline align-middle mr-2 text-accent dark:text-dark-accent" />
             Profil Akun
           </h2>
         </motion.div>
 
         {/* Info Akun */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static" style={{ padding: '1.5rem', marginBottom: '1.25rem' }}>
-          <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Informasi Akun</h4>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
-            <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '1.4rem', fontWeight: 700, color: '#0B1A0F' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card-static p-6 mb-5">
+          <h4 className="text-sm font-semibold uppercase tracking-wide mb-4 text-text-muted dark:text-dark-text-muted">Informasi Akun</h4>
+          <div className="flex items-center gap-4 mb-5">
+            <div className="w-14 h-14 rounded-full shrink-0 flex items-center justify-center text-[1.4rem] font-bold text-[#0B1A0F] bg-gradient-to-br from-accent to-accent-hover">
               {form.nama_lengkap?.[0]?.toUpperCase() || 'U'}
             </div>
             <div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>{form.nama_lengkap}</div>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>{profileData?.user?.email}</div>
+              <div className="text-lg font-semibold">{form.nama_lengkap}</div>
+              <div className="text-sm text-text-muted dark:text-dark-text-muted">{profileData?.user?.email}</div>
             </div>
           </div>
 
           {pd && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-              {[[GraduationCap, 'Jenjang', pd.jenjang], [Hash, 'No Daftar', pd.nomor_daftar || '-'], [CalendarDays, 'Terdaftar', profileData?.user?.created_at ? new Date(profileData.user.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'], [CheckCircle2, 'Status', pd.status || '-']].map(([Icon, label, value]) => (
-                <div key={label} style={{ padding: '0.6rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Icon size={14} color="var(--accent-primary)" />
-                  <div><div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>{label}</div><div style={{ fontSize: '0.78rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</div></div>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                [GraduationCap, 'Jenjang', pd.jenjang],
+                [Hash, 'No Daftar', pd.nomor_daftar || '-'],
+                [CalendarDays, 'Terdaftar', profileData?.user?.created_at ? new Date(profileData.user.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-']
+              ].map(([Icon, label, value]) => (
+                <div key={label} className="p-2.5 rounded-sm flex items-center gap-2 bg-bg-tertiary dark:bg-dark-bg-tertiary">
+                  <Icon size={14} className="text-accent dark:text-dark-accent" />
+                  <div>
+                    <div className="text-[0.6rem] uppercase text-text-muted dark:text-dark-text-muted">{label}</div>
+                    <div className="text-[0.78rem] font-semibold truncate">{value}</div>
+                  </div>
                 </div>
               ))}
+              <div className="p-2.5 rounded-sm flex items-center gap-2 bg-bg-tertiary dark:bg-dark-bg-tertiary">
+                <CheckCircle2 size={14} className="text-accent dark:text-dark-accent" />
+                <div>
+                  <div className="text-[0.6rem] uppercase text-text-muted dark:text-dark-text-muted">Status</div>
+                  <span className="px-2 py-0.5 rounded-full text-[0.7rem] font-bold mt-0.5 inline-block
+                                   bg-accent-bg dark:bg-dark-accent-bg text-accent dark:text-dark-accent">
+                    {pd.status || '-'}
+                  </span>
+                </div>
+              </div>
             </div>
           )}
         </motion.div>
 
         {/* Edit Profil */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card-static" style={{ padding: '1.5rem', marginBottom: '1.25rem' }}>
-          <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Edit Profil</h4>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card-static p-6 mb-5">
+          <h4 className="text-sm font-semibold uppercase tracking-wide mb-4 text-text-muted dark:text-dark-text-muted">Edit Profil</h4>
 
-          {success && <div style={{ padding: '0.65rem', borderRadius: 'var(--radius-sm)', background: 'color-mix(in srgb, var(--status-diterima) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-diterima) 25%, transparent)', color: 'var(--status-diterima)', marginBottom: '1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}><CheckCircle2 size={14} />{success}</div>}
-          {error && <div style={{ padding: '0.65rem', borderRadius: 'var(--radius-sm)', background: 'color-mix(in srgb, var(--status-ditolak) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-ditolak) 25%, transparent)', color: 'var(--status-ditolak)', marginBottom: '1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}><AlertCircle size={14} />{error}</div>}
+          {success && (
+            <div className="flex items-center gap-1.5 p-2.5 rounded-sm mb-4 text-sm text-status-diterima bg-status-diterima/10 border border-status-diterima/25">
+              <CheckCircle2 size={14} />{success}
+            </div>
+          )}
+          {error && (
+            <div className="flex items-center gap-1.5 p-2.5 rounded-sm mb-4 text-sm text-status-ditolak bg-status-ditolak/10 border border-status-ditolak/25">
+              <AlertCircle size={14} />{error}
+            </div>
+          )}
 
-          <div style={{ display: 'grid', gap: '1rem' }}>
+          <div className="grid gap-4">
             <div>
-              <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}><User size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.25rem' }} />Nama Lengkap</label>
-              <input value={form.nama_lengkap} onChange={e => setForm(p => ({ ...p, nama_lengkap: e.target.value }))} style={inputStyle} />
+              <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary"><User size={13} className="inline align-middle mr-1" />Nama Lengkap</label>
+              <input value={form.nama_lengkap} onChange={e => setForm(p => ({ ...p, nama_lengkap: e.target.value }))} className={inputCls} />
             </div>
             <div>
-              <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}><Mail size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.25rem' }} />Email</label>
-              <input value={profileData?.user?.email || ''} disabled style={{ ...inputStyle, opacity: 0.6, cursor: 'not-allowed' }} />
-              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Email tidak bisa diubah</span>
+              <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary"><Mail size={13} className="inline align-middle mr-1" />Email</label>
+              <input value={profileData?.user?.email || ''} disabled className={`${inputCls} opacity-60 cursor-not-allowed`} />
+              <span className="text-[0.72rem] text-text-muted dark:text-dark-text-muted">Email tidak bisa diubah</span>
             </div>
             <div>
-              <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}><Phone size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.25rem' }} />Nomor HP</label>
-              <input value={form.no_hp} onChange={e => setForm(p => ({ ...p, no_hp: e.target.value }))} placeholder="08xxx" style={inputStyle} />
+              <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary"><Phone size={13} className="inline align-middle mr-1" />Nomor HP</label>
+              <input value={form.no_hp} onChange={e => setForm(p => ({ ...p, no_hp: e.target.value }))} placeholder="08xxx" className={inputCls} />
             </div>
           </div>
-          <button onClick={handleSave} disabled={saving} className="btn btn-primary" style={{ marginTop: '1.25rem', width: '100%', justifyContent: 'center', opacity: saving ? 0.7 : 1 }}>
-            {saving ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Menyimpan...</> : <><Save size={16} /> Simpan Perubahan</>}
+          <button onClick={handleSave} disabled={saving} className={`btn btn-primary w-full justify-center mt-5 ${saving ? 'opacity-70' : ''}`}>
+            {saving ? <><Loader2 size={16} className="animate-spin" /> Menyimpan...</> : <><Save size={16} /> Simpan Perubahan</>}
           </button>
         </motion.div>
 
         {/* Ganti Password */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card-static" style={{ padding: '1.5rem', marginBottom: '1.25rem' }}>
-          <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}><Lock size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.25rem' }} />Ganti Password</h4>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card-static p-6 mb-5">
+          <h4 className="text-sm font-semibold uppercase tracking-wide mb-4 text-text-muted dark:text-dark-text-muted">
+            <Lock size={14} className="inline align-middle mr-1" />Ganti Password
+          </h4>
 
-          {pwSuccess && <div style={{ padding: '0.65rem', borderRadius: 'var(--radius-sm)', background: 'color-mix(in srgb, var(--status-diterima) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-diterima) 25%, transparent)', color: 'var(--status-diterima)', marginBottom: '1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}><CheckCircle2 size={14} />{pwSuccess}</div>}
-          {pwError && <div style={{ padding: '0.65rem', borderRadius: 'var(--radius-sm)', background: 'color-mix(in srgb, var(--status-ditolak) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--status-ditolak) 25%, transparent)', color: 'var(--status-ditolak)', marginBottom: '1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}><AlertCircle size={14} />{pwError}</div>}
+          {pwSuccess && (
+            <div className="flex items-center gap-1.5 p-2.5 rounded-sm mb-4 text-sm text-status-diterima bg-status-diterima/10 border border-status-diterima/25">
+              <CheckCircle2 size={14} />{pwSuccess}
+            </div>
+          )}
+          {pwError && (
+            <div className="flex items-center gap-1.5 p-2.5 rounded-sm mb-4 text-sm text-status-ditolak bg-status-ditolak/10 border border-status-ditolak/25">
+              <AlertCircle size={14} />{pwError}
+            </div>
+          )}
 
-          <div style={{ display: 'grid', gap: '1rem' }}>
+          <div className="grid gap-4">
             {[['password_lama', 'Password Lama'], ['password_baru', 'Password Baru'], ['password_baru_confirmation', 'Konfirmasi Password Baru']].map(([name, label]) => (
-              <div key={name} style={{ position: 'relative' }}>
-                <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>{label}</label>
-                <input type={showPw[name] ? 'text' : 'password'} value={pwForm[name]} onChange={e => setPwForm(p => ({ ...p, [name]: e.target.value }))} style={inputStyle} />
-                <button type="button" onClick={() => setShowPw(p => ({ ...p, [name]: !p[name] }))} style={{ position: 'absolute', right: '0.75rem', top: '2.15rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+              <div key={name} className="relative">
+                <label className="block mb-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary">{label}</label>
+                <input type={showPw[name] ? 'text' : 'password'} value={pwForm[name]} onChange={e => setPwForm(p => ({ ...p, [name]: e.target.value }))} className={inputCls} />
+                <button type="button" onClick={() => setShowPw(p => ({ ...p, [name]: !p[name] }))}
+                  className="absolute right-3 top-[2.15rem] text-text-muted dark:text-dark-text-muted cursor-pointer bg-transparent border-none">
                   {showPw[name] ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             ))}
           </div>
-          <button onClick={handleChangePw} disabled={savingPw || !pwForm.password_lama || !pwForm.password_baru} className="btn btn-secondary" style={{ marginTop: '1.25rem', width: '100%', justifyContent: 'center', opacity: savingPw ? 0.7 : 1 }}>
-            {savingPw ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Mengubah...</> : <><Lock size={16} /> Ubah Password</>}
+          <button onClick={handleChangePw} disabled={savingPw || !pwForm.password_lama || !pwForm.password_baru}
+            className={`btn btn-secondary w-full justify-center mt-5 ${savingPw ? 'opacity-70' : ''}`}>
+            {savingPw ? <><Loader2 size={16} className="animate-spin" /> Mengubah...</> : <><Lock size={16} /> Ubah Password</>}
           </button>
         </motion.div>
 
         {/* Logout */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <button onClick={handleLogout} className="btn" style={{ width: '100%', justifyContent: 'center', background: 'transparent', border: '1.5px solid var(--status-ditolak)', color: 'var(--status-ditolak)', cursor: 'pointer' }}>
+          <button onClick={handleLogout}
+            className="btn w-full justify-center bg-transparent cursor-pointer text-status-ditolak border-[1.5px] border-status-ditolak hover:bg-status-ditolak/5">
             <LogOut size={16} /> Keluar dari Akun
           </button>
         </motion.div>
       </div>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

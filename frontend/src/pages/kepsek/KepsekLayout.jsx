@@ -21,54 +21,59 @@ export default function KepsekLayout() {
 
   const handleLogout = async () => { await logout(); navigate('/'); };
   const ThemeIcon = theme === 'dark' ? Sun : Moon;
-  const isActive = (path) => location.pathname === path || location.pathname === '/kepsek' && path === '/kepsek/dashboard';
+  const isActive = (path) => location.pathname === path || (location.pathname === '/kepsek' && path === '/kepsek/dashboard');
 
   const SidebarContent = ({ onNavigate }) => (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--glass-border)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--accent-primary-light), var(--accent-primary))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="flex flex-col h-full">
+      <div className="p-6 border-b border-border-default dark:border-dark-border-default">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-[10px] flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, var(--color-accent-light), var(--color-accent))' }}>
             <GraduationCap size={20} color="white" />
           </div>
           <div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.95rem' }}>Kepala Sekolah</div>
-            <div style={{ fontSize: '0.68rem', color: 'var(--accent-primary-light)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>PPDB Online</div>
+            <div className="font-heading font-bold text-[0.95rem]">Kepala Sekolah</div>
+            <div className="text-[0.68rem] font-semibold uppercase tracking-wide text-accent-light">PPDB Online</div>
           </div>
         </div>
       </div>
-      <nav style={{ flex: 1, padding: '1rem 0.75rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+
+      <nav className="flex-1 py-4 px-3">
+        <div className="flex flex-col gap-1">
           {navItems.map(item => {
             const Icon = item.icon;
             const active = isActive(item.path);
             return (
-              <NavLink key={item.path} to={item.path} onClick={onNavigate} style={{
-                display: 'flex', alignItems: 'center', gap: '0.75rem',
-                padding: '0.7rem 1rem', borderRadius: 'var(--radius-md)',
-                textDecoration: 'none', fontSize: '0.88rem', fontWeight: active ? 600 : 400,
-                color: active ? 'var(--accent-primary-light)' : 'var(--text-secondary)',
-                background: active ? 'rgba(45,138,107,0.1)' : 'transparent',
-                border: active ? '1px solid rgba(45,138,107,0.2)' : '1px solid transparent',
-                transition: 'all 0.2s',
-              }}>
+              <NavLink key={item.path} to={item.path} onClick={onNavigate}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-md no-underline text-[0.88rem] transition-all duration-200
+                  ${active
+                    ? 'font-semibold text-accent dark:text-dark-accent bg-accent-bg dark:bg-dark-accent-bg border border-accent-bg-strong dark:border-dark-accent-bg-strong'
+                    : 'font-normal text-text-secondary dark:text-dark-text-secondary border border-transparent hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary'
+                  }`}>
                 <Icon size={18} />{item.label}
               </NavLink>
             );
           })}
         </div>
       </nav>
-      <div style={{ padding: '1rem 0.75rem', borderTop: '1px solid var(--glass-border)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.75rem', padding: '0 0.25rem' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-primary-light), var(--accent-primary))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700, color: 'white' }}>
+
+      <div className="py-4 px-3 border-t border-border-default dark:border-dark-border-default">
+        <div className="flex items-center gap-2.5 mb-3 px-1">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
+            style={{ background: 'linear-gradient(135deg, var(--color-accent-light), var(--color-accent))' }}>
             {user?.nama_lengkap?.[0]?.toUpperCase() || 'K'}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.nama_lengkap}</div>
-            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Kepala Sekolah</div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-semibold truncate">{user?.nama_lengkap}</div>
+            <div className="text-[0.65rem] text-text-muted dark:text-dark-text-muted">Kepala Sekolah</div>
           </div>
-          <button onClick={toggleTheme} style={{ background: 'none', border: 'none', color: 'var(--accent-primary-light)', cursor: 'pointer', padding: '0.25rem' }}><ThemeIcon size={16} /></button>
+          <button onClick={toggleTheme} className="bg-transparent border-none text-accent-light cursor-pointer p-1">
+            <ThemeIcon size={16} />
+          </button>
         </div>
-        <button onClick={handleLogout} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.6rem', borderRadius: 'var(--radius-md)', background: 'transparent', border: '1px solid color-mix(in srgb, var(--status-ditolak) 40%, transparent)', color: 'var(--status-ditolak)', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 500 }}>
+        <button onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md bg-transparent cursor-pointer text-sm font-medium text-status-ditolak"
+          style={{ border: '1px solid color-mix(in srgb, var(--color-status-ditolak) 40%, transparent)' }}>
           <LogOut size={14} /> Keluar
         </button>
       </div>
@@ -76,41 +81,39 @@ export default function KepsekLayout() {
   );
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <aside className="kepsek-sidebar" style={{ width: '260px', flexShrink: 0, background: 'var(--bg-secondary)', borderRight: '1px solid var(--glass-border)', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100 }}>
+    <div className="flex min-h-screen">
+      <aside className="hidden md:block w-[260px] shrink-0 fixed top-0 left-0 bottom-0 z-[100]
+                         bg-bg-secondary dark:bg-dark-bg-secondary border-r border-border-default dark:border-dark-border-default">
         <SidebarContent onNavigate={() => {}} />
       </aside>
 
-      <div className="kepsek-mobile-header" style={{ display: 'none', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'var(--glass-bg)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid var(--glass-border)', padding: '0.75rem 1rem', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'linear-gradient(135deg, var(--accent-primary-light), var(--accent-primary))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="md:hidden fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 py-3 backdrop-blur-2xl
+                       bg-surface-card/80 dark:bg-dark-surface-card/80 border-b border-border-default dark:border-dark-border-default">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, var(--color-accent-light), var(--color-accent))' }}>
             <GraduationCap size={16} color="white" />
           </div>
-          <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem' }}>Kepala Sekolah</span>
+          <span className="font-heading font-bold text-sm">Kepala Sekolah</span>
         </div>
-        <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}><Menu size={22} /></button>
+        <button onClick={() => setSidebarOpen(true)} className="bg-transparent border-none cursor-pointer text-text-primary dark:text-dark-text-primary">
+          <Menu size={22} />
+        </button>
       </div>
 
       {sidebarOpen && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 200 }}>
-          <motion.div initial={{ x: -280 }} animate={{ x: 0 }} onClick={e => e.stopPropagation()} style={{ width: '280px', height: '100%', background: 'var(--bg-secondary)', borderRight: '1px solid var(--glass-border)' }}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 z-[200]">
+          <motion.div initial={{ x: -280 }} animate={{ x: 0 }} onClick={e => e.stopPropagation()}
+            className="w-[280px] h-full bg-bg-secondary dark:bg-dark-bg-secondary border-r border-border-default dark:border-dark-border-default">
             <SidebarContent onNavigate={() => setSidebarOpen(false)} />
           </motion.div>
         </motion.div>
       )}
 
-      <main className="kepsek-main" style={{ flex: 1, marginLeft: '260px', minHeight: '100vh', background: 'var(--bg-primary)' }}>
-        <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}><Outlet /></div>
+      <main className="flex-1 ml-0 md:ml-[260px] min-h-screen bg-bg-primary dark:bg-dark-bg-primary pt-[60px] md:pt-0">
+        <div className="p-4 md:p-8 max-w-[1200px] mx-auto"><Outlet /></div>
       </main>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .kepsek-sidebar { display: none !important; }
-          .kepsek-mobile-header { display: flex !important; }
-          .kepsek-main { margin-left: 0 !important; padding-top: 60px; }
-          .kepsek-main > div { padding: 1rem !important; }
-        }
-      `}</style>
     </div>
   );
 }
