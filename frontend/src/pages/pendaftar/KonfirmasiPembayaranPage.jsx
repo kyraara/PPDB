@@ -97,8 +97,26 @@ export default function KonfirmasiPembayaranPage() {
         {/* Actions */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
           className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <button className="btn btn-primary justify-center py-3 flex items-center gap-2"
-            onClick={() => alert('Fitur unduh PDF akan tersedia segera.')}>
+          <button className={`btn btn-primary justify-center py-3 flex items-center gap-2 ${loading ? 'opacity-70' : ''}`}
+            onClick={async () => {
+              try {
+                setLoading(true);
+                const response = await api.get(`/pendaftaran/${data.id}/bukti`, { responseType: 'blob' });
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `Bukti_Pendaftaran_${data.nomor_daftar}.pdf`);
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+              } catch (error) {
+                alert('Gagal mengunduh bukti PDF. Silakan coba lagi.');
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={loading}
+          >
             <Download size={18} /> Unduh Bukti (PDF)
           </button>
           <Link to="/beranda" className="btn btn-secondary justify-center py-3 flex items-center gap-2">

@@ -18,7 +18,7 @@ class ExportController extends Controller
         $user = $request->user();
         
         $pendaftaran = Pendaftaran::where('id', $id)
-            ->with(['dataSiswa', 'gelombang', 'pembayaran'])
+            ->with(['dataSiswa', 'gelombang', 'pembayaran', 'dataOrtu'])
             ->first();
 
         if (!$pendaftaran) {

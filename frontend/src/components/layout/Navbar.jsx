@@ -9,7 +9,6 @@ import api from '../../services/api';
 const publicLinks = [
   { label: 'Beranda', path: '/' },
   { label: 'Cek Status', path: '/cek-status' },
-  { label: 'Kontak', path: '/kontak' },
 ];
 
 const pendaftarLinks = [
@@ -81,8 +80,11 @@ export default function Navbar() {
   const [notifikasi, setNotifikasi] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showProfilDropdown, setShowProfilDropdown] = useState(false);
+  const [jenjangList, setJenjangList] = useState([]);
   const notifRef = useRef(null);
   const profileRef = useRef(null);
+  const profilNavRef = useRef(null);
 
   const { isAuthenticated, user, logout } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
@@ -98,12 +100,18 @@ export default function Navbar() {
         setUnreadCount(res.data.unread_count || 0);
       }).catch(() => {});
     }
+    
+    // Fetch jenjang for navbar dropdown
+    api.get('/publik/jenjang').then(res => {
+      if (res.data.success) setJenjangList(res.data.data);
+    }).catch(() => {});
   }, [isAuthenticated, location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notifRef.current && !notifRef.current.contains(event.target)) setShowNotif(false);
       if (profileRef.current && !profileRef.current.contains(event.target)) setShowProfileMenu(false);
+      if (profilNavRef.current && !profilNavRef.current.contains(event.target)) setShowProfilDropdown(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -158,6 +166,42 @@ export default function Navbar() {
               )}
             </Link>
           ))}
+
+          {/* Profil Dropdown */}
+          {!isAuthenticated && (
+            <div className="relative" ref={profilNavRef}>
+              <button onClick={() => setShowProfilDropdown(!showProfilDropdown)}
+                className="text-sm font-medium text-text-secondary dark:text-dark-text-secondary hover:text-accent dark:hover:text-dark-accent bg-transparent border-none cursor-pointer flex items-center gap-1">
+                Tentang
+              </button>
+              <AnimatePresence>
+                {showProfilDropdown && (
+                  <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-full right-0 w-[200px] mt-2 z-[100] overflow-hidden rounded-md shadow-lg
+                               bg-surface-card dark:bg-dark-surface-card border border-border-default dark:border-dark-border-default">
+                    <div className="p-2">
+                      <Link to="/profil-yayasan" onClick={() => setShowProfilDropdown(false)}
+                        className="block px-3 py-2 text-sm rounded-sm no-underline text-text-secondary dark:text-dark-text-secondary hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary">
+                        Profil Yayasan
+                      </Link>
+                      {jenjangList.map(j => (
+                        <Link key={j.kode} to={`/jenjang/${j.kode}`} onClick={() => setShowProfilDropdown(false)}
+                          className="block px-3 py-2 text-sm rounded-sm no-underline text-text-secondary dark:text-dark-text-secondary hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary">
+                          Jenjang {j.kode}
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
+          {!isAuthenticated && (
+            <Link to="/kontak" className="text-sm font-medium relative transition-colors duration-300 text-text-secondary dark:text-dark-text-secondary hover:text-accent dark:hover:text-dark-accent">
+              Kontak
+            </Link>
+          )}
 
           {/* Theme Toggle (Public) */}
           {!isAuthenticated && (
@@ -284,6 +328,27 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+
+              {!isAuthenticated && (
+                <>
+                  <div className="py-3 text-base font-medium text-text-primary dark:text-dark-text-primary border-b border-border-default dark:border-dark-border-default">
+                    Tentang
+                    <div className="flex flex-col gap-2 mt-2 ml-4">
+                      <Link to="/profil-yayasan" onClick={() => setIsMenuOpen(false)} className="text-sm text-text-secondary dark:text-dark-text-secondary no-underline py-1">Profil Yayasan</Link>
+                      {jenjangList.map(j => (
+                        <Link key={j.kode} to={`/jenjang/${j.kode}`} onClick={() => setIsMenuOpen(false)} className="text-sm text-text-secondary dark:text-dark-text-secondary no-underline py-1">
+                          Jenjang {j.kode}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                  <Link to="/kontak" onClick={() => setIsMenuOpen(false)}
+                    className={`block py-3 text-base font-medium border-b border-border-default dark:border-dark-border-default no-underline
+                      ${isLinkActive('/kontak') ? 'text-accent dark:text-dark-accent' : 'text-text-primary dark:text-dark-text-primary'}`}>
+                    Kontak
+                  </Link>
+                </>
+              )}
 
               <div className="flex flex-col gap-3 mt-4">
                 {isAuthenticated ? (

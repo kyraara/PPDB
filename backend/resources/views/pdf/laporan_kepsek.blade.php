@@ -19,10 +19,25 @@
 </head>
 <body>
     <div class="header">
-        <h1>PPDB AL ISTIQOMAH AL ISLAMIYAH</h1>
-        <h2>Tahun Ajaran 2026/2027</h2>
+        <table style="width: 100%; border: none; margin: 0; padding: 0;">
+            <tr>
+                <td style="width: 80px; text-align: left; border: none; vertical-align: middle;">
+                    @php
+                        $logoPath = base_path('../frontend/public/images/logo.png');
+                        $logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
+                    @endphp
+                    @if($logoData)
+                        <img src="data:image/png;base64,{{ $logoData }}" style="width: 70px; height: auto;" alt="Logo" />
+                    @endif
+                </td>
+                <td style="text-align: center; border: none; vertical-align: middle;">
+                    <h1>PPDB AL ISTIQOMAH AL ISLAMIYAH</h1>
+                    <h2>Tahun Ajaran 2026/2027</h2>
+                </td>
+                <td style="width: 80px; border: none;"></td>
+            </tr>
+        </table>
     </div>
-
     <div class="title">LAPORAN REKAPITULASI PENDAFTARAN</div>
 
     <div class="stats-box">

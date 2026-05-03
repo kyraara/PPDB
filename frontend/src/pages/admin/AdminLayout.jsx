@@ -3,19 +3,20 @@ import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard, CalendarDays, FileText, Users, UserCircle,
-  LogOut, GraduationCap, Menu, Shield, CreditCard, Sun, Moon
+  LogOut, GraduationCap, Menu, Shield, CreditCard, Sun, Moon, Settings
 } from 'lucide-react';
 import useAuthStore from '../../stores/authStore';
 import useThemeStore from '../../stores/themeStore';
 
 const navItems = [
   { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/admin/pengaturan-jenjang', label: 'Jenjang', icon: Settings },
   { path: '/admin/gelombang', label: 'Gelombang', icon: CalendarDays },
   { path: '/admin/persyaratan', label: 'Persyaratan', icon: FileText },
   { path: '/admin/panitia', label: 'Panitia', icon: Shield },
   { path: '/admin/pendaftar', label: 'Pendaftar', icon: Users },
   { path: '/admin/pembayaran', label: 'Pembayaran', icon: CreditCard },
-  { path: '/profil', label: 'Profil', icon: UserCircle },
+  { path: '/admin/profil', label: 'Profil', icon: UserCircle },
 ];
 
 export default function AdminLayout() {
@@ -38,10 +39,7 @@ export default function AdminLayout() {
       {/* Logo */}
       <div className="p-6 border-b border-border-default dark:border-dark-border-default">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-[10px] flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))' }}>
-            <GraduationCap size={20} color="#0B1A0F" />
-          </div>
+          <img src="/images/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
           <div>
             <div className="font-heading font-bold text-[0.95rem]">Panel Admin</div>
             <div className="text-[0.68rem] font-semibold uppercase tracking-wide text-accent dark:text-dark-accent">PPDB Online</div>
@@ -105,10 +103,7 @@ export default function AdminLayout() {
       <div className="admin-mobile-header hidden fixed top-0 left-0 right-0 z-[100] items-center justify-between px-4 py-3 backdrop-blur-2xl
                        bg-surface-card/80 dark:bg-dark-surface-card/80 border-b border-border-default dark:border-dark-border-default">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))' }}>
-            <GraduationCap size={16} color="#0B1A0F" />
-          </div>
+          <img src="/images/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
           <div>
             <div className="font-heading font-bold text-sm">Panel Admin</div>
             <div className="text-[0.6rem] font-semibold text-accent dark:text-dark-accent">PPDB Online</div>

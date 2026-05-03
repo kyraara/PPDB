@@ -39,7 +39,7 @@ export default function AdminDashboardPage() {
         <Skeleton width="220px" height="1.75rem" style={{ marginBottom: '0.5rem' }} />
         <Skeleton width="160px" height="0.85rem" style={{ marginBottom: '2rem' }} />
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          {[1,2,3,4,5,6].map(i => <SkeletonCard key={i} height="110px" />)}
+          {[1, 2, 3, 4, 5, 6].map(i => <SkeletonCard key={i} height="110px" />)}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <SkeletonCard height="300px" /><SkeletonCard height="300px" />
@@ -118,10 +118,10 @@ export default function AdminDashboardPage() {
                 <XAxis dataKey="jenjang" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
                 <YAxis tick={{ fill: 'var(--color-text-muted)', fontSize: 11 }} />
                 <Tooltip contentStyle={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border-default)', borderRadius: '8px', fontSize: '0.82rem', color: 'var(--color-text-primary)' }} />
-                <Bar dataKey="Menunggu" stackId="a" fill="#F59E0B" radius={[0,0,0,0]} />
+                <Bar dataKey="Menunggu" stackId="a" fill="#F59E0B" radius={[0, 0, 0, 0]} />
                 <Bar dataKey="Diterima" stackId="a" fill="#10B981" />
                 <Bar dataKey="Ditolak" stackId="a" fill="#EF4444" />
-                <Bar dataKey="Terdaftar" stackId="a" fill="#047857" radius={[4,4,0,0]} />
+                <Bar dataKey="Terdaftar" stackId="a" fill="#047857" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

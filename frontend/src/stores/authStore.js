@@ -33,6 +33,31 @@ const useAuthStore = create((set) => ({
     }
   },
 
+  loginWithGoogle: async (credential, jenjangDaftar = null) => {
+    set({ isLoading: true, error: null });
+    try {
+      const res = await api.post('/auth/google', { credential, jenjang_daftar: jenjangDaftar });
+      const { user, token } = res.data.data;
+
+      localStorage.setItem('ppdb_token', token);
+      localStorage.setItem('ppdb_user', JSON.stringify(user));
+
+      set({
+        user,
+        token,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      });
+
+      return { success: true, user };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Google Sign-In gagal. Silakan coba lagi.';
+      set({ isLoading: false, error: message });
+      return { success: false, message };
+    }
+  },
+
   register: async (data) => {
     set({ isLoading: true, error: null });
     try {

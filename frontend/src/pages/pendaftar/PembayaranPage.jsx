@@ -104,8 +104,7 @@ export default function PembayaranPage() {
     setPaying(true);
     window.snap.pay(token, {
       onSuccess: async () => {
-        await api.post('/pembayaran/sync').catch(() => {});
-        navigate('/pembayaran/konfirmasi');
+        await handleSyncStatus();
       },
       onPending: async () => {
         setPaying(false);
@@ -119,10 +118,19 @@ export default function PembayaranPage() {
       },
       onClose: async () => {
         setPaying(false);
-        await api.post('/pembayaran/sync').catch(() => {});
-        fetchInfo(); // Refresh in case status changed
+        await handleSyncStatus();
       },
     });
+  };
+
+  const handleSyncStatus = async () => {
+    setLoading(true);
+    try {
+      await api.post('/pembayaran/sync').catch(() => {});
+      await fetchInfo();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSimulasiBayar = async () => {
@@ -296,10 +304,14 @@ export default function PembayaranPage() {
 
               {/* Payment URL fallback (redirect if Snap popup fails) */}
               {isSandbox && pembayaran.payment_url && (
-                <a href={pembayaran.payment_url} target="_blank" rel="noopener" className="btn btn-secondary w-full justify-center text-center no-underline flex items-center gap-2">
+                <a href={pembayaran.payment_url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary w-full justify-center text-center no-underline flex items-center gap-2">
                   <CreditCard size={16} /> Buka Halaman Pembayaran
                 </a>
               )}
+              
+              <button onClick={handleSyncStatus} disabled={loading} className="btn bg-bg-tertiary dark:bg-dark-bg-tertiary text-text-secondary border border-border-default hover:border-accent hover:text-accent w-full justify-center text-center flex items-center gap-2 mt-2">
+                <Timer size={16} /> Cek Status Pembayaran
+              </button>
             </div>
           ) : (
             <div className="text-center">

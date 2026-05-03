@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle } from 'lucide-react';
 import useAuthStore from '../stores/authStore';
 import GeometricPattern from '../components/GeometricPattern';
+import GoogleSignInButton from '../components/ui/GoogleSignInButton';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -25,6 +26,12 @@ export default function LoginPage() {
     e.preventDefault();
     clearError();
     const result = await login(email, password);
+    if (result.success) navigate(getDashboardPath(result.user.role));
+  };
+
+  const handleGoogleSuccess = async (credential) => {
+    clearError();
+    const result = await useAuthStore.getState().loginWithGoogle(credential);
     if (result.success) navigate(getDashboardPath(result.user.role));
   };
 
@@ -101,6 +108,18 @@ export default function LoginPage() {
               {isLoading ? 'Memproses...' : <><LogIn size={18} />Masuk</>}
             </button>
           </form>
+
+          <div className="relative flex items-center my-6">
+            <div className="flex-grow border-t border-border-default dark:border-dark-border-default"></div>
+            <span className="shrink-0 px-3 text-xs text-text-muted dark:text-dark-text-muted">atau masuk dengan</span>
+            <div className="flex-grow border-t border-border-default dark:border-dark-border-default"></div>
+          </div>
+
+          <GoogleSignInButton 
+            onSuccess={handleGoogleSuccess} 
+            onError={() => { clearError(); useAuthStore.setState({ error: 'Google Sign-In gagal atau dibatalkan.' }) }} 
+            text="signin_with"
+          />
         </div>
 
         <div className="text-center mt-6">

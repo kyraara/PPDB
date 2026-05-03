@@ -9,6 +9,7 @@ import {
 import PasswordStrengthIndicator from '../components/ui/PasswordStrengthIndicator';
 import useAuthStore from '../stores/authStore';
 import GeometricPattern from '../components/GeometricPattern';
+import GoogleSignInButton from '../components/ui/GoogleSignInButton';
 
 const gelombangAktif = { TK: { nomor: 1 }, SD: { nomor: 1 }, SMP: { nomor: 1 }, SMA: null };
 
@@ -52,6 +53,15 @@ export default function RegisterPage() {
       const mapped = {};
       Object.entries(result.errors).forEach(([key, msgs]) => { mapped[key] = Array.isArray(msgs) ? msgs[0] : msgs; });
       setFieldErrors(mapped);
+    }
+  };
+
+  const handleGoogleSuccess = async (credential) => {
+    clearError();
+    const result = await useAuthStore.getState().loginWithGoogle(credential, selectedJenjang);
+    if (result.success) {
+      // Direct redirect for google login (avoids the "Akun Berhasil Dibuat" screen to act more like login)
+      navigate('/beranda');
     }
   };
 
@@ -208,6 +218,21 @@ export default function RegisterPage() {
                                 text-accent dark:text-dark-accent">
                   <GraduationCap size={14} />Jenjang: {selectedJenjang}
                 </div>
+                
+                <div className="mb-6">
+                  <GoogleSignInButton 
+                    onSuccess={handleGoogleSuccess} 
+                    onError={() => { clearError(); useAuthStore.setState({ error: 'Google Sign-In gagal atau dibatalkan.' }) }} 
+                    text="signup_with"
+                  />
+                </div>
+
+                <div className="relative flex items-center my-6">
+                  <div className="flex-grow border-t border-border-default dark:border-dark-border-default"></div>
+                  <span className="shrink-0 px-3 text-xs text-text-muted dark:text-dark-text-muted">atau daftar manual</span>
+                  <div className="flex-grow border-t border-border-default dark:border-dark-border-default"></div>
+                </div>
+
                 <form onSubmit={handleSubmit}>
                   {renderInput('nama_lengkap', 'Nama Lengkap', User, 'text', 'Masukkan nama lengkap')}
                   {renderInput('email', 'Email', Mail, 'email', 'contoh@email.com')}

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ProfilController;
 use App\Http\Controllers\Api\PublicController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\KepsekController;
+use App\Http\Controllers\Api\PengaturanJenjangController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,8 @@ Route::prefix('publik')->group(function () {
     Route::get('/gelombang', [PublicController::class, 'gelombang']);
     Route::get('/cek-status/{nomor_daftar}', [PublicController::class, 'cekStatus']);
     Route::get('/statistik', [PublicController::class, 'statistik']);
+    Route::get('/jenjang', [PengaturanJenjangController::class, 'index']);
+    Route::get('/jenjang/{kode}', [PengaturanJenjangController::class, 'show']);
 });
 
 Route::get('/persyaratan-dokumen/{jenjang}', [PendaftaranController::class, 'persyaratanDokumen']);
@@ -41,7 +44,10 @@ Route::post('/pembayaran/webhook', [PembayaranController::class, 'webhook']);
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    // CATATAN: Rate limiting ditambahkan untuk mencegah brute force.
+    // throttle:5,1 berarti maksimal 5 percobaan per 1 menit per IP.
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::post('/google', [\App\Http\Controllers\Api\GoogleAuthController::class, 'handle'])->middleware('throttle:5,1');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
@@ -140,6 +146,14 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
 
     // Export
     Route::get('/export/pendaftar', [\App\Http\Controllers\Api\ExportController::class, 'exportPendaftarCsv']);
+
+    // Pengaturan Jenjang
+    Route::get('/pengaturan-jenjang', [PengaturanJenjangController::class, 'adminIndex']);
+    Route::get('/pengaturan-jenjang/{kode}', [PengaturanJenjangController::class, 'adminShow']);
+    Route::put('/pengaturan-jenjang/{kode}', [PengaturanJenjangController::class, 'update']);
+    Route::post('/pengaturan-jenjang/{kode}/logo', [PengaturanJenjangController::class, 'uploadLogo']);
+    Route::delete('/pengaturan-jenjang/{kode}/logo', [PengaturanJenjangController::class, 'deleteLogo']);
+    Route::post('/upload-image', [PengaturanJenjangController::class, 'uploadImage']);
 });
 
 /*

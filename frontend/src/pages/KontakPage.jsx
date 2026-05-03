@@ -66,17 +66,20 @@ export default function KontakPage() {
             <p className="text-text-secondary dark:text-dark-text-secondary mb-6 text-[0.85rem] leading-relaxed">
               Jl. Padat Karya RT.10/RW. 01 Kel. Gunung Ibul, Kec. Prabumulih Timur Kota Prabumulih Sumatera Selatan 31113
             </p>
-            <div className="mt-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-md
-                            bg-accent-bg dark:bg-dark-accent-bg text-accent dark:text-dark-accent">
-              <Clock size={16} /> Buka Sesuai Jam Layanan
-            </div>
+            <a href="https://maps.google.com/?q=Jl.+Padat+Karya+RT.10+RW.01+Prabumulih" target="_blank" rel="noopener noreferrer"
+              className="mt-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-md no-underline
+                          bg-accent-bg dark:bg-dark-accent-bg text-accent dark:text-dark-accent
+                          border border-border-default dark:border-dark-border-default
+                          hover:bg-accent-bg-strong dark:hover:bg-dark-accent-bg-strong transition-colors duration-200">
+              <MapPin size={16} /> Buka di Google Maps ↗
+            </a>
           </div>
         </div>
 
         {/* Peta Lokasi */}
         <div className="max-w-[1000px] mx-auto mt-16">
           <h3 className="mb-6 text-center">Peta Lokasi Kami</h3>
-          <div className="rounded-xl overflow-hidden border border-border-default dark:border-dark-border-default shadow-md h-[400px]">
+          <div className="rounded-xl overflow-hidden border border-border-default dark:border-dark-border-default shadow-md h-[380px] mb-12">
             <iframe
               title="Google Maps"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15935.083756855523!2d104.2253013871582!3d-3.465545299999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e3a1f9a0c0a9b8d%3A0x8e8b8c8d8e8f8g8h!2sPrabumulih!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid"

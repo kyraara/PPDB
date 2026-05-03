@@ -1,44 +1,61 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import BottomNav from './components/layout/BottomNav';
 import ProtectedRoute from './components/ProtectedRoute';
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import LupaPasswordPage from './pages/LupaPasswordPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import CekStatusPage from './pages/CekStatusPage';
-import KontakPage from './pages/KontakPage';
-import BerandaPage from './pages/pendaftar/BerandaPage';
-import FormulirLayout from './components/layout/FormulirLayout';
-import DataSiswaForm from './pages/pendaftar/DataSiswaForm';
-import DataOrtuForm from './pages/pendaftar/DataOrtuForm';
-import DokumenForm from './pages/pendaftar/DokumenForm';
-import ReviewSubmitPage from './pages/pendaftar/ReviewSubmitPage';
-import PembayaranPage from './pages/pendaftar/PembayaranPage';
-import KonfirmasiPembayaranPage from './pages/pendaftar/KonfirmasiPembayaranPage';
-import ProfilPage from './pages/pendaftar/ProfilPage';
-import PanitiaLayout from './pages/panitia/PanitiaLayout';
-import PanitiaDashboardPage from './pages/panitia/PanitiaDashboardPage';
-import PendaftarListPage from './pages/panitia/PendaftarListPage';
-import PendaftarDetailPage from './pages/panitia/PendaftarDetailPage';
-// Admin
-import AdminLayout from './pages/admin/AdminLayout';
-import AdminDashboardPage from './pages/admin/AdminDashboardPage';
-import GelombangPage from './pages/admin/GelombangPage';
-import PersyaratanPage from './pages/admin/PersyaratanPage';
-import PanitiaPage from './pages/admin/PanitiaPage';
-import AdminPendaftarPage from './pages/admin/AdminPendaftarPage';
-import AdminPembayaranPage from './pages/admin/AdminPembayaranPage';
-// Kepsek
-import KepsekLayout from './pages/kepsek/KepsekLayout';
-import KepsekDashboardPage from './pages/kepsek/KepsekDashboardPage';
+import ScreenLoader from './components/ui/ScreenLoader';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 
 import useAuthStore from './stores/authStore';
 import api from './services/api';
+import { Toaster } from 'react-hot-toast';
+
+// --- Static Imports for Core/Fast Pages ---
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import CekStatusPage from './pages/CekStatusPage';
+import KontakPage from './pages/KontakPage';
+
+// --- Lazy Loaded Pages ---
+const ProfilYayasanPage = lazy(() => import('./pages/ProfilYayasanPage'));
+const ProfilJenjangPage = lazy(() => import('./pages/ProfilJenjangPage'));
+const LupaPasswordPage = lazy(() => import('./pages/LupaPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
+
+// Pendaftar
+const BerandaPage = lazy(() => import('./pages/pendaftar/BerandaPage'));
+const FormulirLayout = lazy(() => import('./components/layout/FormulirLayout'));
+const DataSiswaForm = lazy(() => import('./pages/pendaftar/DataSiswaForm'));
+const DataOrtuForm = lazy(() => import('./pages/pendaftar/DataOrtuForm'));
+const DokumenForm = lazy(() => import('./pages/pendaftar/DokumenForm'));
+const ReviewSubmitPage = lazy(() => import('./pages/pendaftar/ReviewSubmitPage'));
+const PembayaranPage = lazy(() => import('./pages/pendaftar/PembayaranPage'));
+const KonfirmasiPembayaranPage = lazy(() => import('./pages/pendaftar/KonfirmasiPembayaranPage'));
+const ProfilPage = lazy(() => import('./pages/pendaftar/ProfilPage'));
+
+// Panitia
+const PanitiaLayout = lazy(() => import('./pages/panitia/PanitiaLayout'));
+const PanitiaDashboardPage = lazy(() => import('./pages/panitia/PanitiaDashboardPage'));
+const PendaftarListPage = lazy(() => import('./pages/panitia/PendaftarListPage'));
+const PendaftarDetailPage = lazy(() => import('./pages/panitia/PendaftarDetailPage'));
+
+// Admin
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
+const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'));
+const GelombangPage = lazy(() => import('./pages/admin/GelombangPage'));
+const PersyaratanPage = lazy(() => import('./pages/admin/PersyaratanPage'));
+const PanitiaPage = lazy(() => import('./pages/admin/PanitiaPage'));
+const AdminPendaftarPage = lazy(() => import('./pages/admin/AdminPendaftarPage'));
+const AdminPembayaranPage = lazy(() => import('./pages/admin/AdminPembayaranPage'));
+const AdminPengaturanJenjangPage = lazy(() => import('./pages/admin/AdminPengaturanJenjangPage'));
+const AdminProfilPage = lazy(() => import('./pages/admin/AdminProfilPage'));
+
+// Kepsek
+const KepsekLayout = lazy(() => import('./pages/kepsek/KepsekLayout'));
+const KepsekDashboardPage = lazy(() => import('./pages/kepsek/KepsekDashboardPage'));
 
 function AppContent() {
   const location = useLocation();
@@ -71,98 +88,115 @@ function AppContent() {
 
   return (
     <>
+      {/* Toast Notifications */}
+      <Toaster position="top-right" toastOptions={{
+        style: { borderRadius: '8px', fontSize: '0.9rem' },
+        success: { duration: 3000 },
+        error: { duration: 4000 },
+      }} />
+
       {/* Grain texture overlay */}
       <div className="grain-overlay" />
 
       {!isPanelPage && <Navbar />}
 
       <main>
-        <Routes>
-          {/* Public */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/daftar" element={<RegisterPage />} />
-          <Route path="/lupa-password" element={<LupaPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/cek-status" element={<CekStatusPage />} />
-          <Route path="/kontak" element={<KontakPage />} />
+        <ErrorBoundary>
+          <Suspense fallback={<ScreenLoader />}>
+          <Routes>
+            {/* Public */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/daftar" element={<RegisterPage />} />
+            <Route path="/lupa-password" element={<LupaPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/cek-status" element={<CekStatusPage />} />
+            <Route path="/kontak" element={<KontakPage />} />
+            <Route path="/profil-yayasan" element={<ProfilYayasanPage />} />
+            <Route path="/jenjang/:key" element={<ProfilJenjangPage />} />
 
-          {/* Pendaftar — Protected */}
-          <Route path="/beranda" element={
-            <ProtectedRoute roles={['pendaftar']}>
-              <BerandaPage />
-            </ProtectedRoute>
-          } />
+            {/* Pendaftar — Protected */}
+            <Route path="/beranda" element={
+              <ProtectedRoute roles={['pendaftar']}>
+                <BerandaPage />
+              </ProtectedRoute>
+            } />
 
-          <Route path="/formulir" element={
-            <ProtectedRoute roles={['pendaftar']}>
-              <FormulirLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<DataSiswaForm />} />
-            <Route path="data-siswa" element={<DataSiswaForm />} />
-            <Route path="data-ortu" element={<DataOrtuForm />} />
-            <Route path="dokumen" element={<DokumenForm />} />
-            <Route path="review" element={<ReviewSubmitPage />} />
-          </Route>
+            <Route path="/formulir" element={
+              <ProtectedRoute roles={['pendaftar']}>
+                <FormulirLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<DataSiswaForm />} />
+              <Route path="data-siswa" element={<DataSiswaForm />} />
+              <Route path="data-ortu" element={<DataOrtuForm />} />
+              <Route path="dokumen" element={<DokumenForm />} />
+              <Route path="review" element={<ReviewSubmitPage />} />
+            </Route>
 
-          {/* Pembayaran */}
-          <Route path="/pembayaran" element={
-            <ProtectedRoute roles={['pendaftar']}>
-              <PembayaranPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/pembayaran/konfirmasi" element={
-            <ProtectedRoute roles={['pendaftar']}>
-              <KonfirmasiPembayaranPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/profil" element={
-            <ProtectedRoute roles={['pendaftar', 'panitia', 'admin', 'kepala_sekolah']}>
-              <ProfilPage />
-            </ProtectedRoute>
-          } />
+            {/* Pembayaran */}
+            <Route path="/pembayaran" element={
+              <ProtectedRoute roles={['pendaftar']}>
+                <PembayaranPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/pembayaran/konfirmasi" element={
+              <ProtectedRoute roles={['pendaftar']}>
+                <KonfirmasiPembayaranPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/profil" element={
+              <ProtectedRoute roles={['pendaftar', 'panitia', 'admin', 'kepala_sekolah']}>
+                <ProfilPage />
+              </ProtectedRoute>
+            } />
 
-          {/* Panitia */}
-          <Route path="/panitia" element={
-            <ProtectedRoute roles={['panitia']}>
-              <PanitiaLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<PanitiaDashboardPage />} />
-            <Route path="dashboard" element={<PanitiaDashboardPage />} />
-            <Route path="pendaftar" element={<PendaftarListPage />} />
-            <Route path="pendaftar/:id" element={<PendaftarDetailPage />} />
-          </Route>
+            {/* Panitia */}
+            <Route path="/panitia" element={
+              <ProtectedRoute roles={['panitia']}>
+                <PanitiaLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<PanitiaDashboardPage />} />
+              <Route path="dashboard" element={<PanitiaDashboardPage />} />
+              <Route path="pendaftar" element={<PendaftarListPage />} />
+              <Route path="pendaftar/:id" element={<PendaftarDetailPage />} />
+              <Route path="profil" element={<AdminProfilPage />} />
+            </Route>
 
-          {/* Admin */}
-          <Route path="/admin" element={
-            <ProtectedRoute roles={['admin']}>
-              <AdminLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<AdminDashboardPage />} />
-            <Route path="dashboard" element={<AdminDashboardPage />} />
-            <Route path="gelombang" element={<GelombangPage />} />
-            <Route path="persyaratan" element={<PersyaratanPage />} />
-            <Route path="panitia" element={<PanitiaPage />} />
-            <Route path="pendaftar" element={<AdminPendaftarPage />} />
-            <Route path="pembayaran" element={<AdminPembayaranPage />} />
-          </Route>
+            {/* Admin */}
+            <Route path="/admin" element={
+              <ProtectedRoute roles={['admin']}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<AdminDashboardPage />} />
+              <Route path="dashboard" element={<AdminDashboardPage />} />
+              <Route path="gelombang" element={<GelombangPage />} />
+              <Route path="persyaratan" element={<PersyaratanPage />} />
+              <Route path="panitia" element={<PanitiaPage />} />
+              <Route path="pendaftar" element={<AdminPendaftarPage />} />
+              <Route path="pembayaran" element={<AdminPembayaranPage />} />
+              <Route path="pengaturan-jenjang" element={<AdminPengaturanJenjangPage />} />
+              <Route path="profil" element={<AdminProfilPage />} />
+            </Route>
 
-          {/* Kepala Sekolah */}
-          <Route path="/kepsek" element={
-            <ProtectedRoute roles={['kepala_sekolah']}>
-              <KepsekLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<KepsekDashboardPage />} />
-            <Route path="dashboard" element={<KepsekDashboardPage />} />
-          </Route>
+            {/* Kepala Sekolah */}
+            <Route path="/kepsek" element={
+              <ProtectedRoute roles={['kepala_sekolah']}>
+                <KepsekLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<KepsekDashboardPage />} />
+              <Route path="dashboard" element={<KepsekDashboardPage />} />
+              <Route path="profil" element={<AdminProfilPage />} />
+            </Route>
 
-          {/* 404 */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+            {/* 404 */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </main>
 
       {/* Conditional footer vs bottom nav */}
