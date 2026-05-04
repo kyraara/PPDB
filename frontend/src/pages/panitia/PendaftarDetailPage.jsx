@@ -7,6 +7,7 @@ import {
   Phone, MapPin, Briefcase, Loader2, MessageSquare, Clock
 } from 'lucide-react';
 import api from '../../services/api';
+import { getStorageUrl } from '../../utils/urls';
 import { Skeleton, SkeletonCard } from '../../components/SkeletonLoader';
 
 const statusBadge = {
@@ -234,7 +235,7 @@ export default function PendaftarDetailPage() {
                       <div className="flex items-center gap-3 flex-wrap text-[0.78rem] text-text-muted dark:text-dark-text-muted mb-2">
                         <span>{doc.nama_file}</span>
                         <span>{(doc.ukuran_file / 1024).toFixed(0)} KB</span>
-                        <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/storage/${doc.path_file}`} target="_blank" rel="noopener" className="flex items-center gap-1 text-accent dark:text-dark-accent hover:underline">
+                        <a href={getStorageUrl(doc.path_file)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-accent dark:text-dark-accent hover:underline">
                           <Eye size={12} /> Lihat
                         </a>
                       </div>

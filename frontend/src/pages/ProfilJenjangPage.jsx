@@ -9,7 +9,7 @@ import VisiMisiSection from '../sections/VisiMisiSection';
 import PrestasiSection from '../sections/PrestasiSection';
 import KegiatanFasilitasSection from '../sections/KegiatanFasilitasSection';
 
-const STORAGE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || '';
+import { getStorageUrl } from '../utils/urls';
 
 /* ─── Helper: normalize array data dari API ─── */
 const normalizeKegiatan = (arr) =>
@@ -33,7 +33,7 @@ function JenjangErrorState() {
 /* ─── Hero Section ─── */
 function HeroJenjang({ jenjang }) {
   const logoUrl = jenjang.logo_path
-    ? `${STORAGE_URL}/storage/${jenjang.logo_path}`
+    ? getStorageUrl(jenjang.logo_path)
     : '/images/logo.png';
 
   return (

@@ -18,7 +18,7 @@ import {
   Image as ImageIcon,
 } from 'lucide-react';
 
-const STORAGE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || '';
+import { getStorageUrl } from '../utils/urls';
 
 /* ─────────────────────────────────────────
    Mapping icon otomatis berdasarkan nama
@@ -99,7 +99,7 @@ function CardPhoto({ fotoUrl, placeholderBg, PlaceholderIcon, placeholderLabel, 
   if (fotoUrl) {
     const finalUrl = fotoUrl.startsWith('http') || fotoUrl.startsWith('data:') 
       ? fotoUrl 
-      : `${STORAGE_URL}/storage/${fotoUrl}`;
+      : getStorageUrl(fotoUrl);
       
     return (
       <img
